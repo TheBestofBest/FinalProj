@@ -1,5 +1,5 @@
 ---
-name: Feature#[input_number] - [input_part] input issue title here
+name: Feature/Request Issue Template
 about: 이슈 생성 양식입니다.
 title: ''
 labels: enhancement
@@ -7,9 +7,10 @@ assignees: DooHwanKim92
 
 ---
 
-### 이슈내역
-- text here
-
-### 해결과제
+### 구현필요사항
 - [ ] task1
 - [ ] task2
+
+### 특이사항 (없을 경우 삭제)
+- etc 1
+- etc 2
