@@ -27,6 +27,9 @@ assignees: ''
      Debug : bug
      Improve : documentations
 
+- Project
+    FinalProj 선택
+
 ---
 
 ### 구현필요사항 or 이슈내역
