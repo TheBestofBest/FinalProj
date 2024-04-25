@@ -12,4 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiV1WorkingStateController {
 
     private final WorkingStateService workingStateService;
+
 }

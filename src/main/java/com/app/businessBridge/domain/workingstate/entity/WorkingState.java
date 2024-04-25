@@ -17,15 +17,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class WorkingState extends BaseEntity{
 
+    // 근태명
+    // ex) 휴가, 근무, 병가, 육아휴직 등등...
     private String name;
 
+    // 근무일 수
     private double working;
 
+    // 사용한 휴가일 수
     private double dayoff;
 
+    // 남은 휴가일 수
     private double leftdayoff;
 
+    // 시작 날짜
     private LocalDateTime startDate;
 
+    // 종료 날짜
     private LocalDateTime endDate;
+
 }

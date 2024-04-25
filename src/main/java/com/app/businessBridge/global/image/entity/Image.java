@@ -1,4 +1,5 @@
-package com.app.businessBridge.domain.rebate.entity;
+package com.app.businessBridge.global.image.entity;
+
 
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.Entity;
@@ -14,21 +15,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Rebate extends BaseEntity {
+public class Image extends BaseEntity {
 
-//    private Member member;
+    // 메일, 동아리, 쪽지 등등 타입
+    private String type;
 
-    // 급여
-    private Long salary;
-
-    // 보너스, 지원금 등등
-    private Long bonus;
-
-    // 세금
-    private Long tax;
-
-    // 보험료
-    private Long insurance;
+    private String filePath;
 
 }
-
