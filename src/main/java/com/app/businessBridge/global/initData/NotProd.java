@@ -18,14 +18,14 @@ public class NotProd {
         return args -> {
 
             // 이미지 저장하는 외부 경로 폴더 생성 로직 필요 시 추가
-            Path directoryArticle = Paths.get("C:\\B-bridge\\file_upload\\mail");
-            Path directoryReview = Paths.get("C:\\B-bridge\\file_upload\\article");
+            Path directoryMail = Paths.get("C:\\B-bridge\\file_upload\\mail");
+            Path directoryArticle = Paths.get("C:\\B-bridge\\file_upload\\article");
 //            Path directoryQuestion = Paths.get("C:\\B-bridge\\file_upload\\question");
 //            Path directoryMember = Paths.get("C:\\B-bridge\\file_upload\\member");
 
             try {
+                Files.createDirectories(directoryMail);
                 Files.createDirectories(directoryArticle);
-                Files.createDirectories(directoryReview);
 //                Files.createDirectories(directoryQuestion);
 //                Files.createDirectories(directoryMember);
             } catch (FileAlreadyExistsException e) {
