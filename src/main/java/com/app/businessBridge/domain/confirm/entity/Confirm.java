@@ -1,5 +1,7 @@
 package com.app.businessBridge.domain.confirm.entity;
 
+import com.app.businessBridge.domain.confirmFormType.entity.ConfrimFormType;
+import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,11 +30,11 @@ public class Confirm extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String content;
     // 결재 양식 타입(휴가승인서, 보고서 등)
-    @Column(length = 255)
-    private String formType;
+    @ManyToOne
+    private ConfrimFormType formType;
     // 결재 처리 상태(진행중, 승인, 반려 등)
-    @Column(length = 255)
-    private String confirmStatus;
+    @ManyToOne
+    private ConfirmStatus confirmStatus;
 
     // ! Member 엔티티 추가 시 주석 해제 하기
 //    // 결재 요청자
