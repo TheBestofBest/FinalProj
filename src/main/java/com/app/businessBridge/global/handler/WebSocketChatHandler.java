@@ -1,6 +1,7 @@
 package com.app.businessBridge.global.handler;
 
 import com.app.businessBridge.domain.chatLog.entity.ChatLog;
+import com.app.businessBridge.domain.chattingRoom.dto.ChattingRoomDto;
 import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
 import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
 import com.app.businessBridge.global.RsData.RsData;
@@ -14,10 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -33,6 +31,19 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         log.info(RsData.of("S","연결완료", session).toString());
+        List<ChattingRoom> chattingRooms = chattingRoomService.getListAll();
+        List<ChattingRoomDto> dtos = new ArrayList<>();
+        for (ChattingRoom c : chattingRooms) {
+            dtos.add(new ChattingRoomDto(c));
+        }
+
+        dtos.stream()
+                .findFirst()
+                .ifPresentOrElse(
+                        rooms -> sendMessage(session, dtos),
+                        () -> sendMessage(session, "채팅방 없음")
+                );
+
         sessions.add(session);
     }
 
@@ -47,7 +58,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         System.out.println("chatlog : " + chatMessageDto);
         log.info("session {}", chatMessageDto.toString());
         //임시
-        ChattingRoom chattingRoom = chattingRoomService.create();
+        ChattingRoom chattingRoom = chattingRoomService.create("이름").getData();
         System.out.println("chatRoomId1 : " + chattingRoom.getId());
         chatMessageDto.toBuilder().chattingRoom(chattingRoom).build();
         System.out.println("chatRoomId2 : " + chatMessageDto);

@@ -1,6 +1,7 @@
 package com.app.businessBridge.domain.chattingRoom.entity;
 
 import com.app.businessBridge.domain.chatLog.entity.ChatLog;
+import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -19,6 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ChattingRoom extends BaseEntity {
     private String name;
+
     @OneToMany(mappedBy = "chattingRoom", cascade = CascadeType.REMOVE)
     private List<ChatLog> chatLogs;
+    @OneToMany(mappedBy = "chattingRoom")
+    private List<MemberChatRelation> members;
 }
