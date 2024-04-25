@@ -14,6 +14,7 @@ import java.util.List;
 public class  ChattingRoomService {
     private final ChattingRoomRepository chattingRoomRepository;
 
+    //임시 : 해당 유저에 대한 리스트 가져오기 필요
     @Transactional
     public List<ChattingRoom> getListAll() {
 //        this.create("채팅방1");
@@ -22,6 +23,17 @@ public class  ChattingRoomService {
         return chattingRoomRepository.findAll();
     }
 
+    @Transactional
+    public RsData<ChattingRoom> getChattingRoom(Long id) {
+        return chattingRoomRepository.findById(id).map((chattingRoom )-> RsData.of(
+                "S-1",
+                "불러오기 성공",
+                chattingRoom
+        )).orElseGet(() -> RsData.of(
+                "F-1",
+                "%d번 채팅방 없음".formatted(id)
+        ));
+    }
     @Transactional
     public RsData<ChattingRoom> create(String name) {
         try {
