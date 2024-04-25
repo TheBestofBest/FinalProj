@@ -12,4 +12,5 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApiV1RebateController {
 
     private final RebateService rebateService;
+
 }
