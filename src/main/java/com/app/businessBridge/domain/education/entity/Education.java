@@ -21,6 +21,8 @@ public class Education extends BaseEntity {
 
 //    private Member author;
 
+    private String category;
+
     private String title;
 
     private String content;
