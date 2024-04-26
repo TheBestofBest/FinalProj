@@ -2,8 +2,6 @@ package com.app.businessBridge.domain.mail.Service;
 
 import com.app.businessBridge.domain.mail.Entity.Mail;
 import com.app.businessBridge.domain.mail.Repository.MailRepository;
-import com.app.businessBridge.domain.mailbox.Entity.Mailbox;
-import com.app.businessBridge.domain.mailbox.Repository.MailboxRepository;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;

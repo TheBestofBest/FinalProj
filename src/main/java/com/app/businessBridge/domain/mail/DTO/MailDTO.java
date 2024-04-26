@@ -14,7 +14,6 @@ public class MailDTO {
     private String title;
     private String content;
     private String attachments;
-    private String category;
     private boolean is_Read;
     private LocalDate sendDate;
     private LocalDate receiveDate;

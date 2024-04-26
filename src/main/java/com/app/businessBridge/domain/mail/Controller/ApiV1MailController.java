@@ -45,18 +45,5 @@ public class ApiV1MailController {
                 null
         ));
     }
-    @PostMapping("")
-    public RsData<SendResponse> SendMail(@Valid @RequestBody SendRequest sendRequest ) {
-        RsData<Mail> MailRs = this.mailService.sendMail(sendRequest.getTitle(), sendRequest.getContent(),sendRequest.getAttachments(),sendRequest.getSendDate(),sendRequest.getReceiveDate());
-
-        if (MailRs.isFail()) return (RsData) MailRs;
-
-        return RsData.of(
-                MailRs.getResultCode(),
-                MailRs.getMsg(),
-                new SendResponse(MailRs.getData())
-        );
-    }
-
 
 }
