@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface ChattingRoomRepository extends JpaRepository<ChattingRoom, Long> {
     // 쿼리필요
-    List<ChattingRoom> findByUsername(String username);
+//    List<ChattingRoom> findByUsername(String username);
 }
