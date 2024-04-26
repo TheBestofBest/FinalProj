@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -27,9 +28,9 @@ public class Schedule extends BaseEntity {
     private String name;
 
     // 시작일
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
     // 종료일
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
 }

@@ -19,7 +19,8 @@ public class APISecurityConfig {
                 .securityMatcher("/api/**")
                 .authorizeRequests(
                         authorizeRequests -> authorizeRequests
-                                //.requestMatchers("API URI").permitAll()
+                                .requestMatchers("/api/v1/schedule/**").permitAll()
+                                .requestMatchers("/api/v1/schedule").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(
