@@ -1,10 +1,9 @@
 package com.app.businessBridge.domain.member.entity;
 
+import com.app.businessBridge.domain.department.entity.Department;
+import com.app.businessBridge.domain.position.entity.Position;
 import com.app.businessBridge.global.Jpa.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,13 +15,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class Member extends BaseEntity {
-    private String departmentCode;
-    private String positionCode;
-    // 화상회의 코드
-    // private Integer meetingRoomCode;
-    private String memberName;
+    @ManyToOne
+    private Department department;
+    @ManyToOne
+    private Position position;
+    private String username;
+    private Integer memberNumber;
+    private String name;
     private String password;
     private String email;
 }

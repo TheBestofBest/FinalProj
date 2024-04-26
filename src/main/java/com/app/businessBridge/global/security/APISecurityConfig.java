@@ -19,7 +19,7 @@ public class APISecurityConfig {
                 .securityMatcher("/api/**")
                 .authorizeRequests(
                         authorizeRequests -> authorizeRequests
-                                //.requestMatchers("API URI").permitAll()
+                                //.requestMatchers("API URI").permitAll() api허용 url 넣으시면 됩니다.
                                 .anyRequest().authenticated()
                 )
                 .csrf(
