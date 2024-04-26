@@ -20,8 +20,10 @@ public class APISecurityConfig {
                 .securityMatcher("/api/**")
                 .authorizeRequests(
                         authorizeRequests -> authorizeRequests
+                                .requestMatchers("/api/v1/schedules/**").permitAll()
+                                .requestMatchers("/api/v1/schedules").permitAll()
                                 //.requestMatchers("API URI").permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/*/chat/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/chats/**")).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(
