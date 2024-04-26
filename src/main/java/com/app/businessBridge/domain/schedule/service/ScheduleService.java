@@ -3,6 +3,7 @@ package com.app.businessBridge.domain.schedule.service;
 import com.app.businessBridge.domain.schedule.controller.ApiV1ScheduleController;
 import com.app.businessBridge.domain.schedule.entity.Schedule;
 import com.app.businessBridge.domain.schedule.repository.ScheduleRepository;
+import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class ScheduleService {
     public RsData create(ApiV1ScheduleController.CreateReq req) {
 
         if(req.startDate.isAfter(req.endDate)){
-            return RsData.of("F-1","끝 날짜는 시작 날짜보다 앞일 수 없습니다.");
+            return RsData.of(RsCode.F_06,"끝시간은 시작시간보다 앞일 수 없습니다.");
         }
 
         Schedule schedule = Schedule.builder()
@@ -30,6 +31,6 @@ public class ScheduleService {
 
         scheduleRepository.save(schedule);
 
-        return RsData.of("S-1","스케줄을 생성하였습니다.");
+        return RsData.of(RsCode.S_01,"성공!");
     }
 }
