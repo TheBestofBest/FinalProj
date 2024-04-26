@@ -14,7 +14,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@ToString(callSuper = true)
 public class ConfirmFormType extends BaseEntity {
     // 양식 이름
     @Column(length = 255)

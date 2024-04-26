@@ -19,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-@ToString(callSuper = true)
 public class Confirm extends BaseEntity {
     // 결재 제목
     @Column(length = 255)
