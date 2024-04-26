@@ -1,8 +1,7 @@
-package com.app.businessBridge.domain.mailbox.Request;
+package com.app.businessBridge.domain.mail.Request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
 
 import java.time.LocalDate;
 

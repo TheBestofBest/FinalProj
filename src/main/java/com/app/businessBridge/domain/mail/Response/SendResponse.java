@@ -1,4 +1,4 @@
-package com.app.businessBridge.domain.mailbox.Response;
+package com.app.businessBridge.domain.mail.Response;
 
 import com.app.businessBridge.domain.mailbox.Entity.Mailbox;
 import lombok.AllArgsConstructor;
