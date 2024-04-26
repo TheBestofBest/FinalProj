@@ -36,14 +36,12 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         for (ChattingRoom c : chattingRooms) {
             dtos.add(new ChattingRoomDto(c));
         }
-
         dtos.stream()
                 .findFirst()
                 .ifPresentOrElse(
                         rooms -> sendMessage(session, dtos),
                         () -> sendMessage(session, "채팅방 없음")
                 );
-
         sessions.add(session);
     }
 
