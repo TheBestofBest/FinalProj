@@ -34,6 +34,12 @@ public class APISecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/confirm-form-types")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/confirms/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/confirms")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/members")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/members/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/grades")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/grades/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/departments")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/departments/**")).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(
