@@ -1,5 +1,7 @@
 package com.app.businessBridge.domain.confirmFormType.controller;
 
+import com.app.businessBridge.domain.confirmFormType.dto.ConfirmFormTypeDTO;
+import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmFormType.service.ConfirmFormTypeService;
 import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import com.app.businessBridge.domain.confirmStatus.controller.ApiV1ConfirmStatusController;
@@ -23,40 +25,29 @@ import java.util.List;
 @RequestMapping("/api/v1/confirm-form-types")
 public class ApiV1ConfirmFormTypeController {
     private final ConfirmFormTypeService confirmFormTypeService;
-//    @Getter
-//    @AllArgsConstructor
-//    public static class ConfrimFormTypesResponse {
-//        private final List<ConfirmForm> confirmStatusDTOS ;
-//    }
-//
-//    @GetMapping("")
-//    public RsData<ApiV1ConfirmStatusController.StatusesResponse> getStatuses(){
-//        List<ConfirmStatus> confirmStatuses = this.confirmStatusService.getAll();
-//        List<ConfirmStatusDTO> confirmStatusDTOS = new ArrayList<>();
-//        for (ConfirmStatus confirmStatus : confirmStatuses) {
-//            confirmStatusDTOS.add(new ConfirmStatusDTO(confirmStatus));
-//        }
-//
-//        return RsData.of("S-1", "성공", new ApiV1ConfirmStatusController.StatusesResponse(confirmStatusDTOS));
-//    }
-//
-//
-//    @Data
-//    public static class CreateConfirmStatusRequest {
-//        @NotBlank
-//        private String statusName;
-//        @NotBlank
-//        private String formDescription;
-//    }
-//    @Getter
-//    @AllArgsConstructor
-//    public static class CreateConfirmStatusResponse {
-//        private final ConfirmStatusDTO confirmStatusDTO;
-//    }
-//
+    @Getter
+    @AllArgsConstructor
+    public static class ConfrimFormTypesResponse {
+        private final List<ConfirmFormTypeDTO> confirmFormTypeDTOS;
+    }
+
+    @GetMapping("")
+    public RsData<ConfrimFormTypesResponse> getStatuses(){
+        List<ConfirmFormType> confirmFormTypes = this.confirmFormTypeService.getAll();
+        List<ConfirmFormTypeDTO> confirmFormTypeDTOS = new ArrayList<>();
+        for (ConfirmFormType confirmFormType : confirmFormTypes) {
+            confirmFormTypeDTOS.add(new ConfirmFormTypeDTO(confirmFormType));
+        }
+
+        return RsData.of("S-1", "성공", new ConfrimFormTypesResponse(confirmFormTypeDTOS));
+    }
+
+
+
+
 //    @PostMapping("")
-//    public RsData<ApiV1ConfirmStatusController.CreateConfirmStatusResponse> createStatus(ApiV1ConfirmStatusController.CreateConfirmStatusRequest createConfirmStatusRequest){
-//        RsData<ConfirmStatus> confirmStatusRsData = this.confirmStatusService.create(createConfirmStatusRequest.statusName,createConfirmStatusRequest.formDescription);
+//    public RsData<> createStatus){
+//        RsData<ConfirmFormType> confirmFormTypeRsData = this.confirmStatusService.create();
 //        return RsData.of(
 //                confirmStatusRsData.getResultCode(),
 //                confirmStatusRsData.getMsg(),

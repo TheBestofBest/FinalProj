@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ConfrimFormTypeDTO {
+public class ConfirmFormTypeDTO {
     private Long id;
     private String formName;
     private String formDescription;
 
-    public ConfrimFormTypeDTO(ConfirmFormType confirmFormType) {
+    public ConfirmFormTypeDTO(ConfirmFormType confirmFormType) {
         this.id = confirmFormType.getId();
         this.formName = confirmFormType.getFormName();
         this.formDescription = confirmFormType.getFormDescription();
