@@ -21,7 +21,8 @@ import java.util.List;
 public class ApiV1MailboxController {
     private final MailboxService mailboxService;
 
-    // 기본 코드들로 우선 미리 넣어두었음 다시 변경 할 예정
+    // 기본 코드들로 우선 미리 넣어두었습니다 다시 변경 할 예정
+
     @GetMapping("")
     public RsData<MailboxsResponse> getMails() {
         List<MailboxDTO> mailboxDTOList = this.mailboxService
@@ -29,7 +30,7 @@ public class ApiV1MailboxController {
                 .stream()
                 .map(mailbox -> new MailboxDTO(mailbox))
                 .toList();
-        return RsData.of("S-01", "성공", new MailboxsResponse(mailboxDTOList));
+        return RsData.of("S-01", "Success 요청 성공", new MailboxsResponse(mailboxDTOList));
     }
 
     @GetMapping("/{id}")

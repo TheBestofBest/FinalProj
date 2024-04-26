@@ -28,11 +28,7 @@ public class MailboxDTO {
         this.is_Read = mailbox.is_Read();
         this.sendDate = mailbox.getSendDate();
         this.receiveDate = mailbox.getReceiveDate();
-
-
     }
-
-
 
 
 }
