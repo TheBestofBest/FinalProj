@@ -1,6 +1,7 @@
 package com.app.businessBridge.domain.schedule.controller;
 
 import com.app.businessBridge.domain.schedule.service.ScheduleService;
+import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -39,7 +40,7 @@ public class ApiV1ScheduleController {
     public RsData create(@Valid @RequestBody CreateReq req, BindingResult br){
 
         if(br.hasErrors()){
-            return RsData.of("F-1","유효하지 않은 입력 입니다.");
+            return RsData.of(RsCode.F_06,"메시지");
         }
 
         return scheduleService.create(req);
