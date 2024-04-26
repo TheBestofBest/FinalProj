@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Position extends BaseEntity {
-    private Integer positionCode;
-    private String positionName;
+public class Grade extends BaseEntity {
+    private Integer gradeCode;
+    private String gradeName;
 }
