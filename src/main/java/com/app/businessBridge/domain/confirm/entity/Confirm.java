@@ -1,6 +1,7 @@
 package com.app.businessBridge.domain.confirm.entity;
 
-import com.app.businessBridge.domain.confirmFormType.entity.ConfrimFormType;
+
+import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.Column;
@@ -31,7 +32,7 @@ public class Confirm extends BaseEntity {
     private String content;
     // 결재 양식 타입(휴가승인서, 보고서 등)
     @ManyToOne
-    private ConfrimFormType formType;
+    private ConfirmFormType formType;
     // 결재 처리 상태(진행중, 승인, 반려 등)
     @ManyToOne
     private ConfirmStatus confirmStatus;
