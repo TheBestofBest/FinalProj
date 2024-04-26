@@ -20,5 +20,5 @@ public class ConfirmStatus extends BaseEntity {
     private String statusName;
     // 상태 간략설명
     @Column(columnDefinition = "TEXT")
-    private String formDescription;
+    private String statusDescription;
 }

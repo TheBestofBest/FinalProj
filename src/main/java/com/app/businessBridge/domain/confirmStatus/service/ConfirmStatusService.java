@@ -17,10 +17,10 @@ public class ConfirmStatusService {
         return this.confirmStatusRepository.findAll();
     }
 
-    public RsData<ConfirmStatus> create(String statusName, String formDescription) {
+    public RsData<ConfirmStatus> create(String statusName, String statusDescription) {
         ConfirmStatus confirmStatus = ConfirmStatus.builder()
                 .statusName(statusName)
-                .formDescription(formDescription)
+                .statusDescription(statusDescription)
                 .build();
         this.confirmStatusRepository.save(confirmStatus);
         return RsData.of(

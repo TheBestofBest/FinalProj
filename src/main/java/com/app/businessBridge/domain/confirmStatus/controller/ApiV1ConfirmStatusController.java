@@ -1,6 +1,6 @@
 package com.app.businessBridge.domain.confirmStatus.controller;
 
-import com.app.businessBridge.domain.confirmStatus.DTO.ConfirmStatusDTO;
+import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
 import com.app.businessBridge.global.RsData.RsData;
@@ -43,7 +43,7 @@ public class ApiV1ConfirmStatusController {
         @NotBlank
         private String statusName;
         @NotBlank
-        private String formDescription;
+        private String statusDescription;
     }
     @Getter
     @AllArgsConstructor
@@ -53,7 +53,7 @@ public class ApiV1ConfirmStatusController {
 
     @PostMapping("")
     public RsData<CreateConfirmStatusResponse> createStatus(CreateConfirmStatusRequest createConfirmStatusRequest){
-        RsData<ConfirmStatus> confirmStatusRsData = this.confirmStatusService.create(createConfirmStatusRequest.statusName,createConfirmStatusRequest.formDescription);
+        RsData<ConfirmStatus> confirmStatusRsData = this.confirmStatusService.create(createConfirmStatusRequest.statusName,createConfirmStatusRequest.statusDescription);
         return RsData.of(
                 confirmStatusRsData.getResultCode(),
                 confirmStatusRsData.getMsg(),
