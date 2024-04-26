@@ -27,8 +27,10 @@ public class Education extends BaseEntity {
 
     private String content;
 
-    private MultipartFile videoFile;
+    private Long hit;
 
-//    private MettingRoom mettingRoom;
+    private String filePath;
+
+//    private Long mettingRoomId;
 
 }
