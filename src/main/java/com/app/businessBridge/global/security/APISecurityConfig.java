@@ -20,10 +20,20 @@ public class APISecurityConfig {
                 .securityMatcher("/api/**")
                 .authorizeRequests(
                         authorizeRequests -> authorizeRequests
-                                .requestMatchers("/api/v1/schedules/**").permitAll()
-                                .requestMatchers("/api/v1/schedules").permitAll()
                                 //.requestMatchers("API URI").permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/chats/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/rebates/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/workingstates/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/statistics/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/educations/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/schedules/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/schedules")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/confirm-statuses/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/confirm-statuses")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/confirm-form-types/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/confirm-form-types")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/confirms/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/confirms")).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(
