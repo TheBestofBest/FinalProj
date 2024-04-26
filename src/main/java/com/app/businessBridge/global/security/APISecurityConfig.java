@@ -28,6 +28,12 @@ public class APISecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/educations/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/schedules/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/schedules")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/members")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/members/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/grades")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/grades/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/departments")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/departments/**")).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(
