@@ -2,7 +2,7 @@
 name: Feature/Request Issue Template
 about: 이슈 생성 양식입니다.
 title: ''
-labels: enhancement
+labels: ''
 assignees: ''
 
 ---
