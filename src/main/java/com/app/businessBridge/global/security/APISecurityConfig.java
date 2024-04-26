@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -20,6 +21,11 @@ public class APISecurityConfig {
                 .authorizeRequests(
                         authorizeRequests -> authorizeRequests
                                 //.requestMatchers("API URI").permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/chat/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/rebates/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/workingstates/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/statistics/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/educations/**")).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(

@@ -34,9 +34,14 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+<<<<<<< HEAD
 	// Spring batch, schedule
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.springframework.boot:spring-boot-starter-quartz'
+=======
+	//WebSocket
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+>>>>>>> b5ebb6a8deef990d8aff0630d7dc9dc3676ece9d
 }
 
 tasks.named('test') {
