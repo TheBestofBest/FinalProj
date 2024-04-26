@@ -59,7 +59,4 @@ public class ApiV1ConfirmStatusController {
                 confirmStatusRsData.getMsg(),
                 new CreateConfirmStatusResponse(new ConfirmStatusDTO(confirmStatusRsData.getData())));
     }
-
-
-
 }
