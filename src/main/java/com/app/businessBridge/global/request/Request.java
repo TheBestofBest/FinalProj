@@ -45,7 +45,7 @@ public class Request {
     }
 
 //    Member Entity Merge하고나서 주석 풀고 사용하세요
-    // 현재 로그인한 member 가져오는 method
+//    // 현재 로그인한 member 가져오는 method
 //    public Member getMember() {
 //        if (isLogout()) {
 //            return null;

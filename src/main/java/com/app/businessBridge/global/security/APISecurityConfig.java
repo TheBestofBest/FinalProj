@@ -21,7 +21,7 @@ public class APISecurityConfig {
                 .authorizeRequests(
                         authorizeRequests -> authorizeRequests
                                 //.requestMatchers("API URI").permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/*/chat/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/chats/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/rebates/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/workingstates/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/statistics/**")).permitAll()
