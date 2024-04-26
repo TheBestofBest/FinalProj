@@ -24,6 +24,8 @@ public class APISecurityConfig {
                                 .requestMatchers("/api/v1/schedules").permitAll()
                                 //.requestMatchers("API URI").permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/chats/**")).permitAll()
+                                .requestMatchers("/api/v1/confirm-statuses/**").permitAll()
+                                .requestMatchers("/api/v1/confirm-statuses").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(
