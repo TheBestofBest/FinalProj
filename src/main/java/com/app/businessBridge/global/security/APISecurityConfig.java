@@ -26,6 +26,10 @@ public class APISecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/chats/**")).permitAll()
                                 .requestMatchers("/api/*/confirm-statuses/**").permitAll()
                                 .requestMatchers("/api/*/confirm-statuses").permitAll()
+                                .requestMatchers("/api/*/confirm-form-types/**").permitAll()
+                                .requestMatchers("/api/*/confirm-form-types").permitAll()
+                                .requestMatchers("/api/*/confirms/**").permitAll()
+                                .requestMatchers("/api/*/confirms").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(
