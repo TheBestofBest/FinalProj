@@ -12,6 +12,7 @@ public class ApiV1RebateController {
 
     private final RebateService rebateService;
 
+
     @GetMapping("")
     public void getRebates() {
 
