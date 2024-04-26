@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 
-@RequestMapping("/api/v1/Mailbox")
+@RequestMapping("/api/v1/mailboxes")
 public class ApiV1MailboxController {
     private final MailboxService mailboxService;
 

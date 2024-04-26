@@ -1,14 +1,10 @@
 package com.app.businessBridge.domain.mail.Controller;
 
 import com.app.businessBridge.domain.mail.DTO.MailDTO;
-import com.app.businessBridge.domain.mail.Entity.Mail;
-import com.app.businessBridge.domain.mail.Request.SendRequest;
 import com.app.businessBridge.domain.mail.Response.MailResponse;
 import com.app.businessBridge.domain.mail.Response.MailsResponse;
-import com.app.businessBridge.domain.mail.Response.SendResponse;
 import com.app.businessBridge.domain.mail.Service.MailService;
 import com.app.businessBridge.global.RsData.RsData;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 
-@RequestMapping("/api/v1/Mails")
+@RequestMapping("/api/v1/mails")
 public class ApiV1MailController {
     private final MailService mailService;
 
