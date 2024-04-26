@@ -1,4 +1,4 @@
-package com.app.businessBridge.global.WebMvc;
+package com.app.businessBridge.global.webMvc;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
