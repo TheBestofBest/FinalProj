@@ -12,7 +12,7 @@ public class EducationDto {
 
     private Long id;
 
-//    private Member authorName;
+//    private String authorName;
 
     private String category;
 
