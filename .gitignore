@@ -177,3 +177,6 @@ replay_pid*
 
 ## application-secret
 application-secret.yml
+
+.gradle
+.idea
