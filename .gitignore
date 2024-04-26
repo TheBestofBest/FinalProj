@@ -139,3 +139,4 @@ application-secret.yml
 
 .gradle
 .idea
+build
