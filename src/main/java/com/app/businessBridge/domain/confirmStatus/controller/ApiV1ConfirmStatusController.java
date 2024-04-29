@@ -2,7 +2,9 @@ package com.app.businessBridge.domain.confirmStatus.controller;
 
 import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
+import com.app.businessBridge.domain.confirmStatus.request.CreateConfirmStatusRequest;
 import com.app.businessBridge.domain.confirmStatus.response.ConfirmStatusesResponse;
+import com.app.businessBridge.domain.confirmStatus.response.CreateConfirmStatusResponse;
 import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.constraints.NotBlank;
@@ -33,23 +35,9 @@ public class ApiV1ConfirmStatusController {
         return RsData.of("S-1", "성공", new ConfirmStatusesResponse(confirmStatusDTOS));
     }
 
-
-    @Data
-    public static class CreateConfirmStatusRequest {
-        @NotBlank
-        private String statusName;
-        @NotBlank
-        private String statusDescription;
-    }
-    @Getter
-    @AllArgsConstructor
-    public static class CreateConfirmStatusResponse {
-        private final ConfirmStatusDTO confirmStatusDTO;
-    }
-
     @PostMapping("")
     public RsData<CreateConfirmStatusResponse> createStatus(CreateConfirmStatusRequest createConfirmStatusRequest){
-        RsData<ConfirmStatus> confirmStatusRsData = this.confirmStatusService.create(createConfirmStatusRequest.statusName,createConfirmStatusRequest.statusDescription);
+        RsData<ConfirmStatus> confirmStatusRsData = this.confirmStatusService.create(createConfirmStatusRequest.getStatusName(),createConfirmStatusRequest.getStatusDescription());
         return RsData.of(
                 confirmStatusRsData.getResultCode(),
                 confirmStatusRsData.getMsg(),
