@@ -1,7 +1,7 @@
 package com.app.businessBridge;
 
 import com.app.businessBridge.domain.chatLog.entity.ChatLog;
-import com.app.businessBridge.global.handler.WebSocketChatHandler;
+//import com.app.businessBridge.global.handler.WebSocketChatHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +14,8 @@ import java.util.Set;
 @SpringBootTest
 class BusinessBridgeApplicationTests {
 
-    @Autowired
-    WebSocketChatHandler webSocketChatHandler;
+//    @Autowired
+//    WebSocketChatHandler webSocketChatHandler;
     @Test
     void contextLoads() {
     }
