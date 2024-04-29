@@ -1,5 +1,6 @@
-package com.app.businessBridge.domain.confirmStatus.response;
+package com.app.businessBridge.domain.confirmFormType.response;
 
+import com.app.businessBridge.domain.confirmFormType.dto.ConfirmFormTypeDTO;
 import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,12 +8,12 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class ConfirmStatusResponse {
+public class ConfirmFormTypeResponse {
 
     @Getter
     @AllArgsConstructor
     public static class getAll{
-        private List<ConfirmStatusDTO> confirmStatusDTOS ;
+        private List<ConfirmFormTypeDTO> confirmFormTypeDTOS ;
 
 
     }
@@ -20,18 +21,18 @@ public class ConfirmStatusResponse {
     @Getter
     @AllArgsConstructor
     public static class create{
-        private ConfirmStatusDTO confirmStatusDTO;
+        private ConfirmFormTypeDTO confirmFormTypeDTO;
     }
 
     @Getter
     @AllArgsConstructor
     public static class patch{
-        private ConfirmStatusDTO confirmStatusDTO;
+        private ConfirmFormTypeDTO confirmFormTypeDTO;
     }
 
     @Getter
     @AllArgsConstructor
     public static class delete{
-        private Long confirmStatusId;
+        private Long confirmFormTypeId;
     }
 }

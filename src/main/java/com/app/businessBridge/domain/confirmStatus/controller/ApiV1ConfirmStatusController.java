@@ -2,20 +2,12 @@ package com.app.businessBridge.domain.confirmStatus.controller;
 
 import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
-import com.app.businessBridge.domain.confirmStatus.request.CreateConfirmStatusRequest;
-import com.app.businessBridge.domain.confirmStatus.request.PatchConfirmStatusRequest;
-import com.app.businessBridge.domain.confirmStatus.response.ConfirmStatusesResponse;
-import com.app.businessBridge.domain.confirmStatus.response.CreateConfirmStatusResponse;
-import com.app.businessBridge.domain.confirmStatus.response.DeleteConfirmStatusResponse;
-import com.app.businessBridge.domain.confirmStatus.response.PatchConfirmStatusResponse;
+import com.app.businessBridge.domain.confirmStatus.request.ConfirmStatusRequest;
+import com.app.businessBridge.domain.confirmStatus.response.ConfirmStatusResponse;
 import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,27 +24,27 @@ public class ApiV1ConfirmStatusController {
 
     // 결재 처리 상태 다건 조회
     @GetMapping("")
-    public RsData<ConfirmStatusesResponse> getConfirmStatuses(){
+    public RsData<ConfirmStatusResponse.getAll> getConfirmStatuses(){
         List<ConfirmStatus> confirmStatuses = this.confirmStatusService.getAll();
         List<ConfirmStatusDTO> confirmStatusDTOS = new ArrayList<>();
         for (ConfirmStatus confirmStatus : confirmStatuses) {
             confirmStatusDTOS.add(new ConfirmStatusDTO(confirmStatus));
         }
 
-        return RsData.of(RsCode.S_01, "Confirm-Status 다건 조회 성공", new ConfirmStatusesResponse(confirmStatusDTOS));
+        return RsData.of(RsCode.S_01, "Confirm-Status 다건 조회 성공", new ConfirmStatusResponse.getAll(confirmStatusDTOS));
     }
     // 결재 처리 상태 신규 등록 [관리자 권한]
     @PostMapping("")
-    public RsData<CreateConfirmStatusResponse> createConfirmStatus(@Valid @RequestBody CreateConfirmStatusRequest createConfirmStatusRequest){
+    public RsData<ConfirmStatusResponse.create> createConfirmStatus(@Valid @RequestBody ConfirmStatusRequest.create createConfirmStatusRequest){
         RsData<ConfirmStatus> confirmStatusRsData = this.confirmStatusService.create(createConfirmStatusRequest.getStatusName(),createConfirmStatusRequest.getStatusDescription());
         return RsData.of(
                 confirmStatusRsData.getRsCode(),
                 confirmStatusRsData.getMsg(),
-                new CreateConfirmStatusResponse(new ConfirmStatusDTO(confirmStatusRsData.getData())));
+                new ConfirmStatusResponse.create(new ConfirmStatusDTO(confirmStatusRsData.getData())));
     }
     // 결재 처리 상태 수정 [관리자 권한]
     @PatchMapping("/{ConfirmStatusId}")
-    public RsData<PatchConfirmStatusResponse> patchConfirmStatus(@PathVariable(value = "ConfirmStatusId") Long confirmStatusId, @Valid @RequestBody PatchConfirmStatusRequest patchConfirmStatusRequest){
+    public RsData<ConfirmStatusResponse.patch> patchConfirmStatus(@PathVariable(value = "ConfirmStatusId") Long confirmStatusId, @Valid @RequestBody ConfirmStatusRequest.patch patchConfirmStatusRequest){
         Optional<ConfirmStatus> optionalConfirmStatus = this.confirmStatusService.getConfirmStatus(confirmStatusId);
         if(optionalConfirmStatus.isEmpty()){
             return RsData.of(
@@ -66,12 +58,12 @@ public class ApiV1ConfirmStatusController {
         return RsData.of(
                 confirmStatusRsData.getRsCode(),
                 confirmStatusRsData.getMsg(),
-                new PatchConfirmStatusResponse(new ConfirmStatusDTO(confirmStatusRsData.getData()))
+                new ConfirmStatusResponse.patch(new ConfirmStatusDTO(confirmStatusRsData.getData()))
         );
     }
 
     @DeleteMapping("/{ConfirmStatusId}")
-    public RsData<DeleteConfirmStatusResponse> deleteConfirmStatus(@PathVariable(value = "ConfirmStatusId") Long confirmStatusId){
+    public RsData<ConfirmStatusResponse.delete> deleteConfirmStatus(@PathVariable(value = "ConfirmStatusId") Long confirmStatusId){
         Optional<ConfirmStatus> optionalConfirmStatus = this.confirmStatusService.getConfirmStatus(confirmStatusId);
         if(optionalConfirmStatus.isEmpty()){
             return RsData.of(
@@ -85,7 +77,7 @@ public class ApiV1ConfirmStatusController {
         return RsData.of(
                 RsCode.S_04,
                 "%d번 결재 처리 상태가 삭제되었습니다.".formatted(confirmStatusId),
-                new DeleteConfirmStatusResponse(confirmStatusId)
+                new ConfirmStatusResponse.delete(confirmStatusId)
         );
     }
 }
