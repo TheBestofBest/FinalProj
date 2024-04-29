@@ -9,20 +9,19 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class RsData<T> {
-    private String resultCode;
-    private String keyWord;
+    private RsCode rsCode;
     private String msg;
     private T data;
     private Boolean isSuccess;
 
-    public static <T> RsData<T> of(RsCode resultCode, String msg, T data) {
+    public static <T> RsData<T> of(RsCode rsCode, String msg, T data) {
 
-        return new RsData<>(resultCode.getCode(),resultCode.getKeyWord(), msg, data, resultCode.getCode().startsWith("S-"));
+        return new RsData<>(rsCode, msg, data, rsCode.getCode().startsWith("S-"));
     }
 
-    public static <T> RsData<T> of(RsCode resultCode, String msg) {
+    public static <T> RsData<T> of(RsCode rsCode, String msg) {
 
-        return new RsData<>(resultCode.getCode(),resultCode.getKeyWord(), msg, null, resultCode.getCode().startsWith("S-"));
+        return new RsData<>(rsCode, msg, null, rsCode.getCode().startsWith("S-"));
     }
 
 
