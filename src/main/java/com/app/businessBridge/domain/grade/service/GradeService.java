@@ -41,9 +41,8 @@ public class GradeService {
     public RsData<GradeDTO> update(Long id, Integer gradeCode, String gradeName) {
         RsData<Grade> rsData = findById(id);
 
-        // result code 문제 해결 필요
         if (rsData.getData() == null) {
-            return RsData.of(null, rsData.getMsg(), null);
+            return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
         }
 
         Grade grade = rsData.getData();
@@ -60,7 +59,7 @@ public class GradeService {
 
         // result code 문제 해결 필요
         if (rsData.getData() == null) {
-            return RsData.of(null, rsData.getMsg(), null);
+            return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
         }
 
         this.gradeRepository.delete(rsData.getData());

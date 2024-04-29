@@ -24,8 +24,7 @@ public class ApiV1GradeController {
     public RsData<GradeListResponse> GetAll() {
         RsData<List<GradeDTO>> rsData = this.gradeService.readAll();
 
-        // result code 문제 해결 필요
-        return RsData.of(null, rsData.getMsg(), new GradeListResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeListResponse(rsData.getData()));
     }
 
     // 직급 등록
@@ -34,8 +33,7 @@ public class ApiV1GradeController {
         RsData<GradeDTO> rsData = this.gradeService.create(postGradeRequest.getGradeCode(),
                 postGradeRequest.getGradeName());
 
-        // result code 문제 해결 필요
-        return RsData.of(null, rsData.getMsg(), new GradeResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse(rsData.getData()));
     }
 
     // 직급 수정
@@ -45,8 +43,7 @@ public class ApiV1GradeController {
         RsData<GradeDTO> rsData = this.gradeService.update(id, patchGradeRequest.getGradeCode(),
                 patchGradeRequest.getGradeName());
 
-        // result code 문제 해결 필요
-        return RsData.of(null, rsData.getMsg(), new GradeResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse(rsData.getData()));
     }
 
     // 직급 삭제
@@ -54,7 +51,6 @@ public class ApiV1GradeController {
     public RsData<GradeResponse> delete(@PathVariable(value = "id") Long id) {
         RsData<GradeDTO> rsData = this.gradeService.delete(id);
 
-        // result code 문제 해결 필요
-        return RsData.of(null, rsData.getMsg(), new GradeResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse(rsData.getData()));
     }
 }
