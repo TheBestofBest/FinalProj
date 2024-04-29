@@ -6,6 +6,7 @@ import com.app.businessBridge.domain.confirmStatus.request.CreateConfirmStatusRe
 import com.app.businessBridge.domain.confirmStatus.response.ConfirmStatusesResponse;
 import com.app.businessBridge.domain.confirmStatus.response.CreateConfirmStatusResponse;
 import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
+import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -25,21 +26,21 @@ public class ApiV1ConfirmStatusController {
 
 
     @GetMapping("")
-    public RsData<ConfirmStatusesResponse> getStatuses(){
+    public RsData<ConfirmStatusesResponse> getConfirmStatuses(){
         List<ConfirmStatus> confirmStatuses = this.confirmStatusService.getAll();
         List<ConfirmStatusDTO> confirmStatusDTOS = new ArrayList<>();
         for (ConfirmStatus confirmStatus : confirmStatuses) {
             confirmStatusDTOS.add(new ConfirmStatusDTO(confirmStatus));
         }
 
-        return RsData.of("S-1", "성공", new ConfirmStatusesResponse(confirmStatusDTOS));
+        return RsData.of(RsCode.S_01, "Confirm-Status 다건 조회 성공", new ConfirmStatusesResponse(confirmStatusDTOS));
     }
 
     @PostMapping("")
-    public RsData<CreateConfirmStatusResponse> createStatus(CreateConfirmStatusRequest createConfirmStatusRequest){
+    public RsData<CreateConfirmStatusResponse> createConfirmStatus(CreateConfirmStatusRequest createConfirmStatusRequest){
         RsData<ConfirmStatus> confirmStatusRsData = this.confirmStatusService.create(createConfirmStatusRequest.getStatusName(),createConfirmStatusRequest.getStatusDescription());
         return RsData.of(
-                confirmStatusRsData.getResultCode(),
+                confirmStatusRsData.getRsCode(),
                 confirmStatusRsData.getMsg(),
                 new CreateConfirmStatusResponse(new ConfirmStatusDTO(confirmStatusRsData.getData())));
     }
