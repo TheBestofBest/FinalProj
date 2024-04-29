@@ -1,8 +1,11 @@
 package com.app.businessBridge.global.RsData;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum RsCode {
 
     S_01("S-01","Success"),
@@ -28,7 +31,6 @@ public enum RsCode {
     F_09("F-09", "Timeout"),
     F_10("F-10", "Unexpected Error"),
     ;
-
 
     private String code;
     private String keyWord;
