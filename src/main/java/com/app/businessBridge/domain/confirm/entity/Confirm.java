@@ -5,10 +5,7 @@ import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.Jpa.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -42,6 +39,6 @@ public class Confirm extends BaseEntity {
     @ManyToOne
     private Member confirmRequestMember;
     // 결재 승인자
-    @OneToMany
+    @ManyToMany
     private List<Member> confirmMembers;
 }

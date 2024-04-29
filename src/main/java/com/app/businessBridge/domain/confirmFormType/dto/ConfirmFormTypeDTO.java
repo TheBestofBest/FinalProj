@@ -17,6 +17,5 @@ public class ConfirmFormTypeDTO {
         this.id = confirmFormType.getId();
         this.formName = confirmFormType.getFormName();
         this.formDescription = confirmFormType.getFormDescription();
-
     }
 }
