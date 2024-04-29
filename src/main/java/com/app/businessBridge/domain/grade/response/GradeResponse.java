@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class GradeResponse {
-    GradeDTO gradeDTO;
+    private GradeDTO gradeDTO;
 }
