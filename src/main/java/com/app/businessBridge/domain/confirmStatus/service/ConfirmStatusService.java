@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,5 +31,28 @@ public class ConfirmStatusService {
                 "새로운 처리상태가 성공적으로 생성되었습니다.",
                 confirmStatus
                 );
+    }
+
+    public Optional<ConfirmStatus> getConfirmStatus(Long confirmStatusId) {
+
+        return this.confirmStatusRepository.findById(confirmStatusId);
+    }
+
+    public RsData<ConfirmStatus> updateConfirmStatus(ConfirmStatus confirmStatus, String statusName, String statusDescription) {
+        ConfirmStatus updatedConfirmStatus = confirmStatus.toBuilder()
+                .statusName(statusName)
+                .statusDescription(statusDescription)
+                .build();
+        this.confirmStatusRepository.save(updatedConfirmStatus);
+
+        return RsData.of(
+                RsCode.S_03,
+                "%d번 결재 처리 상태 수정이 성공했습니다.".formatted(confirmStatus.getId()),
+                updatedConfirmStatus
+        );
+    }
+
+    public void deleteConfirmStatus(ConfirmStatus confirmStatus) {
+        this.confirmStatusRepository.delete(confirmStatus);
     }
 }

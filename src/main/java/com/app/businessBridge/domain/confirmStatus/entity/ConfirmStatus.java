@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class ConfirmStatus extends BaseEntity {
     // 상태 이름
     @Column(length = 255)
