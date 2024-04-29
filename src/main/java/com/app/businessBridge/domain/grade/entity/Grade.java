@@ -1,4 +1,4 @@
-package com.app.businessBridge.domain.position.entity;
+package com.app.businessBridge.domain.grade.entity;
 
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.Entity;
@@ -15,6 +15,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Grade extends BaseEntity {
+
+    // 직급 코드
     private Integer gradeCode;
+
+    // 직급명
     private String gradeName;
+
 }

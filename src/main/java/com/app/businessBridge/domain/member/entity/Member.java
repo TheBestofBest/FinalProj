@@ -1,7 +1,7 @@
 package com.app.businessBridge.domain.member.entity;
 
 import com.app.businessBridge.domain.department.entity.Department;
-import com.app.businessBridge.domain.position.entity.Grade;
+import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
