@@ -19,7 +19,6 @@ public class ConfirmFormTypeService {
         return this.confirmFormTypeRepository.findAll();
     }
 
-    @Transactional
     public RsData<ConfirmFormType> create(String formName, String formDescription) {
         ConfirmFormType confirmFormType = ConfirmFormType.builder()
                 .formName(formName)

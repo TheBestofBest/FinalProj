@@ -19,7 +19,6 @@ public class ConfirmStatusService {
         return this.confirmStatusRepository.findAll();
     }
 
-    @Transactional
     public RsData<ConfirmStatus> create(String statusName, String statusDescription) {
         ConfirmStatus confirmStatus = ConfirmStatus.builder()
                 .statusName(statusName)
