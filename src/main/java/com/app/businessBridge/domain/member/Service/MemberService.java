@@ -1,7 +1,9 @@
 package com.app.businessBridge.domain.member.Service;
 
 import com.app.businessBridge.domain.department.entity.Department;
+import com.app.businessBridge.domain.department.service.DepartmentService;
 import com.app.businessBridge.domain.grade.entity.Grade;
+import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.member.repository.MemberRepository;
@@ -20,13 +22,24 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DepartmentService departmentService;
+    private final GradeService gradeService;
 
-    @Transactional
-    public RsData<MemberDTO> create(Department department, Grade grade, String username,
+    public RsData<MemberDTO> create(Long departmentId, Long gradeId, String username,
                                     Integer memberNumber, String name, String password, String email) {
+        RsData<Department> departmentRsData = this.departmentService.findById(departmentId);
+        RsData<Grade> gradeRsData = this.gradeService.findById(gradeId);
+
+        // 존재하는 부서, 직급인지 검증하는 if 문
+        if (departmentRsData.getData() == null) {
+            return RsData.of(departmentRsData.getRsCode(), departmentRsData.getMsg(), null);
+        } else if (gradeRsData.getData() == null) {
+            return RsData.of(gradeRsData.getRsCode(), gradeRsData.getMsg(), null);
+        }
+
         Member member = Member.builder()
-                .department(department)
-                .grade(grade)
+                .department(departmentRsData.getData())
+                .grade(gradeRsData.getData())
                 .username(username)
                 .memberNumber(memberNumber)
                 .name(name)
@@ -39,15 +52,24 @@ public class MemberService {
         return RsData.of(RsCode.S_02, "회원이 성공적으로 등록되었습니다.", new MemberDTO(member));
     }
 
-    public RsData<MemberDTO> update(Long id, Department department, Grade grade, String username,
+    public RsData<MemberDTO> update(Long id, Long departmentId, Long gradeId, String username,
                                     Integer memberNumber, String name, String password, String email) {
         RsData<Member> rsData = findById(id);
+        RsData<Department> departmentRsData = this.departmentService.findById(departmentId);
+        RsData<Grade> gradeRsData = this.gradeService.findById(gradeId);
+
+        // 존재하는 회원, 부서, 직급인지 검증하는 if 문
         if (rsData.getData() == null) {
             return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
+        } else if (departmentRsData.getData() == null) {
+            return RsData.of(departmentRsData.getRsCode(), departmentRsData.getMsg(), null);
+        } else if (gradeRsData.getData() == null) {
+            return RsData.of(gradeRsData.getRsCode(), gradeRsData.getMsg(), null);
         }
+
         Member member = rsData.getData().toBuilder()
-                .department(department)
-                .grade(grade)
+                .department(departmentRsData.getData())
+                .grade(gradeRsData.getData())
                 .username(username)
                 .memberNumber(memberNumber)
                 .name(name)

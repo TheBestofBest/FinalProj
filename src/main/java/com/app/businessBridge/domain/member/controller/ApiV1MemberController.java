@@ -23,13 +23,13 @@ public class ApiV1MemberController {
     public RsData<MemberResponse> getMember(@PathVariable(value = "id") Long id) {
         RsData<Member> rsData = this.memberService.findById(id);
 
-        // 멤버 null 일시 dto변환 리턴에 에러 터질 수 있음.
+        // 멤버 null일 시 dto변환 리턴에 에러 터질 수 있음.
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse(new MemberDTO(rsData.getData())));
     }
 
     @PostMapping("")
     public RsData<PostMemberResponse> postMember(@Valid @RequestBody PostMemberRequest postMemberRequest) {
-        RsData<MemberDTO> rsData = this.memberService.create(postMemberRequest.getDepartment(), postMemberRequest.getGrade(),
+        RsData<MemberDTO> rsData = this.memberService.create(postMemberRequest.getDepartmentId(), postMemberRequest.getGradeId(),
                 postMemberRequest.getUsername(), postMemberRequest.getMemberNumber(), postMemberRequest.getName(),
                 postMemberRequest.getPassword(), postMemberRequest.getEmail());
 
@@ -39,7 +39,7 @@ public class ApiV1MemberController {
     @PatchMapping("/{id}")
     public RsData<PatchMemberResponse> patchMember(@PathVariable(value = "id") Long id,
                                                    @Valid @RequestBody PatchMemberRequest patchMemberRequest) {
-        RsData<MemberDTO> rsData = this.memberService.update(id, patchMemberRequest.getDepartment(), patchMemberRequest.getGrade(),
+        RsData<MemberDTO> rsData = this.memberService.update(id, patchMemberRequest.getDepartmentId(), patchMemberRequest.getGradeId(),
                 patchMemberRequest.getUsername(), patchMemberRequest.getMemberNumber(), patchMemberRequest.getName(),
                 patchMemberRequest.getPassword(), patchMemberRequest.getEmail());
 
@@ -50,7 +50,7 @@ public class ApiV1MemberController {
     public RsData<MemberResponse> deleteMember(@PathVariable(value = "id") Long id) {
         RsData<MemberDTO> rsData = this.memberService.delete(id);
 
-        // 멤버 null 일시 dto변환 리턴에 에러 터질 수 있음.
+        // 멤버 null일 시 dto변환 리턴에 에러 터질 수 있음.
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse(rsData.getData()));
     }
 }

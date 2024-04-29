@@ -45,9 +45,11 @@ public class DepartmentService {
             return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
         }
 
-        Department department = rsData.getData();
-        department.setDepartmentCode(departmentCode);
-        department.setDepartmentName(departmentName);
+        Department department = rsData.getData().toBuilder()
+                .departmentCode(departmentCode)
+                .departmentName(departmentName)
+                .build();
+
         this.departmentRepository.save(department);
 
         return RsData.of(RsCode.S_03, "리소스가 성공적으로 업데이트되었습니다.", new DepartmentDTO(department));
