@@ -20,6 +20,7 @@ public class ConfirmService {
 
     public RsData<Confirm> createConfirm(ConfirmRequest.create createConfirmRequest) {
         Confirm confirm = Confirm.builder()
-                .
+                .subject(createConfirmRequest.getSubject())
+
     }
 }
