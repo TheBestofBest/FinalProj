@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.confirm.response;
 
+import com.app.businessBridge.domain.confirm.dto.ConfirmDTO;
 import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +12,7 @@ public class ConfirmResponse {
     @Getter
     @AllArgsConstructor
     public static class getAll{
-        private List<ConfirmStatusDTO> confirmStatusDTOS ;
+        private List<ConfirmDTO> confirmDTOS ;
 
 
     }
@@ -19,18 +20,18 @@ public class ConfirmResponse {
     @Getter
     @AllArgsConstructor
     public static class create{
-        private ConfirmStatusDTO confirmStatusDTO;
+        private ConfirmDTO confirmDTO;
     }
 
     @Getter
     @AllArgsConstructor
     public static class patch{
-        private ConfirmStatusDTO confirmStatusDTO;
+        private ConfirmDTO confirmDTO;
     }
 
     @Getter
     @AllArgsConstructor
     public static class delete{
-        private Long confirmStatusId;
+        private Long confirmId;
     }
 }
