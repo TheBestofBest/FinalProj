@@ -15,6 +15,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Department extends BaseEntity {
+
+    // 부서 코드
     private Integer departmentCode;
+
+    // 부서명
     private String departmentName;
 }
