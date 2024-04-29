@@ -3,6 +3,7 @@ package com.app.businessBridge.domain.confirm.entity;
 
 import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -37,10 +38,10 @@ public class Confirm extends BaseEntity {
     private ConfirmStatus confirmStatus;
 
     // ! Member 엔티티 추가 시 주석 해제 하기
-//    // 결재 요청자
-//    @ManyToOne
-//    private Member confirmRequestMember;
-//    // 결재 승인자
-//    @OneToMany
-//    private List<Member> confirmMembers;
+    // 결재 요청자
+    @ManyToOne
+    private Member confirmRequestMember;
+    // 결재 승인자
+    @OneToMany
+    private List<Member> confirmMembers;
 }

@@ -35,7 +35,7 @@ public class ConfirmFormTypeService {
     }
 
     public Optional<ConfirmFormType> getConfirmFormType(Long confirmFormTypeId) {
-        return this.confirmFormTypeRepository.findById(confirmFormTypeId;
+        return this.confirmFormTypeRepository.findById(confirmFormTypeId);
     }
 
     public RsData<ConfirmFormType> updateConfirmFormType(ConfirmFormType confirmFormType, String formName, String formDescription) {
