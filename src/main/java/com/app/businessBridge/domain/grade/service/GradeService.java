@@ -45,9 +45,11 @@ public class GradeService {
             return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
         }
 
-        Grade grade = rsData.getData();
-        grade.setGradeCode(gradeCode);
-        grade.setGradeName(gradeName);
+        Grade grade = rsData.getData().toBuilder()
+                .gradeCode(gradeCode)
+                .gradeName(gradeName)
+                .build();
+
         this.gradeRepository.save(grade);
 
         return RsData.of(RsCode.S_03, "리소스가 성공적으로 업데이트되었습니다.", new GradeDTO(grade));
