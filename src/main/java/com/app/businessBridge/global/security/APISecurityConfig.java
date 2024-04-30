@@ -40,6 +40,10 @@ public class APISecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/grades/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/departments")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/departments/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/mailboxes")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/mailboxes/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/mails")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/mails/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/articles/**")).permitAll()
 
                                 .anyRequest().authenticated()
