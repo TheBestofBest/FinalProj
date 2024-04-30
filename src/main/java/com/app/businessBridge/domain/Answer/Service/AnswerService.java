@@ -40,8 +40,10 @@ public class AnswerService {
         return answerRepository.findById(id);
     }
     public RsData<Answer> modify(Answer answer,String content) {
-        answer.setContent(content);
-        answerRepository.save(answer);
+        Answer answer1= Answer.builder()
+                        .content(content)
+                                .build();
+        answerRepository.save(answer1);
 
         return RsData.of(RsCode.S_03,
                 "%d번 게시물이 수정 되었습니다.".formatted(answer.getId()),

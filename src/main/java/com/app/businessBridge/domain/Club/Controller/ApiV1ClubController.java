@@ -50,7 +50,6 @@ public class ApiV1ClubController {
     @PostMapping("")
     public RsData<WriteResponse> write(@Valid @RequestBody WriteRequest writeRequest) {
 
-
         RsData<Club> writeRs = this.clubService.create(writeRequest.getName());
 
 //        if (writeRs.isFail()) return (RsData) writeRs;

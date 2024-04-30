@@ -40,8 +40,10 @@ public class ClubService {
         return this.clubRepository.findById(id);
     }
     public RsData<Club> modify(Club club, String name) {
-        club.setName(name);
-        clubRepository.save(club);
+        Club club1 = Club.builder()
+                        .name(name)
+                                .build();
+        clubRepository.save(club1);
 
         return RsData.of(RsCode.S_03,
                 "%d번 동아리가 수정 되었습니다.".formatted(club.getId()),
