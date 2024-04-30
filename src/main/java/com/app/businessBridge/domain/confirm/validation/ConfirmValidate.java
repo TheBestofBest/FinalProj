@@ -25,6 +25,7 @@ public class ConfirmValidate {
     public static MemberService memberService;
 
     // 결재 시 결재 양식, 처리상태, 결재 요청자, 결재 승인자 검증 메서드
+    // 결재 양식 검증 메서드
     public static RsData<ConfirmResponse.create> validateConfirmFormType(ConfirmFormType formType){
         // 결재 양식 검증
         Optional<ConfirmFormType> optionalConfirmFormType = confirmFormTypeService.getConfirmFormType(formType.getId());
@@ -43,8 +44,9 @@ public class ConfirmValidate {
                 null
         );
     }
+    // 결재 처리 상태 검증 메서드
     public static RsData<ConfirmResponse.create> validateConfirmStatus(ConfirmStatus confirmStatus){
-        // 결재 양식 검증
+        // 결재 처리 상태 검증
         Optional<ConfirmStatus> optionalConfirmStatus = confirmStatusService.getConfirmStatus(confirmStatus.getId());
         // null 이면 실패코드 반환
         if(optionalConfirmStatus.isEmpty()){
@@ -61,6 +63,7 @@ public class ConfirmValidate {
                 null
         );
     }
+    // 결재 요청자 검증 메서드
     public static RsData<ConfirmResponse.create> validateConfirmRequestMember(Member confirmRequestMember){
         // 결재 요청자 검증
         RsData<Member> memberRsData = memberService.findById(confirmRequestMember.getId());
@@ -79,8 +82,9 @@ public class ConfirmValidate {
                 null
         );
     }
+    // 결재 승인자 검증 메서드
     public static RsData<ConfirmResponse.create> validateConfirmMembers(List<Member> members){
-        // 결재 양식 검증
+        // 결재 승인자 검증
         Optional<ConfirmFormType> optionalConfirmFormType = confirmFormTypeService.getConfirmFormType(formType.getId());
         // null 이면 실패코드 반환
         if(optionalConfirmFormType.isEmpty()){
