@@ -1,9 +1,7 @@
 package com.app.businessBridge.domain.department.controller;
 
-import com.app.businessBridge.domain.department.DTO.DepartmentDTO;
-import com.app.businessBridge.domain.department.request.PatchDepartmentRequest;
-import com.app.businessBridge.domain.department.request.PostDepartmentRequest;
-import com.app.businessBridge.domain.department.response.DepartmentListResponse;
+import com.app.businessBridge.domain.department.entity.Department;
+import com.app.businessBridge.domain.department.request.DepartmentRequest;
 import com.app.businessBridge.domain.department.response.DepartmentResponse;
 import com.app.businessBridge.domain.department.service.DepartmentService;
 import com.app.businessBridge.global.RsData.RsData;
@@ -19,38 +17,39 @@ import java.util.List;
 public class ApiV1DepartmentController {
     private final DepartmentService departmentService;
 
-    // 부서 다건 조회
-    @GetMapping("")
-    public RsData<DepartmentListResponse> getAll() {
-        RsData<List<DepartmentDTO>> rsData = this.departmentService.readAll();
-
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentListResponse(rsData.getData()));
-    }
-
     // 부서 등록
     @PostMapping("")
-    public RsData<DepartmentResponse> post(@Valid @RequestBody PostDepartmentRequest postDepartmentRequest) {
-        RsData<DepartmentDTO> rsData = this.departmentService.create(postDepartmentRequest.getDepartmentCode(),
-                postDepartmentRequest.getDepartmentName());
+    public RsData post(@Valid @RequestBody DepartmentRequest.CreateRequest createRequest) {
+        RsData rsData = this.departmentService.create(createRequest.getDepartmentCode(),
+                createRequest.getDepartmentName());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg());
+    }
+
+    // 부서 다건 조회
+    @GetMapping("")
+    public RsData<DepartmentResponse.GetDepartments> getAll() {
+        RsData<List<Department>> rsData = this.departmentService.readAll();
+
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(),
+                new DepartmentResponse.GetDepartments(rsData.getData()));
     }
 
     // 부서 수정
-    @PatchMapping("/{id}")
-    public RsData<DepartmentResponse> patch(@PathVariable(value = "id") Long id,
-                                            @Valid @RequestBody PatchDepartmentRequest patchDepartmentRequest) {
-        RsData<DepartmentDTO> rsData = this.departmentService.update(id, patchDepartmentRequest.getDepartmentCode(),
-                patchDepartmentRequest.getDepartmentName());
+    @PatchMapping("")
+    public RsData<DepartmentResponse.PatchedDepartment> patch(@Valid @RequestBody DepartmentRequest.UpdateRequest updateRequest) {
+        RsData<Department> rsData = this.departmentService.update(updateRequest.getId(), updateRequest.getDepartmentCode(),
+                updateRequest.getDepartmentName());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse.PatchedDepartment(rsData.getData()));
     }
 
     // 부서 삭제
-    @DeleteMapping("/{id}")
-    public RsData<DepartmentResponse> delete(@PathVariable(value = "id") Long id) {
-        RsData<DepartmentDTO> rsData = this.departmentService.delete(id);
+    @DeleteMapping("")
+    public RsData delete(@Valid @RequestBody DepartmentRequest.DeleteRequest deleteRequest) {
+        RsData rsData = this.departmentService.delete(deleteRequest.getId());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
+
 }

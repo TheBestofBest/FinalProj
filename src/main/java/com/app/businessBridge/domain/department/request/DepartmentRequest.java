@@ -27,4 +27,11 @@ public class DepartmentRequest {
         @NotBlank
         private String departmentName;
     }
+
+    @Getter
+    @Setter
+    public static class DeleteRequest {
+        @NotNull
+        private Long id;
+    }
 }
