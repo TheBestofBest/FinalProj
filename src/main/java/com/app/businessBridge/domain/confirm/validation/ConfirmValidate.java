@@ -13,6 +13,8 @@ import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 import java.util.Optional;
 
 @Getter
@@ -77,7 +79,7 @@ public class ConfirmValidate {
                 null
         );
     }
-    public static RsData<ConfirmResponse.create> validateConfirmFormType(ConfirmFormType formType){
+    public static RsData<ConfirmResponse.create> validateConfirmMembers(List<Member> members){
         // 결재 양식 검증
         Optional<ConfirmFormType> optionalConfirmFormType = confirmFormTypeService.getConfirmFormType(formType.getId());
         // null 이면 실패코드 반환
