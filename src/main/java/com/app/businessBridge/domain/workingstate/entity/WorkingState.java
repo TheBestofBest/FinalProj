@@ -1,6 +1,8 @@
 package com.app.businessBridge.domain.workingstate.entity;
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WorkingState extends BaseEntity{
+
+    @OneToOne
+    private Member member;
 
     // 근태명
     // ex) 휴가, 근무, 병가, 육아휴직 등등...

@@ -26,23 +26,23 @@ public class MailService {
         return this.mailRepository.findById(id);
     }
 
-    @Transactional
-    public RsData<Mail> sendMail( String title, String content, String attachments, LocalDate sendDate, LocalDate receiveDate) {
-        Mail mail = Mail.builder()
-                .title(title)
-                .content(content)
-                .attachments(attachments)
-                .sendDate(sendDate)
-                .receiveDate(receiveDate)
-
-                .build();
-
-        this.mailRepository.save(mail);
-
-        return RsData.of(
-                "S-01",
-                "Success 메일 발송이 되었습니다.",
-                mail
-        );
-    }
+//    @Transactional
+//    public RsData<Mail> sendMail( String title, String content, String attachments, LocalDate sendDate, LocalDate receiveDate) {
+//        Mail mail = Mail.builder()
+//                .title(title)
+//                .content(content)
+//                .attachments(attachments)
+//                .sendDate(sendDate)
+//                .receiveDate(receiveDate)
+//
+//                .build();
+//
+//        this.mailRepository.save(mail);
+//
+//        return RsData.of(
+//                "S-01",
+//                "Success 메일 발송이 되었습니다.",
+//                mail
+//        );
+//    }
 }
