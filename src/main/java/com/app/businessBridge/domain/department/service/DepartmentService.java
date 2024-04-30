@@ -1,6 +1,5 @@
 package com.app.businessBridge.domain.department.service;
 
-import com.app.businessBridge.domain.department.DTO.DepartmentDTO;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.global.RsData.RsCode;

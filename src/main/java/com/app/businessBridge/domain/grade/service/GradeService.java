@@ -1,6 +1,5 @@
 package com.app.businessBridge.domain.grade.service;
 
-import com.app.businessBridge.domain.grade.DTO.GradeDTO;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.grade.repository.GradeRepository;
 import com.app.businessBridge.global.RsData.RsCode;

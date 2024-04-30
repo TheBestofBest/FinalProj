@@ -2,7 +2,6 @@ package com.app.businessBridge.domain.grade.response;
 
 import com.app.businessBridge.domain.grade.DTO.GradeDTO;
 import com.app.businessBridge.domain.grade.entity.Grade;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
