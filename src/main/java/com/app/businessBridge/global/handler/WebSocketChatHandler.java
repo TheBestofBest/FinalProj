@@ -4,6 +4,7 @@ import com.app.businessBridge.domain.chatLog.entity.ChatLog;
 import com.app.businessBridge.domain.chattingRoom.dto.ChattingRoomDto;
 import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
 import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
+import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info(RsData.of("S","연결완료", session).toString());
+        log.info(RsData.of(RsCode.S_01,"연결완료", session).toString());
         List<ChattingRoom> chattingRooms = chattingRoomService.getListAll();
         List<ChattingRoomDto> dtos = new ArrayList<>();
         for (ChattingRoom c : chattingRooms) {
