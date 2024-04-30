@@ -28,12 +28,12 @@ public class ApiV1ChatRoomController {
         private String name;
     }
 
-    @PostMapping
-    public RsData create(@Valid @RequestBody CreateRq createRq) {
-        RsData<ChattingRoom> rsData = chattingRoomService.create(createRq.getName());
-        if (rsData.isFail()) return rsData;
-        return RsData.of(rsData.getResultCode(),
-                rsData.getMsg(),
-                new ChattingRoomDto(rsData.getData()));
-    }
+//    @PostMapping
+//    public RsData create(@Valid @RequestBody CreateRq createRq) {
+//        RsData<ChattingRoom> rsData = chattingRoomService.create(createRq.getName());
+//        if (rsData.isFail()) return rsData;
+//        return RsData.of(rsData.getResultCode(),
+//                rsData.getMsg(),
+//                new ChattingRoomDto(rsData.getData()));
+//    }
 }
