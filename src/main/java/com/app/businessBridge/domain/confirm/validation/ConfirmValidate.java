@@ -59,40 +59,40 @@ public class ConfirmValidate {
                 null
         );
     }
-//    public static RsData<ConfirmResponse.create> validateConfirmRequestMember(Member confirmRequestMember){
-//        // 결재 양식 검증
-//        Optional<ConfirmFormType> optionalConfirmFormType = memberService.findById(confirmRequestMember.getId());
-//        // null 이면 실패코드 반환
-//        if(optionalConfirmFormType.isEmpty()){
-//            return RsData.of(
-//                    RsCode.F_04,
-//                    "해당 양식은 존재하지 않습니다.",
-//                    null
-//            );
-//        }
-//        //검증 통과 시 성공코드 리턴
-//        return RsData.of(
-//                RsCode.S_08,
-//                "결재 양식 검증됨",
-//                null
-//        );
-//    }
-//    public static RsData<ConfirmResponse.create> validateConfirmFormType(ConfirmFormType formType){
-//        // 결재 양식 검증
-//        Optional<ConfirmFormType> optionalConfirmFormType = confirmFormTypeService.getConfirmFormType(formType.getId());
-//        // null 이면 실패코드 반환
-//        if(optionalConfirmFormType.isEmpty()){
-//            return RsData.of(
-//                    RsCode.F_04,
-//                    "해당 양식은 존재하지 않습니다.",
-//                    null
-//            );
-//        }
-//        //검증 통과 시 성공코드 리턴
-//        return RsData.of(
-//                RsCode.S_08,
-//                "결재 양식 검증됨",
-//                null
-//        );
-//    }
+    public static RsData<ConfirmResponse.create> validateConfirmRequestMember(Member confirmRequestMember){
+        // 결재 요청자 검증
+        RsData<Member> memberRsData = memberService.findById(confirmRequestMember.getId());
+        // 실패코드 반환
+        if(!memberRsData.getIsSuccess()){
+            return RsData.of(
+                    RsCode.F_04,
+                    "해당 결재 요청자는 존재하지 않습니다.",
+                    null
+            );
+        }
+        //검증 통과 시 성공코드 리턴
+        return RsData.of(
+                RsCode.S_08,
+                "결재 요청자 검증됨",
+                null
+        );
+    }
+    public static RsData<ConfirmResponse.create> validateConfirmFormType(ConfirmFormType formType){
+        // 결재 양식 검증
+        Optional<ConfirmFormType> optionalConfirmFormType = confirmFormTypeService.getConfirmFormType(formType.getId());
+        // null 이면 실패코드 반환
+        if(optionalConfirmFormType.isEmpty()){
+            return RsData.of(
+                    RsCode.F_04,
+                    "해당 양식은 존재하지 않습니다.",
+                    null
+            );
+        }
+        //검증 통과 시 성공코드 리턴
+        return RsData.of(
+                RsCode.S_08,
+                "결재 양식 검증됨",
+                null
+        );
+    }
 }
