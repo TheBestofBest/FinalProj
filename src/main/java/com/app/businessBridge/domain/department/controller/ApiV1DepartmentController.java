@@ -1,14 +1,14 @@
 package com.app.businessBridge.domain.department.controller;
 
-import com.app.businessBridge.domain.department.DTO.DepartmentDTO;
-import com.app.businessBridge.domain.department.request.PatchDepartmentRequest;
-import com.app.businessBridge.domain.department.request.PostDepartmentRequest;
-import com.app.businessBridge.domain.department.response.DepartmentListResponse;
+import com.app.businessBridge.domain.department.entity.Department;
+import com.app.businessBridge.domain.department.request.DepartmentRequest;
 import com.app.businessBridge.domain.department.response.DepartmentResponse;
 import com.app.businessBridge.domain.department.service.DepartmentService;
+import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,38 +19,54 @@ import java.util.List;
 public class ApiV1DepartmentController {
     private final DepartmentService departmentService;
 
-    // 부서 다건 조회
-    @GetMapping("")
-    public RsData<DepartmentListResponse> getAll() {
-        RsData<List<DepartmentDTO>> rsData = this.departmentService.readAll();
-
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentListResponse(rsData.getData()));
-    }
-
     // 부서 등록
     @PostMapping("")
-    public RsData<DepartmentResponse> post(@Valid @RequestBody PostDepartmentRequest postDepartmentRequest) {
-        RsData<DepartmentDTO> rsData = this.departmentService.create(postDepartmentRequest.getDepartmentCode(),
-                postDepartmentRequest.getDepartmentName());
+    public RsData post(@Valid @RequestBody DepartmentRequest.CreateRequest createRequest,
+                       BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
+        }
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse(rsData.getData()));
+        RsData rsData = this.departmentService.create(createRequest.getDepartmentCode(),
+                createRequest.getDepartmentName());
+
+        return RsData.of(rsData.getRsCode(), rsData.getMsg());
+    }
+
+    // 부서 다건 조회
+    @GetMapping("")
+    public RsData<DepartmentResponse.GetDepartments> getAll() {
+        RsData<List<Department>> rsData = this.departmentService.findAll();
+
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(),
+                new DepartmentResponse.GetDepartments(rsData.getData()));
     }
 
     // 부서 수정
-    @PatchMapping("/{id}")
-    public RsData<DepartmentResponse> patch(@PathVariable(value = "id") Long id,
-                                            @Valid @RequestBody PatchDepartmentRequest patchDepartmentRequest) {
-        RsData<DepartmentDTO> rsData = this.departmentService.update(id, patchDepartmentRequest.getDepartmentCode(),
-                patchDepartmentRequest.getDepartmentName());
+    @PatchMapping("")
+    public RsData<DepartmentResponse.PatchedDepartment> patch(@Valid @RequestBody DepartmentRequest.UpdateRequest updateRequest,
+                                                              BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
+        }
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse(rsData.getData()));
+        RsData<Department> rsData = this.departmentService.update(updateRequest.getId(), updateRequest.getDepartmentCode(),
+                updateRequest.getDepartmentName());
+
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse.PatchedDepartment(rsData.getData()));
     }
 
     // 부서 삭제
-    @DeleteMapping("/{id}")
-    public RsData<DepartmentResponse> delete(@PathVariable(value = "id") Long id) {
-        RsData<DepartmentDTO> rsData = this.departmentService.delete(id);
+    @DeleteMapping("")
+    public RsData delete(@Valid @RequestBody DepartmentRequest.DeleteRequest deleteRequest,
+                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
+        }
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse(rsData.getData()));
+        RsData rsData = this.departmentService.delete(deleteRequest.getId());
+
+        return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
+
 }
