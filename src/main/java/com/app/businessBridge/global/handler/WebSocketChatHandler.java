@@ -46,45 +46,45 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         sessions.add(session);
     }
 
-    @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        String payload = message.getPayload();
-        System.out.println("payload : " + payload);
-        log.info("payload {}", payload);
-
-        // 페이로드 -> chatMessageDto로 변환
-        ChatLog chatMessageDto = objectMapper.readValue(payload, ChatLog.class);
-        System.out.println("chatlog : " + chatMessageDto);
-        log.info("session {}", chatMessageDto.toString());
-        //임시
-        ChattingRoom chattingRoom = chattingRoomService.create("이름").getData();
-        System.out.println("chatRoomId1 : " + chattingRoom.getId());
-        chatMessageDto.toBuilder().chattingRoom(chattingRoom).build();
-        System.out.println("chatRoomId2 : " + chatMessageDto);
-
-        Long chatRoomId = chattingRoom.getId();
-//        Long chatRoomId = chatMessageDto.getChattingRoom().getId();
-
-        System.out.println("chatRoomId3 : " + chatRoomId);
-
-        // 메모리 상에 채팅방에 대한 세션 없으면 만들어줌
-        if (!chatSessionMap.containsKey(chatRoomId)) {
-            chatSessionMap.put(chatRoomId, new HashSet<>());
-        }
-        Set<WebSocketSession> chatRoomSession = chatSessionMap.get(chatRoomId);
-
-        // message 에 담긴 타입을 확인한다.
-        // 이때 message 에서 getType 으로 가져온 내용이
-        // ChatDTO 의 열거형인 MessageType 안에 있는 ENTER 과 동일한 값이라면
-        if (chatMessageDto.getMessageType().equals(ChatLog.MessageType.ENTER)) {
-            // sessions 에 넘어온 session 을 담고,
-            chatRoomSession.add(session);
-        }
-        if (chatRoomSession.size() >= 3) {
-            removeClosedSession(chatRoomSession);
-        }
-        sendMessageToChatRoom(chatMessageDto, chatRoomSession);
-    }
+//    @Override
+//    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+//        String payload = message.getPayload();
+//        System.out.println("payload : " + payload);
+//        log.info("payload {}", payload);
+//
+//        // 페이로드 -> chatMessageDto로 변환
+//        ChatLog chatMessageDto = objectMapper.readValue(payload, ChatLog.class);
+//        System.out.println("chatlog : " + chatMessageDto);
+//        log.info("session {}", chatMessageDto.toString());
+//        //임시
+//        ChattingRoom chattingRoom = chattingRoomService.create("이름").getData();
+//        System.out.println("chatRoomId1 : " + chattingRoom.getId());
+//        chatMessageDto.toBuilder().chattingRoom(chattingRoom).build();
+//        System.out.println("chatRoomId2 : " + chatMessageDto);
+//
+//        Long chatRoomId = chattingRoom.getId();
+////        Long chatRoomId = chatMessageDto.getChattingRoom().getId();
+//
+//        System.out.println("chatRoomId3 : " + chatRoomId);
+//
+//        // 메모리 상에 채팅방에 대한 세션 없으면 만들어줌
+//        if (!chatSessionMap.containsKey(chatRoomId)) {
+//            chatSessionMap.put(chatRoomId, new HashSet<>());
+//        }
+//        Set<WebSocketSession> chatRoomSession = chatSessionMap.get(chatRoomId);
+//
+//        // message 에 담긴 타입을 확인한다.
+//        // 이때 message 에서 getType 으로 가져온 내용이
+//        // ChatDTO 의 열거형인 MessageType 안에 있는 ENTER 과 동일한 값이라면
+//        if (chatMessageDto.getMessageType().equals(ChatLog.MessageType.ENTER)) {
+//            // sessions 에 넘어온 session 을 담고,
+//            chatRoomSession.add(session);
+//        }
+//        if (chatRoomSession.size() >= 3) {
+//            removeClosedSession(chatRoomSession);
+//        }
+//        sendMessageToChatRoom(chatMessageDto, chatRoomSession);
+//    }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
