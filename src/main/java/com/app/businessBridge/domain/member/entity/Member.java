@@ -43,7 +43,7 @@ public class Member extends BaseEntity {
 
     // 직원 근태
     @OneToOne(mappedBy = "member",cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "last_location_id")
+    @JoinColumn(name = "working_state_id")
     @JsonIgnore
     private WorkingState workingState;
 
