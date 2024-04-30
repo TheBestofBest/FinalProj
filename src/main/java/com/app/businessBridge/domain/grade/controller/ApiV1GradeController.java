@@ -1,9 +1,7 @@
 package com.app.businessBridge.domain.grade.controller;
 
-import com.app.businessBridge.domain.grade.DTO.GradeDTO;
-import com.app.businessBridge.domain.grade.request.PatchGradeRequest;
-import com.app.businessBridge.domain.grade.request.PostGradeRequest;
-import com.app.businessBridge.domain.grade.response.GradeListResponse;
+import com.app.businessBridge.domain.grade.entity.Grade;
+import com.app.businessBridge.domain.grade.request.GradeRequest;
 import com.app.businessBridge.domain.grade.response.GradeResponse;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.global.RsData.RsData;
@@ -19,38 +17,38 @@ import java.util.List;
 public class ApiV1GradeController {
     private final GradeService gradeService;
 
-    // 직급 다건 조회
-    @GetMapping("")
-    public RsData<GradeListResponse> getAll() {
-        RsData<List<GradeDTO>> rsData = this.gradeService.readAll();
-
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeListResponse(rsData.getData()));
-    }
-
     // 직급 등록
     @PostMapping("")
-    public RsData<GradeResponse> post(@Valid @RequestBody PostGradeRequest postGradeRequest) {
-        RsData<GradeDTO> rsData = this.gradeService.create(postGradeRequest.getGradeCode(),
-                postGradeRequest.getGradeName());
+    public RsData post(@Valid @RequestBody GradeRequest.CreateRequest createRequest) {
+        RsData rsData = this.gradeService.create(createRequest.getGradeCode(),
+                createRequest.getGradeName());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg());
+    }
+
+
+    // 직급 다건 조회
+    @GetMapping("")
+    public RsData<GradeResponse.GetGrades> getAll() {
+        RsData<List<Grade>> rsData = this.gradeService.readAll();
+
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse.GetGrades(rsData.getData()));
     }
 
     // 직급 수정
     @PatchMapping("/{id}")
-    public RsData<GradeResponse> patch(@PathVariable(value = "id") Long id,
-                                       @Valid @RequestBody PatchGradeRequest patchGradeRequest) {
-        RsData<GradeDTO> rsData = this.gradeService.update(id, patchGradeRequest.getGradeCode(),
-                patchGradeRequest.getGradeName());
+    public RsData<GradeResponse.PatchedGrade> patch(@Valid @RequestBody GradeRequest.UpdateRequest updateRequest) {
+        RsData<Grade> rsData = this.gradeService.update(updateRequest.getId(), updateRequest.getGradeCode(),
+                updateRequest.getGradeName());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse.PatchedGrade(rsData.getData()));
     }
 
     // 직급 삭제
     @DeleteMapping("/{id}")
-    public RsData<GradeResponse> delete(@PathVariable(value = "id") Long id) {
-        RsData<GradeDTO> rsData = this.gradeService.delete(id);
+    public RsData delete(@Valid @RequestBody GradeRequest.DeleteRequest deleteRequest) {
+        RsData rsData = this.gradeService.delete(deleteRequest.getId());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
 }
