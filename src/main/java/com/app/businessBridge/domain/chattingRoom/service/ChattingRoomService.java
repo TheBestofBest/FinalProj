@@ -1,29 +1,28 @@
-//package com.app.businessBridge.domain.chattingRoom.service;
-//
-//import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
-//import com.app.businessBridge.domain.chattingRoom.repository.ChattingRoomRepository;
-//import com.app.businessBridge.global.RsData.RsData;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import java.util.List;
-//
-//@Service
-//@RequiredArgsConstructor
-//public class  ChattingRoomService {
-//    private final ChattingRoomRepository chattingRoomRepository;
-//
-//    //임시 : 해당 유저에 대한 리스트 가져오기 필요
-//    @Transactional
-//    public List<ChattingRoom> getListAll() {
-////        this.create("채팅방1");
-////        this.create("채팅방2");
-////        this.create("채팅방3");
-//        return chattingRoomRepository.findAll();
-//    }
-//
-//    @Transactional
+package com.app.businessBridge.domain.chattingRoom.service;
+
+import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
+import com.app.businessBridge.domain.chattingRoom.repository.ChattingRoomRepository;
+import com.app.businessBridge.global.RsData.RsData;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class  ChattingRoomService {
+    private final ChattingRoomRepository chattingRoomRepository;
+
+    //임시 : 해당 유저에 대한 리스트 가져오기 필요
+    @Transactional
+    public List<ChattingRoom> getListAll() {
+//        this.create("채팅방1");
+//        this.create("채팅방2");
+//        this.create("채팅방3");
+        return chattingRoomRepository.findAll();
+    }
+
 //    public RsData<ChattingRoom> getChattingRoom(Long id) {
 //        return chattingRoomRepository.findById(id).map((chattingRoom )-> RsData.of(
 //                "S-1",
@@ -47,5 +46,6 @@
 //            return RsData.of("F","방생성 실패");
 //        }
 //
-//    }
-//}
+//    }@Transactional
+
+}

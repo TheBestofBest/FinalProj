@@ -1,25 +1,25 @@
-//package com.app.businessBridge.domain.confirmStatus.controller;
-//
-//import com.app.businessBridge.domain.confirmStatus.DTO.ConfirmStatusDTO;
-//import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
-//import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
-//import com.app.businessBridge.global.RsData.RsData;
-//import jakarta.validation.constraints.NotBlank;
-//import lombok.AllArgsConstructor;
-//import lombok.Data;
-//import lombok.Getter;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//@RestController
-//@RequiredArgsConstructor
-//@RequestMapping("/api/v1/confirm-statuses")
-//public class ApiV1ConfirmStatusController {
-//    private final ConfirmStatusService confirmStatusService;
-//
+package com.app.businessBridge.domain.confirmStatus.controller;
+
+import com.app.businessBridge.domain.confirmStatus.DTO.ConfirmStatusDTO;
+import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
+import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
+import com.app.businessBridge.global.RsData.RsData;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/confirm-statuses")
+public class ApiV1ConfirmStatusController {
+    private final ConfirmStatusService confirmStatusService;
+
 //    @Getter
 //    @AllArgsConstructor
 //    public static class StatusesResponse {
@@ -59,7 +59,7 @@
 //                confirmStatusRsData.getMsg(),
 //                new CreateConfirmStatusResponse(new ConfirmStatusDTO(confirmStatusRsData.getData())));
 //    }
-//
-//
-//
-//}
+
+
+
+}

@@ -1,6 +1,7 @@
 package com.app.businessBridge.domain.rebate.dto;
 
 
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,13 +10,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RebateDto {
 
+    // 직원 이름
     private String memberName;
 
+    // 사번
     private String memberId;
 
-    private String memberPosition;
+    // 직급
+    private String grade;
 
-    private String memberDept;
+    // 소속부서
+    private String dept;
 
     // 급여
     private Long salary;
@@ -29,12 +34,11 @@ public class RebateDto {
     // 보험료
     private Long insurance;
 
-//    Member member 아래 생성자 매개변수에 추가 필요
-    public RebateDto(Rebate rebate) {
-//        this.memberName = member.getName();
-//        this.memberId = member.getCodeNumber();
-//        this.memberPosition = member.getPosition();
-//        this.memberDept = member.getDepartment().getName();
+    public RebateDto(Rebate rebate, Member member) {
+        this.memberName = member.getName();
+        this.memberId = String.valueOf(member.getMemberNumber());
+        this.grade = member.getGrade().getGradeName();
+        this.dept = member.getDepartment().getDepartmentName();
 
         this.salary = rebate.getSalary();
         this.bonus = rebate.getBonus();;

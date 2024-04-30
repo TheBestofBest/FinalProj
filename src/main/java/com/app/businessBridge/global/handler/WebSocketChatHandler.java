@@ -3,7 +3,7 @@ package com.app.businessBridge.global.handler;
 import com.app.businessBridge.domain.chatLog.entity.ChatLog;
 import com.app.businessBridge.domain.chattingRoom.dto.ChattingRoomDto;
 import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
-//import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
+import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,30 +22,30 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class WebSocketChatHandler extends TextWebSocketHandler {
-//    private final ChattingRoomService chattingRoomService;
-//    private final ObjectMapper objectMapper;
-//    //현재 연결된 세션
-//    private final Set<WebSocketSession> sessions = new HashSet<>();
-//    //채팅방 ID
-//    private final Map<Long, Set<WebSocketSession>> chatSessionMap = new HashMap<>();
-//
-//    @Override
-//    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-//        log.info(RsData.of(RsCode.S_01,"연결완료", session).toString());
-//        List<ChattingRoom> chattingRooms = chattingRoomService.getListAll();
-//        List<ChattingRoomDto> dtos = new ArrayList<>();
-//        for (ChattingRoom c : chattingRooms) {
-//            dtos.add(new ChattingRoomDto(c));
-//        }
-//        dtos.stream()
-//                .findFirst()
-//                .ifPresentOrElse(
-//                        rooms -> sendMessage(session, dtos),
-//                        () -> sendMessage(session, "채팅방 없음")
-//                );
-//        sessions.add(session);
-//    }
-//
+    private final ChattingRoomService chattingRoomService;
+    private final ObjectMapper objectMapper;
+    //현재 연결된 세션
+    private final Set<WebSocketSession> sessions = new HashSet<>();
+    //채팅방 ID
+    private final Map<Long, Set<WebSocketSession>> chatSessionMap = new HashMap<>();
+
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        log.info(RsData.of(RsCode.S_01,"연결완료", session).toString());
+        List<ChattingRoom> chattingRooms = chattingRoomService.getListAll();
+        List<ChattingRoomDto> dtos = new ArrayList<>();
+        for (ChattingRoom c : chattingRooms) {
+            dtos.add(new ChattingRoomDto(c));
+        }
+        dtos.stream()
+                .findFirst()
+                .ifPresentOrElse(
+                        rooms -> sendMessage(session, dtos),
+                        () -> sendMessage(session, "채팅방 없음")
+                );
+        sessions.add(session);
+    }
+
 //    @Override
 //    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 //        String payload = message.getPayload();
@@ -85,29 +85,29 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 //        }
 //        sendMessageToChatRoom(chatMessageDto, chatRoomSession);
 //    }
-//
-//    @Override
-//    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-//        // TODO Auto-generated method stub
-//        log.info("{} 연결 끊김", session.getId());
-//        sessions.remove(session);
-//    }
-//
-//    // ====== 채팅 관련 메소드 ======
-//    private void removeClosedSession(Set<WebSocketSession> chatRoomSession) {
-//        chatRoomSession.removeIf(sess -> !sessions.contains(sess));
-//    }
-//
-//    private void sendMessageToChatRoom(ChatLog chatMessageDto, Set<WebSocketSession> chatRoomSession) {
-//        chatRoomSession.parallelStream().forEach(sess -> sendMessage(sess, chatMessageDto));//2
-//    }
-//
-//
-//    public <T> void sendMessage(WebSocketSession session, T message) {
-//        try {
-//            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
-//        } catch (IOException e) {
-//            log.error(e.getMessage(), e);
-//        }
-//    }
+
+    @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        // TODO Auto-generated method stub
+        log.info("{} 연결 끊김", session.getId());
+        sessions.remove(session);
+    }
+
+    // ====== 채팅 관련 메소드 ======
+    private void removeClosedSession(Set<WebSocketSession> chatRoomSession) {
+        chatRoomSession.removeIf(sess -> !sessions.contains(sess));
+    }
+
+    private void sendMessageToChatRoom(ChatLog chatMessageDto, Set<WebSocketSession> chatRoomSession) {
+        chatRoomSession.parallelStream().forEach(sess -> sendMessage(sess, chatMessageDto));//2
+    }
+
+
+    public <T> void sendMessage(WebSocketSession session, T message) {
+        try {
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 }
