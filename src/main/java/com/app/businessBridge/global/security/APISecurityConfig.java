@@ -45,7 +45,7 @@ public class APISecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/mails")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/mails/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/articles/**")).permitAll()
-
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/answers/**")).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf(

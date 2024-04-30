@@ -59,7 +59,7 @@ public class ApiV1ArticleController {
         );
     }
     @PatchMapping("/{id}")
-    public RsData modify(@Valid @RequestBody ModifyRequest modifyRequest, @PathVariable("id") Long id) {
+    public RsData<ModifyResponse> modify(@Valid @RequestBody ModifyRequest modifyRequest, @PathVariable("id") Long id) {
         Optional<Article> optionalArticle = this.articleService.findById(id);
 
         if (optionalArticle.isEmpty()) return RsData.of(RsCode.F_01,
