@@ -4,9 +4,11 @@ import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.request.DepartmentRequest;
 import com.app.businessBridge.domain.department.response.DepartmentResponse;
 import com.app.businessBridge.domain.department.service.DepartmentService;
+import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +21,12 @@ public class ApiV1DepartmentController {
 
     // 부서 등록
     @PostMapping("")
-    public RsData post(@Valid @RequestBody DepartmentRequest.CreateRequest createRequest) {
+    public RsData post(@Valid @RequestBody DepartmentRequest.CreateRequest createRequest,
+                       BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
+        }
+
         RsData rsData = this.departmentService.create(createRequest.getDepartmentCode(),
                 createRequest.getDepartmentName());
 
@@ -37,7 +44,12 @@ public class ApiV1DepartmentController {
 
     // 부서 수정
     @PatchMapping("")
-    public RsData<DepartmentResponse.PatchedDepartment> patch(@Valid @RequestBody DepartmentRequest.UpdateRequest updateRequest) {
+    public RsData<DepartmentResponse.PatchedDepartment> patch(@Valid @RequestBody DepartmentRequest.UpdateRequest updateRequest,
+                                                              BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
+        }
+
         RsData<Department> rsData = this.departmentService.update(updateRequest.getId(), updateRequest.getDepartmentCode(),
                 updateRequest.getDepartmentName());
 
@@ -46,7 +58,12 @@ public class ApiV1DepartmentController {
 
     // 부서 삭제
     @DeleteMapping("")
-    public RsData delete(@Valid @RequestBody DepartmentRequest.DeleteRequest deleteRequest) {
+    public RsData delete(@Valid @RequestBody DepartmentRequest.DeleteRequest deleteRequest,
+                         BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
+        }
+
         RsData rsData = this.departmentService.delete(deleteRequest.getId());
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg());
