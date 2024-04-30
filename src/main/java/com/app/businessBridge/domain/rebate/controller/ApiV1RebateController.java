@@ -1,7 +1,9 @@
 package com.app.businessBridge.domain.rebate.controller;
 
 
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.rebate.service.RebateService;
+import com.app.businessBridge.global.request.Request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,13 +14,15 @@ public class ApiV1RebateController {
 
     private final RebateService rebateService;
 
+    private final Request rq;
+
 
     @GetMapping("")
     public void getRebates() {
-
+        Member member = rq.getMember();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public void getRebate() {
 
     }
@@ -28,7 +32,7 @@ public class ApiV1RebateController {
 
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void deleteRebate() {
 
     }
