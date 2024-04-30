@@ -27,7 +27,7 @@ public class GradeService {
     }
 
     // 직급 모두 불러오기
-    public RsData<List<Grade>> readAll() {
+    public RsData<List<Grade>> findAll() {
         List<Grade> gradeDTOList = this.gradeRepository.findAll();
 
         return RsData.of(RsCode.S_05, "요청한 리소스목록을 찾았습니다.", gradeDTOList);

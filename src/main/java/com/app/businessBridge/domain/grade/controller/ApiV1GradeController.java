@@ -36,7 +36,7 @@ public class ApiV1GradeController {
     // 직급 다건 조회
     @GetMapping("")
     public RsData<GradeResponse.GetGrades> getAll() {
-        RsData<List<Grade>> rsData = this.gradeService.readAll();
+        RsData<List<Grade>> rsData = this.gradeService.findAll();
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse.GetGrades(rsData.getData()));
     }

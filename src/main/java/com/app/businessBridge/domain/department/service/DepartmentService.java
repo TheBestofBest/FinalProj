@@ -27,7 +27,7 @@ public class DepartmentService {
     }
 
     // 부서 모두 불러오기
-    public RsData<List<Department>> readAll() {
+    public RsData<List<Department>> findAll() {
         List<Department> departmentList = this.departmentRepository.findAll();
 
         return RsData.of(RsCode.S_05, "부서목록을 찾았습니다.", departmentList);

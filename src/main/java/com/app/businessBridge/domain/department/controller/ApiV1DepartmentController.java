@@ -36,7 +36,7 @@ public class ApiV1DepartmentController {
     // 부서 다건 조회
     @GetMapping("")
     public RsData<DepartmentResponse.GetDepartments> getAll() {
-        RsData<List<Department>> rsData = this.departmentService.readAll();
+        RsData<List<Department>> rsData = this.departmentService.findAll();
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg(),
                 new DepartmentResponse.GetDepartments(rsData.getData()));
