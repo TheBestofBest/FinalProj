@@ -1,13 +1,9 @@
 package com.app.businessBridge.domain.member.controller;
 
-import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
-import com.app.businessBridge.domain.member.request.PatchMemberRequest;
-import com.app.businessBridge.domain.member.request.PostMemberRequest;
+import com.app.businessBridge.domain.member.request.MemberRequest;
 import com.app.businessBridge.domain.member.response.MemberResponse;
-import com.app.businessBridge.domain.member.response.PatchMemberResponse;
-import com.app.businessBridge.domain.member.response.PostMemberResponse;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,38 +15,39 @@ import org.springframework.web.bind.annotation.*;
 public class ApiV1MemberController {
     private final MemberService memberService;
 
+    // 멤버 단건 조회
     @GetMapping("/{id}")
-    public RsData<MemberResponse> getMember(@PathVariable(value = "id") Long id) {
+    public RsData<MemberResponse.GetMember> getMember(@PathVariable(value = "id") Long id) {
         RsData<Member> rsData = this.memberService.findById(id);
 
-        // 멤버 null일 시 dto변환 리턴에 에러 터질 수 있음.
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse(new MemberDTO(rsData.getData())));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.GetMember(rsData.getData()));
     }
 
+    // 멤버 생성
     @PostMapping("")
-    public RsData<PostMemberResponse> postMember(@Valid @RequestBody PostMemberRequest postMemberRequest) {
-        RsData<MemberDTO> rsData = this.memberService.create(postMemberRequest.getDepartmentId(), postMemberRequest.getGradeId(),
-                postMemberRequest.getUsername(), postMemberRequest.getMemberNumber(), postMemberRequest.getName(),
-                postMemberRequest.getPassword(), postMemberRequest.getEmail());
+    public RsData<MemberResponse.GetMember> postMember(@Valid @RequestBody MemberRequest.CreateRequset createRequset) {
+        RsData<Member> rsData = this.memberService.create(createRequset.getDepartmentId(), createRequset.getGradeId(),
+                createRequset.getUsername(), createRequset.getMemberNumber(), createRequset.getName(),
+                createRequset.getPassword(), createRequset.getEmail());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new PostMemberResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.GetMember(rsData.getData()));
     }
 
-    @PatchMapping("/{id}")
-    public RsData<PatchMemberResponse> patchMember(@PathVariable(value = "id") Long id,
-                                                   @Valid @RequestBody PatchMemberRequest patchMemberRequest) {
-        RsData<MemberDTO> rsData = this.memberService.update(id, patchMemberRequest.getDepartmentId(), patchMemberRequest.getGradeId(),
-                patchMemberRequest.getUsername(), patchMemberRequest.getMemberNumber(), patchMemberRequest.getName(),
-                patchMemberRequest.getPassword(), patchMemberRequest.getEmail());
+    // 멤버 수정
+    @PatchMapping("")
+    public RsData<MemberResponse.PatchedMember> patchMember(@Valid @RequestBody MemberRequest.UpdateRequest updateRequest) {
+        RsData<Member> rsData = this.memberService.update(updateRequest.getId(), updateRequest.getDepartmentId(), updateRequest.getGradeId(),
+                updateRequest.getUsername(), updateRequest.getMemberNumber(), updateRequest.getName(),
+                updateRequest.getPassword(), updateRequest.getEmail());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new PatchMemberResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.PatchedMember(rsData.getData()));
     }
 
-    @DeleteMapping("/{id}")
-    public RsData<MemberResponse> deleteMember(@PathVariable(value = "id") Long id) {
-        RsData<MemberDTO> rsData = this.memberService.delete(id);
+    // 멤버 삭제
+    @DeleteMapping("")
+    public RsData deleteMember(@Valid @RequestBody MemberRequest.DeleteRequest deleteRequest) {
+        RsData rsData = this.memberService.delete(deleteRequest.getId());
 
-        // 멤버 null일 시 dto변환 리턴에 에러 터질 수 있음.
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
 }
