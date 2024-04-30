@@ -48,6 +48,7 @@ public class ApiV1ConfirmController {
     @PostMapping("")
     public RsData<ConfirmResponse.create> createConfirm(@Valid @RequestBody ConfirmRequest.create createConfirmRequest){
         // 결재 양식 타입, 결재 처리 상태, 결재 요청자, 결재 승인자 검증
+        // 양식 검증
         RsData<ConfirmResponse.create> validateConfirm =  ConfirmValidate.validateConfirmFormType(createConfirmRequest.getFormType());
         // 검증 실패 시 실패 코드, 메시지 리턴
         if(!validateConfirm.getIsSuccess()){
@@ -66,5 +67,10 @@ public class ApiV1ConfirmController {
                 confirmRsData.getMsg(),
                 new ConfirmResponse.create(new ConfirmDTO(confirmRsData.getData()))
         );
+    }
+
+    @PatchMapping
+    public RsData<ConfirmResponse.patch> patchConfirm(@Valid @RequestBody ConfirmRequest.patch patchConfirmRequest){
+
     }
 }
