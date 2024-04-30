@@ -34,4 +34,10 @@ public class ConfirmResponse {
     public static class delete{
         private Long confirmId;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class validate{
+        private Long invalidId;
+    }
 }
