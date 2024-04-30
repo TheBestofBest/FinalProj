@@ -1,7 +1,9 @@
 package com.app.businessBridge.domain.rebate.entity;
 
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +18,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class Rebate extends BaseEntity {
 
-//    private Member member;
+    @ManyToOne
+    private Member member;
 
     // 급여
     private Long salary;

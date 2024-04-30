@@ -23,29 +23,29 @@ public class  ChattingRoomService {
         return chattingRoomRepository.findAll();
     }
 
-    @Transactional
-    public RsData<ChattingRoom> getChattingRoom(Long id) {
-        return chattingRoomRepository.findById(id).map((chattingRoom )-> RsData.of(
-                "S-1",
-                "불러오기 성공",
-                chattingRoom
-        )).orElseGet(() -> RsData.of(
-                "F-1",
-                "%d번 채팅방 없음".formatted(id)
-        ));
-    }
-    @Transactional
-    public RsData<ChattingRoom> create(String name) {
-        try {
-            ChattingRoom chattingRoom = ChattingRoom.builder()
-                    .name(name)
-                    .build();
-            chattingRoomRepository.save(chattingRoom);
+//    public RsData<ChattingRoom> getChattingRoom(Long id) {
+//        return chattingRoomRepository.findById(id).map((chattingRoom )-> RsData.of(
+//                "S-1",
+//                "불러오기 성공",
+//                chattingRoom
+//        )).orElseGet(() -> RsData.of(
+//                "F-1",
+//                "%d번 채팅방 없음".formatted(id)
+//        ));
+//    }
+//    @Transactional
+//    public RsData<ChattingRoom> create(String name) {
+//        try {
+//            ChattingRoom chattingRoom = ChattingRoom.builder()
+//                    .name(name)
+//                    .build();
+//            chattingRoomRepository.save(chattingRoom);
+//
+//            return RsData.of("S","방생성 성공", chattingRoom);
+//        }catch (Exception e) {
+//            return RsData.of("F","방생성 실패");
+//        }
+//
+//    }@Transactional
 
-            return RsData.of("S","방생성 성공", chattingRoom);
-        }catch (Exception e) {
-            return RsData.of("F","방생성 실패");
-        }
-
-    }
 }
