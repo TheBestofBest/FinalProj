@@ -5,6 +5,7 @@ import com.app.businessBridge.domain.confirm.entity.Confirm;
 import com.app.businessBridge.domain.confirm.request.ConfirmRequest;
 import com.app.businessBridge.domain.confirm.response.ConfirmResponse;
 import com.app.businessBridge.domain.confirm.service.ConfirmService;
+import com.app.businessBridge.domain.confirm.validation.ConfirmValidate;
 import com.app.businessBridge.domain.confirmFormType.dto.ConfirmFormTypeDTO;
 import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmFormType.service.ConfirmFormTypeService;
@@ -47,7 +48,7 @@ public class ApiV1ConfirmController {
     @PostMapping("")
     public RsData<ConfirmResponse.create> createConfirm(@Valid @RequestBody ConfirmRequest.create createConfirmRequest){
         // 결재 양식 타입, 결재 처리 상태, 결재 요청자, 결재 승인자 검증
-        RsData<ConfirmResponse.create> validateConfirm =  validateConfirm(createConfirmRequest.getFormType(), createConfirmRequest.getConfirmStatus(), createConfirmRequest.getConfirmRequestMember(), createConfirmRequest.getConfirmMembers());
+        RsData<ConfirmResponse.create> validateConfirm =  ConfirmValidate.validateConfirmFormType(createConfirmRequest.getFormType());
         // 검증 실패 시 실패 코드, 메시지 리턴
         if(!validateConfirm.getIsSuccess()){
             return RsData.of(
@@ -60,19 +61,10 @@ public class ApiV1ConfirmController {
 
         RsData<Confirm> confirmRsData = this.confirmService.createConfirm(createConfirmRequest);
 
-    }
-
-    // 결재 시 결재 양식, 처리상태, 결재 요청자, 결재 승인자 검증 메서드
-    public RsData<ConfirmResponse.create> _validateConfirm(ConfirmFormType formType, ConfirmStatus confirmStatus, Member confirmRequestMember, List<Member> confirmMembers){
-        // 결재 양식 검증
-        Optional<ConfirmFormType> optionalConfirmFormType = this.confirmFormTypeService.getConfirmFormType(formType.getId());
-
-
-        //상단의 검증 통과 시 성공코드 리턴
         return RsData.of(
-                RsCode.S_08,
-                "결재 양식, 처리상태, 요청자, 승인자 검증됨",
-                null
+                confirmRsData.getRsCode(),
+                confirmRsData.getMsg(),
+                new ConfirmResponse.create(new ConfirmDTO(confirmRsData.getData()))
         );
     }
 }

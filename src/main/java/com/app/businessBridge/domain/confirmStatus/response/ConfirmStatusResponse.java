@@ -3,6 +3,7 @@ package com.app.businessBridge.domain.confirmStatus.response;
 import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
