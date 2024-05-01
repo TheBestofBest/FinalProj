@@ -37,9 +37,9 @@ public class ApiV1ConfirmStatusController {
                 new ConfirmStatusResponse.create(confirmStatusRsData.getData()));
     }
     // 결재 처리 상태 수정 [관리자 권한]
-    @PatchMapping("/{confirmStatusId}")
-    public RsData<ConfirmStatusResponse.patch> patchConfirmStatus(@PathVariable(value = "confirmStatusId") Long confirmStatusId, @Valid @RequestBody ConfirmStatusRequest.patch patchConfirmStatusRequest){
-        Optional<ConfirmStatus> optionalConfirmStatus = this.confirmStatusService.getConfirmStatus(confirmStatusId);
+    @PatchMapping("/{id}")
+    public RsData<ConfirmStatusResponse.patch> patchConfirmStatus(@PathVariable(value = "id") Long id, @Valid @RequestBody ConfirmStatusRequest.patch patchConfirmStatusRequest){
+        Optional<ConfirmStatus> optionalConfirmStatus = this.confirmStatusService.getConfirmStatus(id);
         if(optionalConfirmStatus.isEmpty()){
             return RsData.of(
                     RsCode.F_04,
@@ -56,9 +56,9 @@ public class ApiV1ConfirmStatusController {
         );
     }
 
-    @DeleteMapping("/{confirmStatusId}")
-    public RsData<ConfirmStatusResponse.delete> deleteConfirmStatus(@PathVariable(value = "confirmStatusId") Long confirmStatusId){
-        Optional<ConfirmStatus> optionalConfirmStatus = this.confirmStatusService.getConfirmStatus(confirmStatusId);
+    @DeleteMapping("/{id}")
+    public RsData<ConfirmStatusResponse.delete> deleteConfirmStatus(@PathVariable(value = "id") Long id){
+        Optional<ConfirmStatus> optionalConfirmStatus = this.confirmStatusService.getConfirmStatus(id);
         if(optionalConfirmStatus.isEmpty()){
             return RsData.of(
                     RsCode.F_04,
@@ -70,8 +70,8 @@ public class ApiV1ConfirmStatusController {
 
         return RsData.of(
                 RsCode.S_04,
-                "%d번 결재 처리 상태가 삭제되었습니다.".formatted(confirmStatusId),
-               new ConfirmStatusResponse.delete(confirmStatusId)
+                "%d번 결재 처리 상태가 삭제되었습니다.".formatted(id),
+               new ConfirmStatusResponse.delete(id)
         );
     }
 }

@@ -40,13 +40,13 @@ public class ApiV1ConfirmFormTypeController {
     }
 
     // 결재 양식 수정
-    @PatchMapping("/{confirmFormTypeId}")
-    public RsData<ConfirmFormTypeResponse.patch> patchConfirmFormType(@PathVariable(value = "confirmFormTypeId") Long confirmFormTypeId, @Valid @RequestBody ConfirmFormTypeRequest.patch patchConfirmFormTypeRequest){
-        Optional<ConfirmFormType> optionalConfirmFormType = this.confirmFormTypeService.getConfirmFormType(confirmFormTypeId);
+    @PatchMapping("/{id}")
+    public RsData<ConfirmFormTypeResponse.patch> patchConfirmFormType(@PathVariable(value = "id") Long id, @Valid @RequestBody ConfirmFormTypeRequest.patch patchConfirmFormTypeRequest){
+        Optional<ConfirmFormType> optionalConfirmFormType = this.confirmFormTypeService.getConfirmFormType(id);
         if (optionalConfirmFormType.isEmpty()){
             return RsData.of(
                     RsCode.F_04,
-                    "%d번 결재 양식은 존재하지 않습니다.".formatted(confirmFormTypeId),
+                    "%d번 결재 양식은 존재하지 않습니다.".formatted(id),
                     null
             );
         }
@@ -56,18 +56,18 @@ public class ApiV1ConfirmFormTypeController {
         return RsData.of(
                 confirmFormTypeRsData.getRsCode(),
                 confirmFormTypeRsData.getMsg(),
-                new ConfirmFormTypeResponse.patch(new ConfirmFormTypeDTO(confirmFormTypeRsData.getData()))
+                new ConfirmFormTypeResponse.patch(confirmFormTypeRsData.getData())
         );
     }
 
     // 결재 양식 삭제
-    @DeleteMapping("/{ConfirmFormTypeId}")
-    public RsData<ConfirmFormTypeResponse.delete> deleteConfirmFormType(@PathVariable(value = "ConfirmFormTypeId") Long confirmFormTypeId){
-        Optional<ConfirmFormType> optionalConfirmFormType = this.confirmFormTypeService.getConfirmFormType(confirmFormTypeId);
+    @DeleteMapping("/{id}")
+    public RsData<ConfirmFormTypeResponse.delete> deleteConfirmFormType(@PathVariable(value = "id") Long id){
+        Optional<ConfirmFormType> optionalConfirmFormType = this.confirmFormTypeService.getConfirmFormType(id);
         if (optionalConfirmFormType.isEmpty()){
             return RsData.of(
                     RsCode.F_04,
-                    "%d번 결재 양식은 존재하지 않습니다.".formatted(confirmFormTypeId),
+                    "%d번 결재 양식은 존재하지 않습니다.".formatted(id),
                     null
             );
         }
@@ -76,7 +76,7 @@ public class ApiV1ConfirmFormTypeController {
         return RsData.of(
                 RsCode.S_04,
                 "%d번 결재 양식이 삭제되었습니다.",
-                new ConfirmFormTypeResponse.delete(confirmFormTypeId)
+                new ConfirmFormTypeResponse.delete(id)
         ) ;
     }
 }

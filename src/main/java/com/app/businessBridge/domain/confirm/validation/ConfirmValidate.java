@@ -148,6 +148,25 @@ public class ConfirmValidate {
                 null
         );
     }
+    // 처리상태 변경 시 결재 처리 상태 검증 메서드
+    public static RsData<ConfirmResponse.changeStatus> validateConfirmStatusChange(ConfirmStatus confirmStatus) {
+        // 결재 처리 상태 검증
+        Optional<ConfirmStatus> optionalConfirmStatus = confirmStatusService.getConfirmStatus(confirmStatus.getId());
+        // null 이면 실패코드 반환
+        if (optionalConfirmStatus.isEmpty()) {
+            return RsData.of(
+                    RsCode.F_04,
+                    "해당 결재 처리상태는 존재하지 않습니다.",
+                    null
+            );
+        }
+        //검증 통과 시 성공코드 리턴
+        return RsData.of(
+                RsCode.S_08,
+                "결재 처리상태 검증됨",
+                null
+        );
+    }
 
     // 결재 요청자 검증 메서드
     public static RsData<ConfirmResponse.patch> validateConfirmRequestMemberPatch(Member confirmRequestMember) {
@@ -284,5 +303,7 @@ public class ConfirmValidate {
                 null
         );
     }
+
+
 }
 

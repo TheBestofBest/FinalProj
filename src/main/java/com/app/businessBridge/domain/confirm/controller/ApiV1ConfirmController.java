@@ -35,35 +35,31 @@ public class ApiV1ConfirmController {
 
     // 결재 다건 조회
     @GetMapping("")
-    public RsData<ConfirmResponse.getAll> getConfirms() {
+    public RsData<ConfirmResponse.getConfirms> getConfirms() {
         List<Confirm> confirms = this.confirmService.getAll();
-        List<ConfirmDTO> confirmDTOS = new ArrayList<>();
-        for (Confirm confirm : confirms) {
-            confirmDTOS.add(new ConfirmDTO(confirm));
-        }
 
         return RsData.of(
                 RsCode.S_01,
                 "결재 다건 조회 성공",
-                new ConfirmResponse.getAll(confirmDTOS)
+                new ConfirmResponse.getConfirms(confirms)
         );
     }
 
     // 결재 단건 조회
-    @GetMapping("/{confirmId}")
-    public RsData<ConfirmResponse.getConfirm> getConfirm(@PathVariable(value = "confirmId") Long confirmId){
-        Optional<Confirm> optionalConfirm = this.confirmService.findById(confirmId);
+    @GetMapping("/{id}")
+    public RsData<ConfirmResponse.getConfirm> getConfirm(@PathVariable(value = "id") Long id){
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
         if(optionalConfirm.isEmpty()){
             return RsData.of(
                     RsCode.F_04,
-                    "id: %d번 결재 는 존재하지 않습니다.".formatted(confirmId),
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
                     null
             );
         }
         return RsData.of(
                 RsCode.S_05,
-                "id: %d번 결재 단건 조회 성공".formatted(confirmId),
-                new ConfirmResponse.getConfirm(new ConfirmDTO(optionalConfirm.get()))
+                "id: %d번 결재 단건 조회 성공".formatted(id),
+                new ConfirmResponse.getConfirm(optionalConfirm.get())
         );
     }
 
@@ -88,17 +84,17 @@ public class ApiV1ConfirmController {
         return RsData.of(
                 confirmRsData.getRsCode(),
                 confirmRsData.getMsg(),
-                new ConfirmResponse.create(new ConfirmDTO(confirmRsData.getData()))
+                new ConfirmResponse.create(confirmRsData.getData())
         );
     }
 
-    @PatchMapping("/{confirmId}")
-    public RsData<ConfirmResponse.patch> patchConfirm(@PathVariable(value="confirmId") Long confirmId ,@Valid @RequestBody ConfirmRequest.patch patchConfirmRequest) {
-        Optional<Confirm> optionalConfirm = this.confirmService.findById(confirmId);
+    @PatchMapping("/{id}")
+    public RsData<ConfirmResponse.patch> patchConfirm(@PathVariable(value="id") Long id ,@Valid @RequestBody ConfirmRequest.patch patchConfirmRequest) {
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
         if(optionalConfirm.isEmpty()){
             return RsData.of(
                     RsCode.F_04,
-                    "id: %d번 결재 는 존재하지 않습니다.".formatted(confirmId),
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
                     null
             );
         }
@@ -118,20 +114,27 @@ public class ApiV1ConfirmController {
         return RsData.of(
                 confirmRsData.getRsCode(),
                 confirmRsData.getMsg(),
-                new ConfirmResponse.patch(new ConfirmDTO(confirmRsData.getData()))
+                new ConfirmResponse.patch(confirmRsData.getData())
         );
     }
 
-    @PatchMapping("/{confirmId}/change-status")
-    public RsData<ConfirmResponse.changeStatus> changeStatusConfirm(@PathVariable(value = "confirmId") Long confirmId, @Valid @RequestBody ConfirmRequest.changeStatus changeStatusRequest){
+    @PatchMapping("/{id}/change-status")
+    public RsData<ConfirmResponse.changeStatus> changeStatusConfirm(@PathVariable(value = "id") Long id, @Valid @RequestBody ConfirmRequest.changeStatus changeStatusRequest){
         // 결재 처리상태 검증
-        RsData<ConfirmResponse.patch> patchRsData = ConfirmValidate.validateConfirmStatusPatch(changeStatusRequest.getConfirmStatus());
-        // {confirmId}번 결재 존재하는지 검증
-        Optional<Confirm> optionalConfirm = this.confirmService.findById(confirmId);
+        RsData<ConfirmResponse.changeStatus> patchRsData = ConfirmValidate.validateConfirmStatusChange(changeStatusRequest.getConfirmStatus());
+        if(!patchRsData.getIsSuccess()){
+            return RsData.of(
+                    patchRsData.getRsCode(),
+                    patchRsData.getMsg(),
+                    patchRsData.getData()
+            );
+        }
+        // {id}번 결재 존재하는지 검증
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
         if(optionalConfirm.isEmpty()){
             return RsData.of(
                     RsCode.F_04,
-                    "id: %d번 결재 는 존재하지 않습니다.".formatted(confirmId),
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
                     null
             );
         }
@@ -143,26 +146,26 @@ public class ApiV1ConfirmController {
         return RsData.of(
                 confirmRsData.getRsCode(),
                 confirmRsData.getMsg(),
-                new ConfirmResponse.changeStatus(new ConfirmDTO(confirmRsData.getData()))
+                new ConfirmResponse.changeStatus(confirmRsData.getData())
         );
     }
 
-    @DeleteMapping("/{confirmId}")
-    public RsData<ConfirmResponse.delete> deleteConfirm(@PathVariable(value = "confirmId") Long confirmId){
-        // {confirmId}번 결재 존재하는지 검증
-        Optional<Confirm> optionalConfirm = this.confirmService.findById(confirmId);
+    @DeleteMapping("/{id}")
+    public RsData<ConfirmResponse.delete> deleteConfirm(@PathVariable(value = "id") Long id){
+        // {id}번 결재 존재하는지 검증
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
         if(optionalConfirm.isEmpty()){
             return RsData.of(
                     RsCode.F_04,
-                    "id: %d번 결재 는 존재하지 않습니다.".formatted(confirmId),
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
                     null
             );
         }
         this.confirmService.deleteConfirm(optionalConfirm.get());
         return RsData.of(
                 RsCode.S_04,
-                "id: %d번 결재가 삭제되었습니다.".formatted(confirmId),
-                new ConfirmResponse.delete(confirmId)
+                "id: %d번 결재가 삭제되었습니다.".formatted(id),
+                new ConfirmResponse.delete(id)
         );
     }
 }
