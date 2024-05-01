@@ -1,9 +1,12 @@
 package com.app.businessBridge.global.handler;
 
+import com.app.businessBridge.domain.chatLog.dto.ChatLogDto;
 import com.app.businessBridge.domain.chatLog.entity.ChatLog;
-import com.app.businessBridge.domain.chattingRoom.dto.ChattingRoomDto;
+import com.app.businessBridge.domain.chatLog.service.ChatLogService;
 import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
 import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
+import com.app.businessBridge.domain.member.Service.MemberService;
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,75 +19,75 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class WebSocketChatHandler extends TextWebSocketHandler {
+    private final MemberService memberService;
     private final ChattingRoomService chattingRoomService;
+    private final ChatLogService chatLogService;
     private final ObjectMapper objectMapper;
     //현재 연결된 세션
     private final Set<WebSocketSession> sessions = new HashSet<>();
-    //채팅방 ID
+    //채팅방 세션 목록
     private final Map<Long, Set<WebSocketSession>> chatSessionMap = new HashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        log.info(RsData.of(RsCode.S_01,"연결완료", session).toString());
-        List<ChattingRoom> chattingRooms = chattingRoomService.getListAll();
-        List<ChattingRoomDto> dtos = new ArrayList<>();
-        for (ChattingRoom c : chattingRooms) {
-            dtos.add(new ChattingRoomDto(c));
-        }
-        dtos.stream()
-                .findFirst()
-                .ifPresentOrElse(
-                        rooms -> sendMessage(session, dtos),
-                        () -> sendMessage(session, "채팅방 없음")
-                );
+        System.out.println(session);
+        String uri = String.valueOf(session.getUri());
+        Long roomId = Long.valueOf((uri.split("chats/", 2)[1]));
+        log.info(RsData.of(RsCode.S_01, "연결성공", session).toString());
+        TextMessage textMessage = new TextMessage("%d 번 채팅방 입장".formatted(roomId));
+        session.sendMessage(textMessage);
         sessions.add(session);
+        chatSessionMap.put(roomId, sessions);
     }
 
-//    @Override
-//    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-//        String payload = message.getPayload();
-//        System.out.println("payload : " + payload);
-//        log.info("payload {}", payload);
-//
-//        // 페이로드 -> chatMessageDto로 변환
-//        ChatLog chatMessageDto = objectMapper.readValue(payload, ChatLog.class);
-//        System.out.println("chatlog : " + chatMessageDto);
-//        log.info("session {}", chatMessageDto.toString());
-//        //임시
-//        ChattingRoom chattingRoom = chattingRoomService.create("이름").getData();
-//        System.out.println("chatRoomId1 : " + chattingRoom.getId());
-//        chatMessageDto.toBuilder().chattingRoom(chattingRoom).build();
-//        System.out.println("chatRoomId2 : " + chatMessageDto);
-//
-//        Long chatRoomId = chattingRoom.getId();
-////        Long chatRoomId = chatMessageDto.getChattingRoom().getId();
-//
-//        System.out.println("chatRoomId3 : " + chatRoomId);
-//
-//        // 메모리 상에 채팅방에 대한 세션 없으면 만들어줌
-//        if (!chatSessionMap.containsKey(chatRoomId)) {
-//            chatSessionMap.put(chatRoomId, new HashSet<>());
-//        }
-//        Set<WebSocketSession> chatRoomSession = chatSessionMap.get(chatRoomId);
-//
-//        // message 에 담긴 타입을 확인한다.
-//        // 이때 message 에서 getType 으로 가져온 내용이
-//        // ChatDTO 의 열거형인 MessageType 안에 있는 ENTER 과 동일한 값이라면
-//        if (chatMessageDto.getMessageType().equals(ChatLog.MessageType.ENTER)) {
-//            // sessions 에 넘어온 session 을 담고,
-//            chatRoomSession.add(session);
-//        }
-//        if (chatRoomSession.size() >= 3) {
-//            removeClosedSession(chatRoomSession);
-//        }
-//        sendMessageToChatRoom(chatMessageDto, chatRoomSession);
-//    }
+    @Override
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+        String payload = message.getPayload();
+        System.out.println("payload : " + payload);
+        log.info("payload {}", payload);
+
+        // 페이로드 -> chatMessageDto로 변환
+        ChatLogDto chatLogDto = objectMapper.readValue(payload, ChatLogDto.class);
+        System.out.println("chatlog : " + chatLogDto);
+        log.info("session {}", chatLogDto.toString());
+        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom(chatLogDto.getRoomId()).getData();
+        Member member = memberService.findByUsername(chatLogDto.getAuthor()).getData();
+        ChatLog chatLog = ChatLog.builder()
+                .content(chatLogDto.getContent())
+                .chattingRoom(chattingRoom)
+                .member(member)
+                .build();
+        //임시
+        chatLogService.save(chatLog);
+        TextMessage textMessage = new TextMessage(payload);
+        session.sendMessage(textMessage);
+
+        Long chatRoomId = chattingRoom.getId();
+
+        // 메모리 상에 채팅방에 대한 세션 없으면 만들어줌
+        if (!chatSessionMap.containsKey(chatRoomId)) {
+            chatSessionMap.put(chatRoomId, new HashSet<>());
+        }
+        Set<WebSocketSession> chatRoomSession = chatSessionMap.get(chatRoomId);
+        System.out.println("sdsdasd채티방 아이디 :" + chatSessionMap.get(chatRoomId) );
+        // message 에 담긴 타입을 확인한다.
+        // 이때 message 에서 getType 으로 가져온 내용이
+        // ChatDTO 의 열거형인 MessageType 안에 있는 ENTER 과 동일한 값이라면
+        if (chatRoomSession.size() >= 3) {
+            removeClosedSession(chatRoomSession);
+        }
+        System.out.println(chatRoomSession.toArray());
+        sendMessageToChatRoom(chatLog, chatRoomSession);
+    }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -95,11 +98,11 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
     // ====== 채팅 관련 메소드 ======
     private void removeClosedSession(Set<WebSocketSession> chatRoomSession) {
-        chatRoomSession.removeIf(sess -> !sessions.contains(sess));
+        chatRoomSession.removeIf(session -> !sessions.contains(session));
     }
 
-    private void sendMessageToChatRoom(ChatLog chatMessageDto, Set<WebSocketSession> chatRoomSession) {
-        chatRoomSession.parallelStream().forEach(sess -> sendMessage(sess, chatMessageDto));//2
+    private void sendMessageToChatRoom(ChatLog chatLogDto, Set<WebSocketSession> chatRoomSession) {
+        chatRoomSession.parallelStream().forEach(session -> sendMessage(session, chatLogDto));//2
     }
 
 
