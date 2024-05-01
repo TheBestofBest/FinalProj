@@ -3,9 +3,12 @@ package com.app.businessBridge.domain.rebate.controller;
 
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.rebate.service.RebateService;
+import com.app.businessBridge.global.hoildayapi.ApiExplorer;
 import com.app.businessBridge.global.request.Request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +19,15 @@ public class ApiV1RebateController {
 
     private final Request rq;
 
+    private final ApiExplorer apiExplorer;
+
+    @GetMapping("{year}/{month}")
+    public String testGetHoilday(@PathVariable(value = "year") String year,
+                               @PathVariable(value = "month") String month) throws IOException {
+
+        return apiExplorer.getHoilday(year, month);
+
+    }
 
     @GetMapping("")
     public void getRebates() {
