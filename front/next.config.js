@@ -1,3 +1,3 @@
 {
-    swcMinify: false
-    }
+  swcMinify: false;
+}

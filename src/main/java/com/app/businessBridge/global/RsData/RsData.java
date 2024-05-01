@@ -17,6 +17,7 @@ public class RsData<T> {
     public static <T> RsData<T> of(RsCode rsCode, String msg, T data) {
 
         return new RsData<>(rsCode, msg, data, rsCode.getCode().startsWith("S-"));
+
     }
 
     public static <T> RsData<T> of(RsCode rsCode, String msg) {
