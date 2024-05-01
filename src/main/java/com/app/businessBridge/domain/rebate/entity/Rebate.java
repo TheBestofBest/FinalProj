@@ -33,5 +33,8 @@ public class Rebate extends BaseEntity {
     // 보험료
     private Long insurance;
 
+    // 세후 최종 실급여
+    private Long totalSalary;
+
 }
 
