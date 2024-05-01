@@ -46,4 +46,10 @@ public class ConfirmResponse {
     public static class changeStatus{
         private ConfirmDTO confirmDTO;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class getConfirm{
+        private ConfirmDTO confirmDTO;
+    }
 }

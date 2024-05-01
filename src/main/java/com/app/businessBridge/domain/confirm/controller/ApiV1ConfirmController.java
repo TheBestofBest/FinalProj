@@ -16,6 +16,7 @@ import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +48,25 @@ public class ApiV1ConfirmController {
                 new ConfirmResponse.getAll(confirmDTOS)
         );
     }
+
+    // 결재 단건 조회
+    @GetMapping("/{confirmId}")
+    public RsData<ConfirmResponse.getConfirm> getConfirm(@PathVariable(value = "confirmId") Long confirmId){
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(confirmId);
+        if(optionalConfirm.isEmpty()){
+            return RsData.of(
+                    RsCode.F_04,
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(confirmId),
+                    null
+            );
+        }
+        return RsData.of(
+                RsCode.S_05,
+                "id: %d번 결재 단건 조회 성공".formatted(confirmId),
+                new ConfirmResponse.getConfirm(new ConfirmDTO(optionalConfirm.get()))
+        );
+    }
+
 
     // 결재 등록
     @PostMapping("")
