@@ -44,7 +44,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         Long roomId = Long.valueOf((uri.split("chats/", 2)[1]));
         log.info(RsData.of(RsCode.S_01, "연결성공", session).toString());
         TextMessage textMessage = new TextMessage("%d 번 채팅방 입장".formatted(roomId));
-        session.sendMessage(textMessage);
+//        session.sendMessage(textMessage);
         sessions.add(session);
         chatSessionMap.put(roomId, sessions);
     }
@@ -60,33 +60,28 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         System.out.println("chatlog : " + chatLogDto);
         log.info("session {}", chatLogDto.toString());
         ChattingRoom chattingRoom = chattingRoomService.getChattingRoom(chatLogDto.getRoomId()).getData();
-        Member member = memberService.findByUsername(chatLogDto.getAuthor()).getData();
+       // Member member = memberService.findByUsername(chatLogDto.getAuthor()).getData();
+        Member member = memberService.findByUsername("user01").getData(); //getMember 있으면 위에꺼로 대체
+
         ChatLog chatLog = ChatLog.builder()
                 .content(chatLogDto.getContent())
                 .chattingRoom(chattingRoom)
                 .member(member)
                 .build();
-        //임시
         chatLogService.save(chatLog);
-        TextMessage textMessage = new TextMessage(payload);
-        session.sendMessage(textMessage);
 
         Long chatRoomId = chattingRoom.getId();
-
         // 메모리 상에 채팅방에 대한 세션 없으면 만들어줌
         if (!chatSessionMap.containsKey(chatRoomId)) {
             chatSessionMap.put(chatRoomId, new HashSet<>());
         }
         Set<WebSocketSession> chatRoomSession = chatSessionMap.get(chatRoomId);
-        System.out.println("sdsdasd채티방 아이디 :" + chatSessionMap.get(chatRoomId) );
-        // message 에 담긴 타입을 확인한다.
-        // 이때 message 에서 getType 으로 가져온 내용이
-        // ChatDTO 의 열거형인 MessageType 안에 있는 ENTER 과 동일한 값이라면
-        if (chatRoomSession.size() >= 3) {
-            removeClosedSession(chatRoomSession);
-        }
-        System.out.println(chatRoomSession.toArray());
-        sendMessageToChatRoom(chatLog, chatRoomSession);
+//        System.out.println("sdsdasd채티방 아이디 :" + chatSessionMap.get(chatRoomId) );
+//        if (chatRoomSession.size() >= 3) {
+//            removeClosedSession(chatRoomSession);
+//        }
+//        System.out.println(chatRoomSession.toArray());
+        sendMessageToChatRoom(chatLogDto, chatRoomSession);
     }
 
     @Override
@@ -101,7 +96,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         chatRoomSession.removeIf(session -> !sessions.contains(session));
     }
 
-    private void sendMessageToChatRoom(ChatLog chatLogDto, Set<WebSocketSession> chatRoomSession) {
+    private void sendMessageToChatRoom(ChatLogDto chatLogDto, Set<WebSocketSession> chatRoomSession) {
         chatRoomSession.parallelStream().forEach(session -> sendMessage(session, chatLogDto));//2
     }
 

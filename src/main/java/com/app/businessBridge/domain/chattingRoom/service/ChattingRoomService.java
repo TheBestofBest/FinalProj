@@ -22,11 +22,15 @@ public class ChattingRoomService {
 
     //임시 : 해당 유저에 대한 리스트 가져오기 필요
     @Transactional
-    public List<ChattingRoom> getListAll() {
-//        this.create("채팅방1");
-//        this.create("채팅방2");
-//        this.create("채팅방3");
-        return chattingRoomRepository.findAll();
+    public RsData<List<ChattingRoom>> getListByUsername(String username) {
+        return chattingRoomRepository.findChattingRoomByUsername(username).isEmpty() ? RsData.of(
+                RsCode.F_04,
+                "해당 채팅방 없음"
+        ) : RsData.of(
+                RsCode.S_01,
+                "불러오기 성공",
+                chattingRoomRepository.findChattingRoomByUsername(username)
+        );
     }
 
     @Transactional
