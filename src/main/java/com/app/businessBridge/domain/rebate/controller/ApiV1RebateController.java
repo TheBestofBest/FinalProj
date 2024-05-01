@@ -29,6 +29,13 @@ public class ApiV1RebateController {
 
     }
 
+    @GetMapping("/all/{year}/{month}")
+    public String testGetAllDay(@PathVariable(value = "year") String year,
+                                @PathVariable(value = "month") String month) throws IOException {
+
+        return apiExplorer.getAllDay(year, month);
+    }
+
     @GetMapping("")
     public void getRebates() {
         Member member = rq.getMember();
