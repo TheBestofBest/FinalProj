@@ -6,3 +6,10 @@ export interface ChattingRoom {
     name: string;
     members: string[];
 }
+
+
+export interface Message {
+    roomId: number;
+    author: string;
+    content: string;
+}
