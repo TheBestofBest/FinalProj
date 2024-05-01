@@ -23,14 +23,10 @@ public class ApiV1ConfirmFormTypeController {
 
     // 결재 양식 다건 조회
     @GetMapping("")
-    public RsData<ConfirmFormTypeResponse.getAll> getConfirmFormTypes(){
+    public RsData<ConfirmFormTypeResponse.getConfirmFormTypes> getConfirmFormTypes(){
         List<ConfirmFormType> confirmFormTypes = this.confirmFormTypeService.getAll();
-        List<ConfirmFormTypeDTO> confirmFormTypeDTOS = new ArrayList<>();
-        for (ConfirmFormType confirmFormType : confirmFormTypes) {
-            confirmFormTypeDTOS.add(new ConfirmFormTypeDTO(confirmFormType));
-        }
 
-        return RsData.of(RsCode.S_01, "성공", new ConfirmFormTypeResponse.getAll(confirmFormTypeDTOS));
+        return RsData.of(RsCode.S_01, "성공", new ConfirmFormTypeResponse.getConfirmFormTypes(confirmFormTypes));
     }
 
     // 결재 양식 신규 등록
@@ -40,12 +36,12 @@ public class ApiV1ConfirmFormTypeController {
         return RsData.of(
                 confirmFormTypeRsData.getRsCode(),
                 confirmFormTypeRsData.getMsg(),
-                new ConfirmFormTypeResponse.create(new ConfirmFormTypeDTO(confirmFormTypeRsData.getData())));
+                new ConfirmFormTypeResponse.create(confirmFormTypeRsData.getData()));
     }
 
     // 결재 양식 수정
-    @PatchMapping("/{ConfirmFormTypeId}")
-    public RsData<ConfirmFormTypeResponse.patch> patchConfirmFormType(@PathVariable(value = "ConfirmFormTypeId") Long confirmFormTypeId, @Valid @RequestBody ConfirmFormTypeRequest.patch patchConfirmFormTypeRequest){
+    @PatchMapping("/{confirmFormTypeId}")
+    public RsData<ConfirmFormTypeResponse.patch> patchConfirmFormType(@PathVariable(value = "confirmFormTypeId") Long confirmFormTypeId, @Valid @RequestBody ConfirmFormTypeRequest.patch patchConfirmFormTypeRequest){
         Optional<ConfirmFormType> optionalConfirmFormType = this.confirmFormTypeService.getConfirmFormType(confirmFormTypeId);
         if (optionalConfirmFormType.isEmpty()){
             return RsData.of(
