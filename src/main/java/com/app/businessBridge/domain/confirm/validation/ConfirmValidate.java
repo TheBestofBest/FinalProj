@@ -83,21 +83,26 @@ public class ConfirmValidate {
         );
     }
     // 결재 승인자 검증 메서드
-    public static RsData<ConfirmResponse.create> validateConfirmMembers(List<Member> members){
+    public static RsData<ConfirmResponse.create> validateConfirmMembers(List<Member> confirmMembers){
         // 결재 승인자 검증
-        Optional<ConfirmFormType> optionalConfirmFormType = confirmFormTypeService.getConfirmFormType(formType.getId());
-        // null 이면 실패코드 반환
-        if(optionalConfirmFormType.isEmpty()){
-            return RsData.of(
-                    RsCode.F_04,
-                    "해당 양식은 존재하지 않습니다.",
-                    null
-            );
+
+        for(Member member: confirmMembers){
+            RsData<Member> memberRsData = memberService.findById(member.getId());
+            // null 이면 실패코드 반환
+            if(!memberRsData.getIsSuccess()){
+                return RsData.of(
+                        RsCode.F_04,
+                        "해당 결재 승인자는 존재하지 않습니다.",
+                        null
+                );
+            }
         }
+
+
         //검증 통과 시 성공코드 리턴
         return RsData.of(
                 RsCode.S_08,
-                "결재 양식 검증됨",
+                "결재 승인자 검증됨",
                 null
         );
     }
