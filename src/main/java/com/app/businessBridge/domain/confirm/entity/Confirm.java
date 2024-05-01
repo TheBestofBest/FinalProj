@@ -3,11 +3,9 @@ package com.app.businessBridge.domain.confirm.entity;
 
 import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.Jpa.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -18,7 +16,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class Confirm extends BaseEntity {
     // 결재 제목
     @Column(length = 255)
@@ -29,6 +27,9 @@ public class Confirm extends BaseEntity {
     // 결재 상세내용
     @Column(columnDefinition = "TEXT")
     private String content;
+    // 결재 리뷰(승인자가 남기는 리뷰)
+    @Column(columnDefinition = "TEXT")
+    private String review;
     // 결재 양식 타입(휴가승인서, 보고서 등)
     @ManyToOne
     private ConfirmFormType formType;
@@ -37,10 +38,10 @@ public class Confirm extends BaseEntity {
     private ConfirmStatus confirmStatus;
 
     // ! Member 엔티티 추가 시 주석 해제 하기
-//    // 결재 요청자
-//    @ManyToOne
-//    private Member confirmRequestMember;
-//    // 결재 승인자
-//    @OneToMany
-//    private List<Member> confirmMembers;
+    // 결재 요청자
+    @ManyToOne
+    private Member confirmRequestMember;
+    // 결재 승인자
+    @ManyToMany
+    private List<Member> confirmMembers;
 }
