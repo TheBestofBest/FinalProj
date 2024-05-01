@@ -34,6 +34,9 @@ public class RebateDto {
     // 보험료
     private Long insurance;
 
+    // 세후 실급여
+    private Long totalSalary;
+
     public RebateDto(Rebate rebate, Member member) {
         this.memberName = member.getName();
         this.memberId = String.valueOf(member.getMemberNumber());
@@ -44,5 +47,6 @@ public class RebateDto {
         this.bonus = rebate.getBonus();;
         this.tax = rebate.getTax();
         this.insurance = rebate.getInsurance();
+        this.totalSalary = rebate.getTotalSalary();
     }
 }

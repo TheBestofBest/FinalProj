@@ -109,4 +109,5 @@ public class MemberService {
         }
         return RsData.of(RsCode.S_05, "회원을 찾았습니다.", om.get());
     }
+
 }
