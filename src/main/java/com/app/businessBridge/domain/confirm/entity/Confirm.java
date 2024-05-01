@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 public class Confirm extends BaseEntity {
     // 결재 제목
     @Column(length = 255)
@@ -27,6 +27,9 @@ public class Confirm extends BaseEntity {
     // 결재 상세내용
     @Column(columnDefinition = "TEXT")
     private String content;
+    // 결재 리뷰(승인자가 남기는 리뷰)
+    @Column(columnDefinition = "TEXT")
+    private String review;
     // 결재 양식 타입(휴가승인서, 보고서 등)
     @ManyToOne
     private ConfirmFormType formType;

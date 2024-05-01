@@ -27,6 +27,8 @@ public class ConfirmDTO {
     private String description;
     // 결재 상세내용
     private String content;
+    // 결재 승인자가 남기는 리뷰
+    private String review;
     // 결재 등록일
     private LocalDateTime createDate;
     // 결재 수정일
@@ -46,6 +48,7 @@ public class ConfirmDTO {
         this.subject = confirm.getSubject();
         this.description = confirm.getDescription();
         this.content = confirm.getContent();
+        this.review = confirm.getReview();
         this.createDate = confirm.getCreatedDate();
         this.modifiedDate = confirm.getModifiedDate();
         this.formTypeDTO = new ConfirmFormTypeDTO(confirm.getFormType());

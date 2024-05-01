@@ -41,8 +41,6 @@ public class ConfirmRequest {
     @Getter
     @Setter
     public static class patch{
-        // 수정할 결재
-        private Confirm confirm;
         // 결재 제목
         private String subject;
         // 결재 간략설명
@@ -59,6 +57,15 @@ public class ConfirmRequest {
         private Member confirmRequestMember;
         // 결재 승인자
         private List<Member> confirmMembers;
+    }
+
+    @Getter
+    @Setter
+    public static class changeStatus{
+        // 결재 리뷰(승인자가 남기는 리뷰)
+        private String review;
+        // 결재 처리 상태(진행중, 승인, 반려 등)
+        private ConfirmStatus confirmStatus;
     }
 
 }

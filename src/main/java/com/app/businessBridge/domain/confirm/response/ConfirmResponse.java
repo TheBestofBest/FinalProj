@@ -40,4 +40,10 @@ public class ConfirmResponse {
     public static class validate{
         private Long invalidId;
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class changeStatus{
+        private ConfirmDTO confirmDTO;
+    }
 }
