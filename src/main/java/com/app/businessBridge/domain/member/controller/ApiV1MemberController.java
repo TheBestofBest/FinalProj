@@ -18,8 +18,8 @@ public class ApiV1MemberController {
     private final MemberService memberService;
 
     // 멤버 생성
-    @PostMapping("")
-    public RsData<MemberResponse.GetMember> postMember(@Valid @RequestBody MemberRequest.CreateRequset createRequset,
+    @PostMapping("/signup")
+    public RsData<MemberResponse.GetMember> signup(@Valid @RequestBody MemberRequest.CreateRequset createRequset,
                                                        BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -32,6 +32,9 @@ public class ApiV1MemberController {
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.GetMember(rsData.getData()));
     }
+
+//    @PostMapping("/login")
+//    public RsData<MemberResponse.GetMember> login (@Valid)
 
     // 멤버 단건 조회
     @GetMapping("/{id}")
@@ -66,4 +69,5 @@ public class ApiV1MemberController {
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
+
 }

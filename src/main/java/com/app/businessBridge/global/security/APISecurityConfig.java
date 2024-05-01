@@ -35,7 +35,8 @@ public class APISecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/confirms/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/confirms")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/members")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/*/members/**")).permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/*/members/login").permitAll() // 로그인
+                                .requestMatchers(HttpMethod.POST, "/api/*/members/logout").permitAll() // 로그아웃
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/grades")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/grades/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/departments")).permitAll()
