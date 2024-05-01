@@ -75,4 +75,8 @@ public class ConfirmService {
                 statusChangedConfirm
         );
     }
+
+    public void deleteConfirm(Confirm confirm) {
+        this.confirmRepository.delete(confirm);
+    }
 }

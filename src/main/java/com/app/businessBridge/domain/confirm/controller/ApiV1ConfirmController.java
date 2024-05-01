@@ -126,4 +126,23 @@ public class ApiV1ConfirmController {
                 new ConfirmResponse.changeStatus(new ConfirmDTO(confirmRsData.getData()))
         );
     }
+
+    @DeleteMapping("/{confirmId}")
+    public RsData<ConfirmResponse.delete> deleteConfirm(@PathVariable(value = "confirmId") Long confirmId){
+        // {confirmId}번 결재 존재하는지 검증
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(confirmId);
+        if(optionalConfirm.isEmpty()){
+            return RsData.of(
+                    RsCode.F_04,
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(confirmId),
+                    null
+            );
+        }
+        this.confirmService.deleteConfirm(optionalConfirm.get());
+        return RsData.of(
+                RsCode.S_04,
+                "id: %d번 결재가 삭제되었습니다.".formatted(confirmId),
+                new ConfirmResponse.delete(confirmId)
+        );
+    }
 }
