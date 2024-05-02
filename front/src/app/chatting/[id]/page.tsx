@@ -66,10 +66,10 @@ const Id = () => {
 
     return (
         <>
-            <header className="bg-blue-600 text-white py-4 px-6">
+            <header className="bg-blue-700 text-white py-4 px-6 rounded">
                 <h1 className="text-2xl font-bold">{chattingRoom?.name}</h1>
             </header>
-            <main className="flex-1 h-dvh p-6 overflow-y-auto">
+            <main className="flex-1 h-115 p-6 overflow-y-auto ">
                 <div className="flex flex-col gap-2">
                     {messages?.map((message: Message) => <>
                         {message.author != username ?
@@ -85,14 +85,14 @@ const Id = () => {
                     </>)}
                 </div>
             </main>
-            <footer className="bg-gray-300 py-4 px-6">
+            <footer className="bg-gray-300 py-4 px-6 ">
                 <div className="flex">
                     <input type="text" placeholder="Type your message..." className="flex-1 rounded-l-lg p-2 focus:outline-none"
                         name="content" value={message.content} onChange={handleChange} />
-                    <button className="bg-blue-600 text-white px-4 rounded-r-lg" type="button" onClick={sendMessage}>Send</button>
+                    <button className="bg-blue-700 text-white px-4 rounded-r-lg" type="button" onClick={sendMessage}>Send</button>
                 </div>
-                <label >작성자</label>
-                <input type="text" name="author" value={message.author} onChange={handleChange} />
+                {/* <label >작성자</label> */}
+                {/* <input type="text" name="author" value={message.author} onChange={handleChange} /> */}
             </footer>
         </>
     )
