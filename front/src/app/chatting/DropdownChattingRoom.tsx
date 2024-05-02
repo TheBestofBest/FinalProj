@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const DropdownChattingRoom = ({ onSelected, isSelected }: any) => {
+const DropdownChattingRoom = ({ onSelected, isSelected, offSelected }: any) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const trigger = useRef<any>(null);
     const dropdown = useRef<any>(null);
 
     let roomNum = isSelected;
-
+    console.log(roomNum)
     // close on click outside
     useEffect(() => {
         const clickHandler = ({ target }: MouseEvent) => {
@@ -59,15 +59,15 @@ const DropdownChattingRoom = ({ onSelected, isSelected }: any) => {
                     }`}
             >
                 <ul className="flex flex-col border-b border-stroke  dark:border-strokedark">
-                    {isSelected == 0 ? <li className="border-b border-gray">
+                    {roomNum == 0 ? <li className="border-b border-gray">
                         <button
                             className="py-1.5 pl-2 flex items-center gap-3.5 text-xs font-bold duration-300 ease-in-out hover:text-primary lg:text-base"
                             onClick={onSelected}
                         >
                             <svg
                                 className="fill-current"
-                                width="22"
-                                height="22"
+                                width="20"
+                                height="20"
                                 viewBox="0 0 22 22"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -83,15 +83,26 @@ const DropdownChattingRoom = ({ onSelected, isSelected }: any) => {
                             </svg>
                             <span>수정</span>
                         </button>
-                    </li> : <></>}
+                    </li>
+                        : <li>
+                            <button
+                                className="py-1.5 pl-2 flex items-center gap-3.5 text-xs font-bold duration-300 ease-in-out hover:text-primary lg:text-base"
+                                onClick={offSelected}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-5 h-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                                </svg>
+                                <span>취소</span>
+                            </button>
+                        </li>}
 
                     <li>
                         <button className="py-1.5 pl-2 flex items-center gap-3.5 text-xs font-bold duration-300 ease-in-out hover:text-primary lg:text-base">
                             <svg
                                 className="fill-current"
-                                width="22"
-                                height="22"
-                                viewBox="0 0 22 22"
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 22"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
                             >

@@ -2,6 +2,7 @@ package com.app.businessBridge.domain.chattingRoom.controller;
 
 import com.app.businessBridge.domain.chattingRoom.dto.ChattingRoomDto;
 import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
+import com.app.businessBridge.domain.chattingRoom.request.ChattingRoomRequest;
 import com.app.businessBridge.domain.chattingRoom.response.ChattingRoomResponse;
 import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
 import com.app.businessBridge.domain.member.Service.MemberService;
@@ -50,30 +51,58 @@ public class ApiV1ChatRoomController {
         );
     }
 
-
-    @Data
-    public static class CreateRq {
-        @NotBlank
-        private String name;
-    }
-
     @PostMapping
-    public RsData create(@Valid @RequestBody CreateRq createRq) {
+    public RsData<ChattingRoomResponse.getChattingRoom> create(@Valid @RequestBody ChattingRoomRequest.Create createRq) {
         Member member = memberService.findByUsername("user01").getData(); //getMember 로 바꾸기
         RsData<ChattingRoom> rsData = chattingRoomService.create(createRq.getName(), member);
-        if (rsData.getRsCode().getCode().startsWith("F")) return rsData;
-        return RsData.of(RsCode.S_02,
+        if (!rsData.getIsSuccess()) {
+            return (RsData)rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
                 rsData.getMsg(),
-                new ChattingRoomDto(rsData.getData()));
+                new ChattingRoomResponse.getChattingRoom(rsData.getData())
+        );
+    }
+
+    @PatchMapping("/{id}/invite")
+    public RsData<ChattingRoomResponse.getChattingRoom> invite(@PathVariable("id") Long id) {
+        Member member = memberService.findByUsername("user01").getData();
+        RsData<ChattingRoom> rsData = chattingRoomService.invite(id, member);
+        if (!rsData.getIsSuccess()) {
+            return (RsData)rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
+                rsData.getMsg(),
+                new ChattingRoomResponse.getChattingRoom(rsData.getData())
+        );
     }
 
     @PatchMapping("/{id}")
-    public RsData invite(@PathVariable("id") Long id) {
-        Member member = memberService.findByUsername("user01").getData();
-        RsData<ChattingRoom> rsData = chattingRoomService.invite(id, member);
-        if (rsData.getRsCode().getCode().startsWith("F")) return rsData;
-        return RsData.of(RsCode.S_02,
+    public RsData<ChattingRoomResponse.getChattingRoom> modify(@PathVariable("id") Long id, @Valid @RequestBody ChattingRoomRequest.Create createRq) {
+        RsData<ChattingRoom> rsData = chattingRoomService.modify(id, createRq.getName());
+        if (!rsData.getIsSuccess()) {
+            return (RsData)rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
                 rsData.getMsg(),
-                new ChattingRoomDto(rsData.getData()));
+                new ChattingRoomResponse.getChattingRoom(rsData.getData())
+        );
+    }
+
+    @PatchMapping("/{id}/exit")
+    public RsData<ChattingRoomResponse.getChattingRoom> exit(@PathVariable("id") Long id) {
+        Member member = memberService.findByUsername("user01").getData();
+        RsData<ChattingRoom> rsData = chattingRoomService.exit(id, member);
+        if (!rsData.getIsSuccess()) {
+            return (RsData)rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
+                rsData.getMsg(),
+                new ChattingRoomResponse.getChattingRoom(rsData.getData())
+        );
     }
 }

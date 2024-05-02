@@ -47,6 +47,24 @@ export default function ChattingLayout({
         }
     }
 
+    //채팅방 이름 수정
+    const [modifyName, setModifyName] = useState<string>();
+    const modifyChattingRoom = async (e: React.FormEvent<HTMLFormElement>, id: number) => {
+        e.preventDefault();
+        const response = await api.patch(`/api/v1/chats/${id}`, { name: modifyName });
+        if (response.status == 200) {
+            fetchChattingRooms();
+            setModifyName("");
+            offSelected();
+        } else {
+            alert('수정에 실패했습니다.');
+        }
+    }
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setModifyName(e.target.value);
+        console.log(e.target.value)
+    }
+
 
 
     //modal 
@@ -69,8 +87,13 @@ export default function ChattingLayout({
 
     //selected room
     const [isSelected, setIsSelected] = useState<number>(0);
-    const onSelected = (id: number) => {
+    const onSelected = (id: number, name: string) => {
         setIsSelected(id);
+        setModifyName(name);
+    }
+    const offSelected = () => {
+        setIsSelected(0);
+        setModifyName("");
     }
 
     return (
@@ -90,15 +113,26 @@ export default function ChattingLayout({
                     <div className="mt-1">
                         {isEmpty ? <></> :
                             chattingRooms.map((chattingRoom: ChattingRoom) =>
-                                <Link className={`flex w-full border rounded p-1.5 mt-1
+                                <>
+                                    <Link className={`flex w-full border rounded p-1.5 mt-1
                                      justify-between items-center`} href={"/chatting/" + chattingRoom.id}
-                                    onMouseEnter={() => onMouseEnter(chattingRoom.id)} onMouseLeave={onMouseLeave}>
-                                    <span>{chattingRoom.name}</span>
-                                    {isHovered == chattingRoom.id ? 
-                                    <DropdownChattingRoom
-                                     onSelected={() => onSelected(chattingRoom.id)}
-                                     isSelected={isSelected}></DropdownChattingRoom> : <></>}
-                                </Link>
+                                        onMouseEnter={() => onMouseEnter(chattingRoom.id)} onMouseLeave={onMouseLeave}>
+                                        <span className="p-1">{chattingRoom.name}</span>
+                                        {isHovered == chattingRoom.id ?
+                                            <DropdownChattingRoom
+                                                onSelected={() => onSelected(chattingRoom.id, chattingRoom.name)}
+                                                isSelected={isSelected}
+                                                offSelected={() => offSelected()}></DropdownChattingRoom> : <></>}
+                                    </Link>
+                                    {isSelected == chattingRoom.id ?
+                                        <form className="p-0.5 flex justify-between" onSubmit={(e) => modifyChattingRoom(e, chattingRoom.id)}>
+                                            <input className="w-3/4 p-0.5 border rounded-sm" value={modifyName}
+                                                onChange={handleChange} type="text" />
+                                            <button type="submit" className="w-1/4 p-0.5 border rounded-sm">수정</button>
+                                        </form> :
+                                        <></>
+                                    }
+                                </>
                             )
                         }
                     </div>

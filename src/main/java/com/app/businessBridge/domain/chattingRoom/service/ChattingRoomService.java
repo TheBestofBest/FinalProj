@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +63,20 @@ public class ChattingRoomService {
         }
     }
 
+    @Transactional
+    public RsData<ChattingRoom> modify(Long id, String name) {
+        ChattingRoom chattingRoom = this.getChattingRoom(id).getData();
+        try {
+            ChattingRoom modified = chattingRoom.toBuilder()
+                    .name(name)
+                    .build();
+            chattingRoomRepository.save(modified);
+            return RsData.of(RsCode.S_03, "방이름 수정", modified);
+        } catch (Exception e) {
+            return RsData.of(RsCode.F_01, "수정 실패");
+        }
+    }
+
 
     @Transactional
     public RsData<ChattingRoom> invite(Long chatRoomId, Member member) {
@@ -78,4 +93,27 @@ public class ChattingRoomService {
             return RsData.of(RsCode.F_01, "초대 실패");
         }
     }
+
+    @Transactional
+    public RsData<ChattingRoom> exit(Long chatRoomId, Member member) {
+        ChattingRoom chattingRoom = this.getChattingRoom(chatRoomId).getData();
+        try {
+            List<MemberChatRelation> relations = chattingRoom.getMembers();
+            relations = relations.stream()
+                    .filter(relation -> !relation.getMember().equals(member))
+                    .collect(Collectors.toList());
+            if (relations.isEmpty()) {
+                chattingRoomRepository.delete(chattingRoom);
+                return RsData.of(RsCode.S_04,"채팅방 삭제");
+            }
+            chattingRoom = chattingRoom.toBuilder()
+                    .members(relations)
+                    .build();
+            chattingRoomRepository.save(chattingRoom);
+            return RsData.of(RsCode.S_03, "나가기 성공");
+        } catch (Exception e) {
+            return RsData.of(RsCode.F_01, "나가기 실패");
+        }
+    }
+
 }
