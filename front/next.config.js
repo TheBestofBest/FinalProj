@@ -4,6 +4,6 @@
 
 const nextConfig = {
   reactStrictMode: false,
-}
+};
 
-module.exports = nextConfig;
+module.export = nextConfig;
