@@ -29,4 +29,26 @@ public class MemberResponse {
             this.memberDTO = new MemberDTO(member);
         }
     }
+
+    @Getter
+    public static class AuthAndMakeTokensResponseBody {
+        private Member member;
+        private String accessToken;
+        private String refreshToken;
+
+        public AuthAndMakeTokensResponseBody(Member member, String accessToken, String refreshToken) {
+            this.member = member;
+            this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
+        }
+    }
+
+    @Getter
+    public static class LoginResponse {
+        private MemberDTO memberDTO;
+
+        public LoginResponse(MemberDTO memberDTO) {
+            this.memberDTO = memberDTO;
+        }
+    }
 }
