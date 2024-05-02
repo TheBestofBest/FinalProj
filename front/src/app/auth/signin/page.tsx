@@ -31,16 +31,18 @@ const SignIn: React.FC = () => {
     e.preventDefault();
 
     return await api
-      .post("/members/login", {
+      .post("/api/v1/members/login", {
         username: loginForm.username,
         password: loginForm.password,
       })
       .then((res) => {
+        if (!res.data.isSuccess) {
+          return alert(res.data.msg);
+        }
         queryClient.setQueryData(["member"], res.data.data);
+        alert(res.data.msg);
         console.log(res.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
+        router.replace("/");
       });
   };
 

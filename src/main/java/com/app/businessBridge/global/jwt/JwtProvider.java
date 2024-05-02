@@ -35,6 +35,14 @@ public class JwtProvider {
         return Keys.hmacShaKeyFor(keyBase64Encoded.getBytes());
     }
 
+    public String genRefreshToken(Member member) {
+        return genToken(member, 60 * 60 * 24 * 365 * 1);
+    }
+
+    public String genAccessToken(Member member) {
+        return genToken(member, 60 * 10);
+    }
+
     // 주어진 클레임과 만료 시간을 사용하여 JWT를 생성.
     // 생성된 토큰은 주어진 클레임을 포함하고, 주어진 만료 시간 후에 만료됨.
     public String genToken(Member member, int seconds) {

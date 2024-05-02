@@ -1,13 +1,18 @@
 package com.app.businessBridge.domain.member.controller;
 
+import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.member.request.MemberRequest;
 import com.app.businessBridge.domain.member.response.MemberResponse;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
+import com.app.businessBridge.global.exception.GlobalException;
+import com.app.businessBridge.global.request.Request;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,11 +21,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/members")
 public class ApiV1MemberController {
     private final MemberService memberService;
+    private final Request rq;
 
     // 멤버 생성
     @PostMapping("/signup")
     public RsData<MemberResponse.GetMember> signup(@Valid @RequestBody MemberRequest.CreateRequset createRequset,
-                                                       BindingResult bindingResult) {
+                                                   BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
@@ -33,8 +39,23 @@ public class ApiV1MemberController {
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.GetMember(rsData.getData()));
     }
 
-//    @PostMapping("/login")
-//    public RsData<MemberResponse.GetMember> login (@Valid)
+    // 멤버 로그인
+    @PostMapping("/login")
+    public RsData<MemberResponse.LoginResponse> login(@Valid @RequestBody MemberRequest.LoginRequest loginRequest) {
+        RsData<MemberResponse.AuthAndMakeTokensResponseBody> authAndMakeTokensRsData =
+                this.memberService.authAndMakeTokens(loginRequest.getUsername(), loginRequest.getPassword());
+        try {
+            // 쿠키에 accessToken, refreshToken 토큰 넣기
+            rq.setCrossDomainCookie("accessToken", authAndMakeTokensRsData.getData().getAccessToken());
+            rq.setCrossDomainCookie("refreshToken", authAndMakeTokensRsData.getData().getRefreshToken());
+        } catch (Exception e) {
+            return RsData.of(RsCode.F_10, "로그인에 실패하였습니다.");
+        }
+
+
+        return RsData.of(authAndMakeTokensRsData.getRsCode(), authAndMakeTokensRsData.getMsg(),
+                new MemberResponse.LoginResponse(new MemberDTO(authAndMakeTokensRsData.getData().getMember())));
+    }
 
     // 멤버 단건 조회
     @GetMapping("/{id}")
