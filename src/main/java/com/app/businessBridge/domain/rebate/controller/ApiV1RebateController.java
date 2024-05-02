@@ -21,12 +21,19 @@ public class ApiV1RebateController {
 
     private final ApiExplorer apiExplorer;
 
-    @GetMapping("{year}/{month}")
+    @GetMapping("/{year}/{month}")
     public String testGetHoilday(@PathVariable(value = "year") String year,
                                @PathVariable(value = "month") String month) throws IOException {
 
         return apiExplorer.getHoilday(year, month);
 
+    }
+
+    @GetMapping("/all/{year}/{month}")
+    public String testGetAllDay(@PathVariable(value = "year") String year,
+                                @PathVariable(value = "month") String month) throws IOException {
+
+        return apiExplorer.getAllDay(year, month);
     }
 
     @GetMapping("")
