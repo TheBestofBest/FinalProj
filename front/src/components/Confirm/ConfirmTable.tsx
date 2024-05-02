@@ -27,28 +27,13 @@ const packageData: Package[] = [
     status: "Pending",
   },
 ];
+// Props로 `결재 리스트` 받기
 const ConfirmTable = () => {
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-sm border border-stroke bg-white px-2 pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           {/* 추후 head 삭제 */}
-          <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="min-w-[220px] px-4 py-4 font-medium text-black dark:text-white xl:pl-11">
-                결재
-              </th>
-              <th className="min-w-[150px] px-4 py-4 font-medium text-black dark:text-white">
-                등록일
-              </th>
-              <th className="min-w-[120px] px-4 py-4 font-medium text-black dark:text-white">
-                처리 상태
-              </th>
-              <th className="px-4 py-4 font-medium text-black dark:text-white">
-                결재 진행 상황
-              </th>
-            </tr>
-          </thead>
           <tbody>
             {packageData.map((packageItem, key) => (
               <tr key={key}>
@@ -56,12 +41,13 @@ const ConfirmTable = () => {
                   <h5 className="font-medium text-black dark:text-white">
                     {packageItem.name}
                   </h5>
-                  <p className="text-sm">${packageItem.price}</p>
+                  <p className="text-sm">{packageItem.invoiceDate}</p>
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <p className="text-black dark:text-white">
-                    {packageItem.invoiceDate}
+                    결재 요청자, 요청자 직급
                   </p>
+                  <p className="text-sm">부서</p>
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <p

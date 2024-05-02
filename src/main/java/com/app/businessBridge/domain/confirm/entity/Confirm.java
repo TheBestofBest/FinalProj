@@ -44,4 +44,7 @@ public class Confirm extends BaseEntity {
     // 결재 승인자
     @ManyToMany
     private List<Member> confirmMembers;
+    // 결재 승인 단계를 위한 카운터
+    @Column(nullable = false)
+    private Long confirmStepCounter = 0L;
 }
