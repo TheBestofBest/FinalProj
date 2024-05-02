@@ -1,3 +1,4 @@
+"use client";
 import React, { ChangeEvent, useState } from "react";
 import ReactMarkdown from "react-markdown";
 
