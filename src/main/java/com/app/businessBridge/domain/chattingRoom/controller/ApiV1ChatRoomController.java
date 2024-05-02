@@ -105,4 +105,17 @@ public class ApiV1ChatRoomController {
                 new ChattingRoomResponse.getChattingRoom(rsData.getData())
         );
     }
+
+    @DeleteMapping("/{id}")
+    public RsData<ChattingRoomResponse.getChattingRoom> delete(@PathVariable("id") Long id) {
+        RsData<ChattingRoom> rsData = chattingRoomService.delete(id);
+        if (!rsData.getIsSuccess()) {
+            return (RsData)rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
+                rsData.getMsg(),
+                new ChattingRoomResponse.getChattingRoom(rsData.getData())
+        );
+    }
 }

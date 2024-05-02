@@ -102,10 +102,6 @@ public class ChattingRoomService {
             relations = relations.stream()
                     .filter(relation -> !relation.getMember().equals(member))
                     .collect(Collectors.toList());
-            if (relations.isEmpty()) {
-                chattingRoomRepository.delete(chattingRoom);
-                return RsData.of(RsCode.S_04,"채팅방 삭제");
-            }
             chattingRoom = chattingRoom.toBuilder()
                     .members(relations)
                     .build();
@@ -113,6 +109,17 @@ public class ChattingRoomService {
             return RsData.of(RsCode.S_03, "나가기 성공");
         } catch (Exception e) {
             return RsData.of(RsCode.F_01, "나가기 실패");
+        }
+    }
+
+    @Transactional
+    public RsData<ChattingRoom> delete(Long chatRoomId) {
+        ChattingRoom chattingRoom = this.getChattingRoom(chatRoomId).getData();
+        try {
+            chattingRoomRepository.delete(chattingRoom);
+            return RsData.of(RsCode.S_04,"채팅방 삭제");
+        } catch (Exception e) {
+            return RsData.of(RsCode.F_01, "삭제 실패");
         }
     }
 

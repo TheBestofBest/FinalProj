@@ -13,15 +13,21 @@ import Image from "next/image";
 import CreateBtn from "../../../public/images/chatiing/createButton.png"
 import DropdownChattingRoom from "./DropdownChattingRoom";
 import InviteModal from "./inviteModal";
+import { useRouter } from "next/navigation";
 
 export default function ChattingLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+
+    const router = useRouter();
+
     const [loading, setLoading] = useState<boolean>(true);
     const [chattingRooms, setChattingRooms] = useState<ChattingRoom[]>([]);
     const [isEmpty, setIsEmpty] = useState<boolean>();
+
+    const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
 
     useEffect(() => {
         setTimeout(() => setLoading(false), 1000);
@@ -71,13 +77,33 @@ export default function ChattingLayout({
         console.log(id);
         const response = await api.patch(`/api/v1/chats/${id}/exit`);
         if (response.status == 200) {
-            fetchChattingRooms();
+            fetchChattingRoom(id);
+            if (chattingRoom?.members == null) {
+                deleteChattingRoom(id);
+            }
             offSelected();
+            router.push("/chatting");
         } else {
             alert('나가기에 실패했습니다.');
         }
     }
 
+    const fetchChattingRoom = (id: number) => {
+        api.get(`/api/v1/chats/${id}`)
+            .then(response => {
+                setChattingRoom(response.data.data.chattingRoomDto);
+            })
+    }
+
+    const deleteChattingRoom = async (id: number) => {
+        const response = await api.delete(`/api/v1/chats/${id}`);
+        if (response.status == 200) {
+            offSelected();
+            router.push("/chatting");
+        } else {
+            alert('나가기에 실패했습니다.');
+        }
+    }
 
 
     //modal 
