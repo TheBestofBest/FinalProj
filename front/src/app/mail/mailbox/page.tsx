@@ -42,7 +42,7 @@ const mailbox = () => {
                                         >
                                         </EnvelopeIcon>
                                     </span>
-                                    메일 보내기
+                                    메일 보내기 
                                 </Link>
                                 <Link
                                     href="#"
