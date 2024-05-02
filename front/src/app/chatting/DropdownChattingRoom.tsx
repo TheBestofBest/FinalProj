@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const DropdownChattingRoom = ({ onSelected, isSelected, offSelected }: any) => {
+const DropdownChattingRoom = ({ onSelected, isSelected, offSelected, exitChattingRoom }: any) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
     const trigger = useRef<any>(null);
@@ -97,7 +97,8 @@ const DropdownChattingRoom = ({ onSelected, isSelected, offSelected }: any) => {
                         </li>}
 
                     <li>
-                        <button className="py-1.5 pl-2 flex items-center gap-3.5 text-xs font-bold duration-300 ease-in-out hover:text-primary lg:text-base">
+                        <button className="py-1.5 pl-2 flex items-center gap-3.5 text-xs font-bold duration-300 ease-in-out hover:text-primary lg:text-base"
+                        onClick={exitChattingRoom}>
                             <svg
                                 className="fill-current"
                                 width="20"

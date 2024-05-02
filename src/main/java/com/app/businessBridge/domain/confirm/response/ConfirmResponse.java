@@ -2,7 +2,6 @@ package com.app.businessBridge.domain.confirm.response;
 
 import com.app.businessBridge.domain.confirm.dto.ConfirmDTO;
 import com.app.businessBridge.domain.confirm.entity.Confirm;
-import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -66,6 +66,19 @@ export default function ChattingLayout({
     }
 
 
+    //채팅방 나가기
+    const exitChattingRoom = async (id: number) => {
+        console.log(id);
+        const response = await api.patch(`/api/v1/chats/${id}/exit`);
+        if (response.status == 200) {
+            fetchChattingRooms();
+            offSelected();
+        } else {
+            alert('나가기에 실패했습니다.');
+        }
+    }
+
+
 
     //modal 
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -122,7 +135,8 @@ export default function ChattingLayout({
                                             <DropdownChattingRoom
                                                 onSelected={() => onSelected(chattingRoom.id, chattingRoom.name)}
                                                 isSelected={isSelected}
-                                                offSelected={() => offSelected()}></DropdownChattingRoom> : <></>}
+                                                offSelected={() => offSelected()}
+                                                exitChattingRoom={() => exitChattingRoom(chattingRoom.id)}></DropdownChattingRoom> : <></>}
                                     </Link>
                                     {isSelected == chattingRoom.id ?
                                         <form className="p-0.5 flex justify-between" onSubmit={(e) => modifyChattingRoom(e, chattingRoom.id)}>
