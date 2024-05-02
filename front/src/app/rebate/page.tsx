@@ -9,7 +9,10 @@ export default function Rebate() {
     return (
         <>
         <DefaultLayout>
-            정산 페이지
+            <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
+                정산 페이지
+            </h4>
+            
             <MemberTable></MemberTable>
         </DefaultLayout>
         </>

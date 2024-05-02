@@ -1,16 +1,16 @@
 'use client'
 
-import ECommerce from "@/components/Dashboard/E-commerce";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
+import Stats from "./stats";
 
 
-export default function Stats() {
+export default function StatsMain() {
 
     return (
         <>
         <DefaultLayout>
             통계 페이지
-            <ECommerce></ECommerce>
+            <Stats/>
         </DefaultLayout>
         </>
     )
