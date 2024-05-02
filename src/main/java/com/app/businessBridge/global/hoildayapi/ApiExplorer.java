@@ -54,11 +54,16 @@ public class ApiExplorer {
     // 연, 월에 해당하는 모든 날짜 요청
     // 주말 구분을 위해 필요 ㅠ
     public String getAllDay(String year, String month) throws IOException {
+
+        if(month.length() == 1) {
+            month = "0" + month;
+        }
+
         StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/B090041/openapi/service/LrsrCldInfoService/getLunCalInfo"); /*URL*/
         urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + this.api_key); /*Service Key*/
         urlBuilder.append("&" + URLEncoder.encode("solYear","UTF-8") + "=" + URLEncoder.encode(year, "UTF-8")); /*연*/
         urlBuilder.append("&" + URLEncoder.encode("solMonth","UTF-8") + "=" + URLEncoder.encode(month, "UTF-8")); /*월*/
-//        urlBuilder.append("&" + URLEncoder.encode("solDay","UTF-8") + "=" + URLEncoder.encode("22", "UTF-8")); /*일*/
+        // urlBuilder.append("&" + URLEncoder.encode("solDay","UTF-8") + "=" + URLEncoder.encode("22", "UTF-8")); /*일*/
         URL url = new URL(urlBuilder.toString());
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");

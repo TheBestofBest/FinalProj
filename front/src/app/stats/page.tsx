@@ -1,16 +1,16 @@
 'use client'
 
+import ECommerce from "@/components/Dashboard/E-commerce";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import MemberTable from "./MemberTable";
 
 
-export default function Rebate() {
+export default function Stats() {
 
     return (
         <>
         <DefaultLayout>
-            정산 페이지
-            <MemberTable></MemberTable>
+            통계 페이지
+            <ECommerce></ECommerce>
         </DefaultLayout>
         </>
     )
