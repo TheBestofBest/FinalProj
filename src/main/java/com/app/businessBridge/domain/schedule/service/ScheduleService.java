@@ -24,7 +24,7 @@ public class ScheduleService {
     @Transactional
     public RsData create(ScheduleRequest.CreateReq req) {
 
-        if(!timeValidation(req.getStartDate(), req.getEndDate())){
+        if(timeValidation(req.getStartDate(), req.getEndDate())== -1){
             return RsData.of(RsCode.F_06,"끝시간은 시작시간보다 앞일 수 없습니다.");
         }
 
@@ -61,7 +61,7 @@ public class ScheduleService {
             return RsData.of(RsCode.F_04,"존재하지 않는 스케줄 입니다.");
         }
 
-        if(!timeValidation(req.getStartDate(), req.getEndDate())){
+        if(timeValidation(req.getStartDate(), req.getEndDate()) == -1){
             return RsData.of(RsCode.F_06,"끝시간은 시작시간보다 앞일 수 없습니다.");
         }
 
@@ -91,8 +91,8 @@ public class ScheduleService {
 
     }
 
-    public boolean timeValidation(LocalDate startDate, LocalDate endDate){
-        return endDate.isAfter(startDate);
+    public int timeValidation(LocalDate startDate, LocalDate endDate){
+        return endDate.compareTo(startDate);
     }
 
 }
