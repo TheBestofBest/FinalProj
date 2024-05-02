@@ -1,13 +1,28 @@
 "use client";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { remark } from "remark";
+import html from "remark-html";
 
 const MarkdownPreviewer = () => {
   const [markdown, setMarkdown] = useState("");
+  const [markdownResult, setMarkdownResult] = useState("");
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setMarkdown(e.target.value);
   };
+  async function markdownToHtml(markdown: string) {
+    const result = await remark().use(html).process(markdown);
+    return result.toString();
+  }
+  useEffect(() => {
+    async function updateMarkdownResult() {
+      const result = await markdownToHtml(markdown);
+      setMarkdownResult(result);
+    }
+
+    updateMarkdownResult();
+  }, [markdown]);
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -20,7 +35,7 @@ const MarkdownPreviewer = () => {
         />
       </div>
       <div style={{ width: "45%", padding: "10px" }}>
-        <ReactMarkdown>{markdown}</ReactMarkdown>
+        <ReactMarkdown>{markdownResult}</ReactMarkdown>
       </div>
     </div>
   );
