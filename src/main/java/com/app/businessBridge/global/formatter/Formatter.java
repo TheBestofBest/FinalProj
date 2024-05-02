@@ -12,8 +12,16 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class Formatter {
 
+    // 2024-05-02 형태로 포맷
     public static String YMDFormatter(LocalDateTime dateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        return dateTime.format(formatter);
+    }
+
+    // 2024-05 형태로 포맷
+    public static String YMFormatter(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
 
         return dateTime.format(formatter);
     }
