@@ -10,6 +10,14 @@ export interface ChattingRoom {
 
 export interface Message {
     roomId: number;
-    author: string;
     content: string;
+    name: string | undefined;
+    username: string | undefined;
+    isCheck: number | undefined;
+}
+
+export interface Member {
+    id: number;
+    username: string | undefined;
+    name: string | undefined;
 }

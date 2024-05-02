@@ -102,6 +102,9 @@ public class ChattingRoomService {
             relations = relations.stream()
                     .filter(relation -> !relation.getMember().equals(member))
                     .collect(Collectors.toList());
+            if (relations.isEmpty()) {
+                this.delete(chatRoomId);
+            }
             chattingRoom = chattingRoom.toBuilder()
                     .members(relations)
                     .build();

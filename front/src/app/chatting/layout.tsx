@@ -7,13 +7,14 @@ import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
-import { ChattingRoom } from "./type";
+import { ChattingRoom, Member } from "./type";
 import api from "@/util/api";
 import Image from "next/image";
 import CreateBtn from "../../../public/images/chatiing/createButton.png"
 import DropdownChattingRoom from "./DropdownChattingRoom";
 import InviteModal from "./inviteModal";
 import { useRouter } from "next/navigation";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
 
 export default function ChattingLayout({
     children,
@@ -22,15 +23,18 @@ export default function ChattingLayout({
 }>) {
 
     const router = useRouter();
+    
 
     const [loading, setLoading] = useState<boolean>(true);
     const [chattingRooms, setChattingRooms] = useState<ChattingRoom[]>([]);
     const [isEmpty, setIsEmpty] = useState<boolean>();
+    
 
     const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
 
     useEffect(() => {
         setTimeout(() => setLoading(false), 1000);
+        
         fetchChattingRooms();
     }, []);
 

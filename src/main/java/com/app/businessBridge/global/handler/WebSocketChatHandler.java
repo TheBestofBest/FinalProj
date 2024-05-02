@@ -60,8 +60,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         System.out.println("chatlog : " + chatLogDto);
         log.info("session {}", chatLogDto.toString());
         ChattingRoom chattingRoom = chattingRoomService.getChattingRoom(chatLogDto.getRoomId()).getData();
-       // Member member = memberService.findByUsername(chatLogDto.getAuthor()).getData();
-        Member member = memberService.findByUsername("user01").getData(); //getMember 있으면 위에꺼로 대체
+        Member member = memberService.findByUsername(chatLogDto.getUsername()).getData();
 
         ChatLog chatLog = ChatLog.builder()
                 .content(chatLogDto.getContent())
@@ -81,6 +80,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 //            removeClosedSession(chatRoomSession);
 //        }
 //        System.out.println(chatRoomSession.toArray());
+        System.out.println(chatLogDto);
         sendMessageToChatRoom(chatLogDto, chatRoomSession);
     }
 
