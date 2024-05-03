@@ -34,6 +34,7 @@ public class ApiV1RebateController {
                                 @PathVariable(value = "month") String month) throws IOException {
 
         return apiExplorer.getAllDay(year, month);
+
     }
 
     @GetMapping("")

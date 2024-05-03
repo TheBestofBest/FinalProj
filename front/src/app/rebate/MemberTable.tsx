@@ -1,6 +1,7 @@
 import { BRAND } from "@/types/brand";
 import Image from "next/image";
 import Link from "next/link";
+import DropDownMenu from "./DropDownMenu";
 
 const members = [
   {
@@ -59,10 +60,10 @@ const MemberTable = () => {
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         Top Channels
       </h4>
+        <DropDownMenu></DropDownMenu>
         <Link
               href="#"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-2 py-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
+              className="inline-flex items-center justify-center rounded-md bg-primary px-2 py-2 text-center font-medium text-white hover:bg-opacity-90">
               저장하기
         </Link>
 

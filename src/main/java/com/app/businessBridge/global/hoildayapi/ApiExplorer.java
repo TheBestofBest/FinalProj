@@ -49,6 +49,8 @@ public class ApiExplorer {
         rd.close();
         conn.disconnect();
 
+        System.out.println(sb);
+
         return sb.toString();
     }
 
@@ -85,6 +87,8 @@ public class ApiExplorer {
         }
         rd.close();
         conn.disconnect();
+
+        System.out.println(sb);
 
         return sb.toString();
     }
