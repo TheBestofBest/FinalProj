@@ -90,4 +90,11 @@ public class ApiV1MemberController {
         return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
 
+    @GetMapping("/me")
+    public RsData<MemberResponse.GetMember> memberMe(){
+        if(rq.getMember()==null){
+            return RsData.of(RsCode.F_02,"로그아웃 상태입니다.",null);
+        }
+        return RsData.of(RsCode.S_06, "로그인 상태 입니다.",new MemberResponse.GetMember(rq.getMember()));
+    }
 }

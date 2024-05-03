@@ -22,7 +22,7 @@ import lombok.experimental.SuperBuilder;
 public class Member extends BaseEntity {
     @ManyToOne
     private Department department; // 부서
-    @OneToOne
+    @ManyToOne
     private Grade grade; // 직급
     private String username; // 로그인 아이디
     private String password; // 비밀번호
