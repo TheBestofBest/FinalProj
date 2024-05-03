@@ -39,7 +39,7 @@ const SignIn: React.FC = () => {
         if (!res.data.isSuccess) {
           return alert(res.data.msg);
         }
-        queryClient.setQueryData(["member"], res.data.data);
+        queryClient.setQueryData(["member"], res.data.data.memberDTO);
         alert(res.data.msg);
         console.log(res.data.data);
         router.replace("/");
