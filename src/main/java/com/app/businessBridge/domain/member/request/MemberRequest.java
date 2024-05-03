@@ -54,4 +54,13 @@ public class MemberRequest {
         @NotNull
         private Long id;
     }
+
+    @Getter
+    @Setter
+    public static class LoginRequest {
+        @NotBlank
+        private String username;
+        @NotBlank
+        private String password;
+    }
 }
