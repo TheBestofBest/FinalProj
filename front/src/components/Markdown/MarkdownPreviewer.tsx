@@ -24,20 +24,25 @@ const MarkdownPreviewer = () => {
     updateMarkdownResult();
   }, [markdown]);
 
+  const htmlTest = `<h1> 123</h1`;
+
   return (
-    <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <div style={{ width: "45%", padding: "10px" }}>
-        <textarea
-          style={{ width: "100%", height: "300px" }}
-          value={markdown}
-          onChange={handleChange}
-          placeholder="마크다운을 작성하세요..."
-        />
+    <>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ width: "45%", padding: "10px" }}>
+          <textarea
+            style={{ width: "100%", height: "300px" }}
+            value={markdown}
+            onChange={handleChange}
+            placeholder="마크다운을 작성하세요..."
+          />
+        </div>
+        <div
+          style={{ width: "45%", padding: "10px" }}
+          dangerouslySetInnerHTML={{ __html: markdownResult }}
+        ></div>
       </div>
-      <div style={{ width: "45%", padding: "10px" }}>
-        <ReactMarkdown>{markdownResult}</ReactMarkdown>
-      </div>
-    </div>
+    </>
   );
 };
 
