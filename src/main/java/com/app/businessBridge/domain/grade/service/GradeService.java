@@ -16,10 +16,10 @@ public class GradeService {
     private final GradeRepository gradeRepository;
 
     // 직급 생성
-    public RsData create(Integer gradeCode, String gradeName) {
+    public RsData create(Integer code, String name) {
         Grade grade = Grade.builder()
-                .gradeCode(gradeCode)
-                .gradeName(gradeName)
+                .code(code)
+                .name(name)
                 .build();
         this.gradeRepository.save(grade);
 
@@ -34,7 +34,7 @@ public class GradeService {
     }
 
     // 직급 업데이트
-    public RsData<Grade> update(Long id, Integer gradeCode, String gradeName) {
+    public RsData<Grade> update(Long id, Integer code, String name) {
         RsData<Grade> rsData = findById(id);
 
         if (rsData.getData() == null) {
@@ -42,8 +42,8 @@ public class GradeService {
         }
 
         Grade grade = rsData.getData().toBuilder()
-                .gradeCode(gradeCode)
-                .gradeName(gradeName)
+                .code(code)
+                .name(name)
                 .build();
 
         this.gradeRepository.save(grade);
