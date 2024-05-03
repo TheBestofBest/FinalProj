@@ -11,6 +11,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import api from "@/util/api";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 // 종료일을 하루 더하는 함수
 const addOneDayToEnd = (endDateString) => {
@@ -20,6 +22,7 @@ const addOneDayToEnd = (endDateString) => {
 };
 
 const SchedulePage = () => {
+  const router = useRouter();
   const [schedules, setSchedules] = useState<any[]>([]);
   const [todaySchedules, setTodaySchedules] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -27,21 +30,28 @@ const SchedulePage = () => {
   const [endDate, setEndDate] = useState(new Date());
   const today = new Date();
 
+  const { isLoading, data } = useQuery({
+    queryKey: ["member"],
+  });
+
+  if (data == null) {
+    router.push("/");
+  }
+
   const handleCheckBox = () => {
-    console.log("돌아요");
     const checkList = document.querySelectorAll(
       'input[name="category"]:checked',
     );
     setSchedules([]);
     checkList.forEach((checkbox) => {
       if (checkbox.id == "all") {
-        getSchedules("all", 0);
+        getSchedules("all", data && data?.department.id);
       }
       if (checkbox.id == "dept") {
-        getSchedules("dept", 1);
+        getSchedules("dept", data && data?.department.id);
       }
       if (checkbox.id == "member") {
-        getSchedules("member", 2);
+        getSchedules("member", data && data?.id);
       }
     });
   };
@@ -79,11 +89,11 @@ const SchedulePage = () => {
 
   useEffect(() => {
     // 회사 일정
-    getSchedules("all", 0);
+    getSchedules("all", data && data?.department.id);
     // 부서
-    getSchedules("dept", 1);
+    getSchedules("dept", data && data?.department.id);
     // 개인
-    getSchedules("member", 2);
+    getSchedules("member", data && data?.id);
   }, []);
 
   function renderEventContent(eventInfo) {
@@ -129,10 +139,23 @@ const SchedulePage = () => {
     if (!confirm("스케줄을 등록하시겠습니까?")) {
       return;
     }
+    var relationId = null;
+
+    if (sendCategory == "all" || sendCategory == "dept") {
+      relationId = data && data?.department.id;
+    }
+    if (sendCategory == "member") {
+      relationId = data && data?.id;
+    }
+
+    if (relationId == null) {
+      alert("권한이 없습니다.");
+      return;
+    }
 
     const sendData = {
       relationName: sendCategory,
-      relationId: 0,
+      relationId: relationId,
       name: sendName,
       startDate:
         startDate.getFullYear() +
