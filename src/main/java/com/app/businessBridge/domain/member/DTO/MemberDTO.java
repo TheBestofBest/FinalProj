@@ -17,10 +17,7 @@ public class MemberDTO {
     private String username;
     private Integer memberNumber;
     private String name;
-    private String password;
     private String email;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
 
     public MemberDTO(Member member) {
         this.id = member.getId();
@@ -29,9 +26,6 @@ public class MemberDTO {
         this.username = member.getUsername();
         this.memberNumber = member.getMemberNumber();
         this.name = member.getName();
-        this.password = member.getPassword();
         this.email = member.getEmail();
-        this.createdDate = member.getCreatedDate();
-        this.modifiedDate = member.getModifiedDate();
     }
 }
