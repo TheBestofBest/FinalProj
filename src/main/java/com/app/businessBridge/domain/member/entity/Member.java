@@ -4,6 +4,7 @@ import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.workingstate.entity.WorkingState;
 import com.app.businessBridge.global.Jpa.BaseEntity;
+import com.app.businessBridge.global.image.entity.Image;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,39 +20,33 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Member extends BaseEntity {
-
-    // 부서
     @ManyToOne
-    private Department department;
-
-    // 직급
+    private Department department; // 부서
     @OneToOne
-    private Grade grade;
+    private Grade grade; // 직급
+    private String username; // 로그인 아이디
+    private String password; // 비밀번호
+    private String email; // 이메일
 
-    // 로그인 아이디
-    private String username;
-
-    // 사원번호
-    private Integer memberNumber;
-
-    // 사원명
-    private String name;
-
-    // 비밀번호
-    private String password;
-
-    // 이메일
-    private String email;
-
-    // 리프레시 토큰
-    private String refreshToken;
+    @OneToOne
+    private Image profileImg; // 프로필 사진
+    private Integer memberNumber; // 사원번호
+    private String name; // 사원명
+    private String assignedTask; // 담당 업무
+    private String workStatus; // 근무 상태 ( 온라인, 오프라인, 부재중 )
+    private String extensionNumber; // 내선 전화 번호
+    private String phoneNumber; // 개인 연락처
+    private String statusMessage; // 상태메세지
 
     // 직원 근태
     @OneToOne(mappedBy = "member",cascade = CascadeType.REMOVE)
     @JoinColumn(name = "working_state_id")
     @JsonIgnore
     private WorkingState workingState;
-
     // 연봉 > 정산 시 필요
     private Long salary;
+
+
+    // 리프레시 토큰
+    private String refreshToken;
 }
