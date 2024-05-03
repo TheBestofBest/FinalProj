@@ -52,7 +52,6 @@ public class ApiV1MemberController {
             return RsData.of(RsCode.F_10, "로그인에 실패하였습니다.");
         }
 
-
         return RsData.of(authAndMakeTokensRsData.getRsCode(), authAndMakeTokensRsData.getMsg(),
                 new MemberResponse.LoginResponse(new MemberDTO(authAndMakeTokensRsData.getData().getMember())));
     }

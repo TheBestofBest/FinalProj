@@ -9,20 +9,25 @@ import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.web.socket.WebSocketSession;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
+@Setter
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChattingRoom extends BaseEntity {
     private String name;
-
     @OneToMany(mappedBy = "chattingRoom", cascade = CascadeType.REMOVE)
     private List<ChatLog> chatLogs;
-    @OneToMany(mappedBy = "chattingRoom")
+
+    @OneToMany(mappedBy = "chattingRoom", cascade = CascadeType.REMOVE)
     private List<MemberChatRelation> members;
 }
