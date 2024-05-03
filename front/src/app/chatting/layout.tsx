@@ -164,6 +164,8 @@ export default function ChattingLayout({
                                      justify-between items-center`} href={"/chatting/" + chattingRoom.id}
                                         onMouseEnter={() => onMouseEnter(chattingRoom.id)} onMouseLeave={onMouseLeave}>
                                         <span className="p-1">{chattingRoom.name}</span>
+                                        <span>{chattingRoom.members}</span>
+                                        {chattingRoom.members == null?<>asdasd</>:<></>}
                                         {isHovered == chattingRoom.id ?
                                             <DropdownChattingRoom
                                                 onSelected={() => onSelected(chattingRoom.id, chattingRoom.name)}
