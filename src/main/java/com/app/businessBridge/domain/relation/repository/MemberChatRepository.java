@@ -13,6 +13,6 @@ public interface MemberChatRepository extends JpaRepository<MemberChatRelation, 
     @Query("SELECT mcr FROM MemberChatRelation mcr WHERE mcr.chattingRoom.id = :chattingRoomId")
     List<MemberChatRelation> findMemberChatRelationByChattingRoomId(@Param("chattingRoomId") Long id);
 
-    @Query("SELECT mcr FROM MemberChatRelation mcr WHERE mcr.member.username = :username")
-    List<MemberChatRelation> findMemberChatRelationByUsername(@Param("username") String username);
+    @Query("SELECT mcr FROM MemberChatRelation mcr WHERE mcr.member.id = :memberId")
+    List<MemberChatRelation> findMemberChatRelationByMemberId(@Param("memberId")  Long id);
 }
