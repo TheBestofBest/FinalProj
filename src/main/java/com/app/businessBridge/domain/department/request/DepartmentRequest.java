@@ -12,9 +12,9 @@ public class DepartmentRequest {
     @Setter
     public static class CreateRequest {
         @NotNull
-        private Integer departmentCode;
+        private Integer code;
         @NotBlank
-        private String departmentName;
+        private String name;
     }
 
     @Getter
@@ -23,9 +23,9 @@ public class DepartmentRequest {
         @NotNull
         private Long id;
         @NotNull
-        private Integer departmentCode;
+        private Integer code;
         @NotBlank
-        private String departmentName;
+        private String name;
     }
 
     @Getter

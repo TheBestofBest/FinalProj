@@ -17,8 +17,8 @@ import lombok.experimental.SuperBuilder;
 public class Department extends BaseEntity {
 
     // 부서 코드
-    private Integer departmentCode;
+    private Integer code;
 
     // 부서명
-    private String departmentName;
+    private String name;
 }

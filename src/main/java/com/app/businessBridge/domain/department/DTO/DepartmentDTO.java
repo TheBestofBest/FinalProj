@@ -13,8 +13,8 @@ import java.util.List;
 public class DepartmentDTO {
 
     private Long id;
-    private Integer departmentCode;
-    private String departmentName;
+    private Integer code;
+    private String name;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -23,8 +23,8 @@ public class DepartmentDTO {
 
     public DepartmentDTO(Department department) {
         this.id = department.getId();
-        this.departmentCode = department.getDepartmentCode();
-        this.departmentName = department.getDepartmentName();
+        this.code = department.getCode();
+        this.name = department.getName();
         this.createdDate = department.getCreatedDate();
         this.modifiedDate = department.getModifiedDate();
     }

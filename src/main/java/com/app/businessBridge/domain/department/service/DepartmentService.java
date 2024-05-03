@@ -16,10 +16,10 @@ public class DepartmentService {
     private final DepartmentRepository departmentRepository;
 
     // 부서 생성
-    public RsData create(Integer departmentCode, String departmentName) {
+    public RsData create(Integer code, String name) {
         Department department = Department.builder()
-                .departmentCode(departmentCode)
-                .departmentName(departmentName)
+                .code(code)
+                .name(name)
                 .build();
         this.departmentRepository.save(department);
 
@@ -34,7 +34,7 @@ public class DepartmentService {
     }
 
     // 부서 업데이트
-    public RsData<Department> update(Long id, Integer departmentCode, String departmentName) {
+    public RsData<Department> update(Long id, Integer code, String name) {
         RsData<Department> rsData = findById(id);
 
         if (rsData.getData() == null) {
@@ -42,8 +42,8 @@ public class DepartmentService {
         }
 
         Department department = rsData.getData().toBuilder()
-                .departmentCode(departmentCode)
-                .departmentName(departmentName)
+                .code(code)
+                .name(name)
                 .build();
 
         this.departmentRepository.save(department);
