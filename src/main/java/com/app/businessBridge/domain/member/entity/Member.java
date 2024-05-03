@@ -9,10 +9,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
+@Setter
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,6 +42,9 @@ public class Member extends BaseEntity {
 
     // 이메일
     private String email;
+
+    // 리프레시 토큰
+    private String refreshToken;
 
     // 직원 근태
     @OneToOne(mappedBy = "member",cascade = CascadeType.REMOVE)
