@@ -54,12 +54,11 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         System.out.println("payload : " + payload);
         log.info("payload {}", payload);
-
         // 페이로드 -> chatMessageDto로 변환
         ChatLogDto chatLogDto = objectMapper.readValue(payload, ChatLogDto.class);
         System.out.println("chatlog : " + chatLogDto);
         log.info("session {}", chatLogDto.toString());
-        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom(chatLogDto.getRoomId()).getData();
+        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom((Long) chatLogDto.getRoomId()).getData();
         Member member = memberService.findByUsername(chatLogDto.getUsername()).getData();
 
         ChatLog chatLog = ChatLog.builder()
@@ -75,12 +74,11 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             chatSessionMap.put(chatRoomId, new HashSet<>());
         }
         Set<WebSocketSession> chatRoomSession = chatSessionMap.get(chatRoomId);
-//        System.out.println("sdsdasd채티방 아이디 :" + chatSessionMap.get(chatRoomId) );
+        System.out.println("채팅방 아이디 :" + chatSessionMap.get(chatRoomId) );
 //        if (chatRoomSession.size() >= 3) {
 //            removeClosedSession(chatRoomSession);
 //        }
-//        System.out.println(chatRoomSession.toArray());
-        System.out.println(chatLogDto);
+        System.out.println("----------roomId: " + chatLogDto.getRoomId());
         sendMessageToChatRoom(chatLogDto, chatRoomSession);
     }
 

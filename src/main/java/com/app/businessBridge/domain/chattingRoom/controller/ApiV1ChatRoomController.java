@@ -67,12 +67,16 @@ public class ApiV1ChatRoomController {
         );
     }
 
-    @PatchMapping("/{id}/invite")
-    public RsData<ChattingRoomResponse.getChattingRoom> invite(@PathVariable("id") Long id) {
-        Member member = rq.getMember();
+    @PatchMapping("/{id}/invite") //해당 채팅방id에 username으로 초대
+    public RsData<ChattingRoomResponse.getChattingRoom> invite(@PathVariable("id") Long id,@Valid @RequestBody ChattingRoomRequest.Invite inviteRq) {
+        Member member = memberService.findByUsername(inviteRq.getUsername()).getData();
         RsData<ChattingRoom> rsData = chattingRoomService.invite(id, member);
         if (!rsData.getIsSuccess()) {
-            return (RsData) rsData;
+            return RsData.of(
+                    rsData.getRsCode(),
+                    rsData.getMsg(),
+                    new ChattingRoomResponse.getChattingRoom(rsData.getData())
+            );
         }
         return RsData.of(
                 rsData.getRsCode(),
@@ -116,8 +120,7 @@ public class ApiV1ChatRoomController {
         }
         return RsData.of(
                 rsData.getRsCode(),
-                rsData.getMsg(),
-                new ChattingRoomResponse.getChattingRoom(rsData.getData())
+                rsData.getMsg()
         );
     }
 }

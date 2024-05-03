@@ -12,7 +12,8 @@ const Id = () => {
     const params: Params = useParams();
     const router = useRouter();
     const queryClient = useQueryClient();
-    const memberData : any = queryClient.getQueryData(["member"]);
+    const memberData: any = queryClient.getQueryData(["member"]) ? queryClient.getQueryData(["member"])
+        : router.push("/auth/signin");
 
     const ws = useRef<WebSocket | null>(null);
     const [chosenUsername, setChosenUsername] = useState(""); //선택된 유저 이름 지정 
@@ -23,8 +24,8 @@ const Id = () => {
     useEffect(() => {
         fetchChattingRoom();
         console.log(memberData);
-        console.log(memberData.memberDTO.name);
-        console.log(memberData.memberDTO.username);
+        console.log(memberData.name);
+        console.log(memberData.username);
         wsHandler();
     }, [])
 
@@ -57,8 +58,8 @@ const Id = () => {
     const [message, setMessage] = useState<Message>({
         roomId: parseInt(params.id),
         content: '',
-        username: memberData.memberDTO.username,
-        name: memberData.memberDTO.name,
+        username: memberData.username,
+        name: memberData.name,
         isCheck: chattingRoom?.members.length
     });
 
@@ -67,8 +68,8 @@ const Id = () => {
         setMessage({
             roomId: parseInt(params.id),
             content: '',
-            username: memberData.memberDTO.username,
-            name: memberData.memberDTO.name,
+            username: memberData.username,
+            name: memberData.name,
             isCheck: message.isCheck ? -1 : undefined
         });
     };
@@ -89,7 +90,7 @@ const Id = () => {
             <main className="flex-1 h-115 p-6 overflow-y-auto ">
                 <div className="flex flex-col gap-2">
                     {messages?.map((message: Message) => <>
-                        {message.username != memberData.memberDTO.username ?
+                        {message.username != memberData.username ?
                             <div className="bg-gray-100 p-4 rounded-lg max-w-xs self-start border">
                                 <p className="text-sm">{message.content}</p>
                                 <p className="text-sm">{message.name}</p>

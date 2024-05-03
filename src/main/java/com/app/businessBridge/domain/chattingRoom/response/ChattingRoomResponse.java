@@ -12,6 +12,7 @@ public class ChattingRoomResponse {
     @Getter
     public static class getChattingRooms {
         private final List<ChattingRoomDto> chattingRoomDtoList;
+
         public getChattingRooms(List<ChattingRoom> chattingRoomList) {
             this.chattingRoomDtoList = chattingRoomList.stream().map(ChattingRoomDto::new).toList();
         }
@@ -20,8 +21,9 @@ public class ChattingRoomResponse {
     @Getter
     public static class getChattingRoom {
         private final ChattingRoomDto chattingRoomDto;
+
         public getChattingRoom(ChattingRoom chattingRoom) {
-            this.chattingRoomDto = new ChattingRoomDto(chattingRoom);
+            this.chattingRoomDto = (chattingRoom == null) ? null : new ChattingRoomDto(chattingRoom);
         }
     }
 }
