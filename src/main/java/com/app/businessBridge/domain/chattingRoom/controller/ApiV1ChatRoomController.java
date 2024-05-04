@@ -29,7 +29,7 @@ public class ApiV1ChatRoomController {
     @GetMapping("")
     public RsData<ChattingRoomResponse.getChattingRooms> getChattingRooms() {
         Member member = rq.getMember();
-        RsData<List<ChattingRoom>> rsData = chattingRoomService.getListByUsername(member.getUsername());
+        RsData<List<ChattingRoom>> rsData = chattingRoomService.getListByMemberId(member.getId());
         if (!rsData.getIsSuccess()) {
             return (RsData) rsData;
         }

@@ -14,7 +14,7 @@ public class ChattingRoomResponse {
         private final List<ChattingRoomDto> chattingRoomDtoList;
 
         public getChattingRooms(List<ChattingRoom> chattingRoomList) {
-            this.chattingRoomDtoList = chattingRoomList.stream().map(ChattingRoomDto::new).toList();
+            this.chattingRoomDtoList = (chattingRoomList ==null) ? null : chattingRoomList.stream().map(ChattingRoomDto::new).toList();
         }
     }
 

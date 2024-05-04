@@ -24,10 +24,12 @@ public class ChattingRoomService {
 
     //임시 : 해당 유저에 대한 리스트 가져오기 필요
     @Transactional
-    public RsData<List<ChattingRoom>> getListByUsername(String username) {
-        List<MemberChatRelation> chatRooms = memberChatService.getListByUsername(username);
-        List<ChattingRoom> chattingRoomList = chatRooms.stream().map(r -> this.getChattingRoom(r.getId()).getData())
-                .toList();
+    public RsData<List<ChattingRoom>> getListByMemberId(Long memberId) {
+        List<MemberChatRelation> chatRooms = memberChatService.getListByMemberId(memberId);
+        List<ChattingRoom> chattingRoomList = new ArrayList<>();
+        for (MemberChatRelation mcr : chatRooms) {
+            chattingRoomList.add(this.getChattingRoom(mcr.getChattingRoom().getId()).getData());
+        }
         return chatRooms.isEmpty() ? RsData.of(
                 RsCode.F_04,
                 "해당 채팅방 없음"

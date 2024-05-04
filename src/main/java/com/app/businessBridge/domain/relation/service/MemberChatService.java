@@ -27,8 +27,8 @@ public class MemberChatService {
     public List<MemberChatRelation> getListByChatId(Long chatId) {
         return memberChatRepository.findMemberChatRelationByChattingRoomId(chatId);
     }
-    public List<MemberChatRelation> getListByUsername(String username) {
-        return memberChatRepository.findMemberChatRelationByUsername(username);
+    public List<MemberChatRelation> getListByMemberId(Long memberId) {
+        return memberChatRepository.findMemberChatRelationByMemberId(memberId);
     }
 
     public void delete(MemberChatRelation memberChatRelation) {
