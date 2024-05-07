@@ -36,12 +36,17 @@ public class Request {
     public String getCookie(String name) {
         Cookie[] cookies = req.getCookies();
 
-        return Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals(name))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElse("");
+        if (cookies != null) {
+            return Arrays.stream(cookies)
+                    .filter(cookie -> cookie.getName().equals(name))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .orElse("");
+        } else {
+            return "";
+        }
     }
+
 
     // Cross 도메인 쿠키 설정
     public void setCrossDomainCookie(String tokenName, String token) {
