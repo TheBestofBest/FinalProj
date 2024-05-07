@@ -19,7 +19,8 @@ public class ConfirmService {
     public List<Confirm> getAll() {
         return this.confirmRepository.findAll();
     }
-    public Optional<Confirm> findById(Long confirmId){
+
+    public Optional<Confirm> findById(Long confirmId) {
         return this.confirmRepository.findById(confirmId);
     }
 
@@ -42,7 +43,7 @@ public class ConfirmService {
         );
     }
 
-    public RsData<Confirm> updateConfirm(Confirm confirm,  ConfirmRequest.patch patchConfirmRequest) {
+    public RsData<Confirm> updateConfirm(Confirm confirm, ConfirmRequest.patch patchConfirmRequest) {
         Confirm patchedConfirm = confirm.toBuilder()
                 .subject(patchConfirmRequest.getSubject())
                 .description(patchConfirmRequest.getDescription())
