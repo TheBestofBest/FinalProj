@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder(toBuilder = true)
+
 public class Confirm extends BaseEntity {
     // 결재 제목
     @Column(length = 255)
@@ -25,8 +26,8 @@ public class Confirm extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
     // 결재 상세내용
-    @Column(columnDefinition = "TEXT")
-    private String content;
+    @Column(columnDefinition = "JSON")
+    private String formData;
     // 결재 리뷰(승인자가 남기는 리뷰)
     @Column(columnDefinition = "TEXT")
     private String review;
@@ -45,6 +46,7 @@ public class Confirm extends BaseEntity {
     @ManyToMany
     private List<Member> confirmMembers;
     // 결재 승인 단계를 위한 카운터
+    @Builder.Default
     @Column(nullable = false)
     private Long confirmStepCounter = 0L;
 }

@@ -25,7 +25,7 @@ public class ConfirmRequest {
         // 결재 간략설명
         private String description;
         // 결재 상세내용
-        private String content;
+        private String formData;
 
         // 결재 양식 타입(휴가승인서, 보고서 등)
         private ConfirmFormType formType;
@@ -46,7 +46,7 @@ public class ConfirmRequest {
         // 결재 간략설명
         private String description;
         // 결재 상세내용
-        private String content;
+        private String formData;
 
         // 결재 양식 타입(휴가승인서, 보고서 등)
         private ConfirmFormType formType;
