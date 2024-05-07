@@ -23,7 +23,7 @@ public class ApiV1RebateController {
 
     @GetMapping("/{year}/{month}")
     public String testGetHoilday(@PathVariable(value = "year") String year,
-                               @PathVariable(value = "month") String month) throws IOException {
+                                 @PathVariable(value = "month") String month) throws IOException {
 
         return apiExplorer.getHoilday(year, month);
 
