@@ -45,8 +45,10 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         log.info(RsData.of(RsCode.S_01, "연결성공", session).toString());
         TextMessage textMessage = new TextMessage("%d 번 채팅방 입장".formatted(roomId));
 //        session.sendMessage(textMessage);
-        sessions.add(session);
-        chatSessionMap.put(roomId, sessions);
+        if (!chatSessionMap.containsKey(roomId)) {
+            chatSessionMap.put(roomId, new HashSet<>());
+        }
+        chatSessionMap.get(roomId).add(session);
     }
 
     @Override
@@ -74,7 +76,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             chatSessionMap.put(chatRoomId, new HashSet<>());
         }
         Set<WebSocketSession> chatRoomSession = chatSessionMap.get(chatRoomId);
-        System.out.println("채팅방 아이디 :" + chatSessionMap.get(chatRoomId) );
+        System.out.println("채팅방 아이디 :" + chatSessionMap.get(chatRoomId));
 //        if (chatRoomSession.size() >= 3) {
 //            removeClosedSession(chatRoomSession);
 //        }
@@ -87,6 +89,10 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         // TODO Auto-generated method stub
         log.info("{} 연결 끊김", session.getId());
         sessions.remove(session);
+        // 모든 채팅방에서 세션 제거
+        for (Set<WebSocketSession> sessionSet : chatSessionMap.values()) {
+            sessionSet.remove(session);
+        }
     }
 
     // ====== 채팅 관련 메소드 ======
