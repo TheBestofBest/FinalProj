@@ -1,7 +1,7 @@
 'use client'
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ChattingRoom, Member, Message } from "../type";
 import api from "@/util/api";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
@@ -86,6 +86,11 @@ const Id = () => {
         <>
             <header className="bg-blue-700 text-white py-4 px-6 rounded">
                 <h1 className="text-2xl font-bold">{chattingRoom?.name}</h1>
+                <span className="text-sm">{chattingRoom?.members.map((name, index) =>
+                    <React.Fragment key={index}>
+                        {index == 0 ? name : `, ${name}`}
+                    </React.Fragment>)}
+                </span>
             </header>
             <main className="flex-1 h-115 p-6 overflow-y-auto ">
                 <div className="flex flex-col gap-2">
