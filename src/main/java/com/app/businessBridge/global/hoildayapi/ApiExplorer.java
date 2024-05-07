@@ -1,8 +1,13 @@
 package com.app.businessBridge.global.hoildayapi;
 
+import com.app.businessBridge.global.RsData.RsCode;
+import com.app.businessBridge.global.RsData.RsData;
+import com.app.businessBridge.global.hoildayapi.dto.HoliDayDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -19,7 +24,7 @@ public class ApiExplorer {
     private String api_key;
 
     // 연, 월을 매개변수로 받아 휴일만 return 하는 api
-    public String getHoilday(String year, String month) throws IOException {
+    public RsData<HoliDayDto> getHoilDay(String year, String month) throws IOException {
         // 9월로 입력한 경우 09월로 변경 필요
         if(month.length() == 1) {
             month = "0" + month;
@@ -35,6 +40,10 @@ public class ApiExplorer {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
         System.out.println("Response code: " + conn.getResponseCode());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        HoliDayDto holiDayDto = objectMapper.readValue(conn.getInputStream(), HoliDayDto.class);
+
         BufferedReader rd;
         if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -46,12 +55,13 @@ public class ApiExplorer {
         while ((line = rd.readLine()) != null) {
             sb.append(line);
         }
-        rd.close();
-        conn.disconnect();
 
         System.out.println(sb);
 
-        return sb.toString();
+        rd.close();
+        conn.disconnect();
+
+        return RsData.of(RsCode.S_01,"success", holiDayDto);
     }
 
     // 연, 월에 해당하는 모든 날짜 요청

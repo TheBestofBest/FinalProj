@@ -10,7 +10,7 @@ export default function Rebate() {
         <>
         <DefaultLayout>
             <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-                정산 페이지
+                급여정산 페이지
             </h4>
             
             <MemberTable></MemberTable>

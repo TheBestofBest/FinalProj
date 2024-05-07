@@ -1,44 +1,46 @@
 'use client'
 
-{/* <script>
-    // JavaScript to toggle the dropdown
-        const dropdownButton = document.getElementById('dropdown-button');
-        const dropdownMenu = document.getElementById('dropdown-menu');
-        const searchInput = document.getElementById('search-input');
-        let isOpen = false; // Set to true to open the dropdown by default
-        
-        // Function to toggle the dropdown state
-        function toggleDropdown() {
-          isOpen = !isOpen;
-          dropdownMenu.classList.toggle('hidden', !isOpen);
-        }
-        
-        // Set initial state
-        toggleDropdown();
-        
-        dropdownButton.addEventListener('click', () => {
-          toggleDropdown();
-        });
-        
-        // Add event listener to filter items based on input
-        searchInput.addEventListener('input', () => {
-          const searchTerm = searchInput.value.toLowerCase();
-          const items = dropdownMenu.querySelectorAll('a');
-        
-          items.forEach((item) => {
-            const text = item.textContent.toLowerCase();
-            if (text.includes(searchTerm)) {
-              item.style.display = 'block';
-            } else {
-              item.style.display = 'none';
-            }
-          });
-        });
-    </script> */}
-
-
+import { useEffect, useState } from 'react';
 
 export default function DropDownMenu() {
+
+  useEffect(() => {
+    const dropdownButton = document.getElementById('dropdown-button');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    const searchInput = document.getElementById('search-input');
+    let isOpen = true;
+
+    const toggleDropdown = () => {
+      isOpen = !isOpen;
+      dropdownMenu.classList.toggle('hidden', !isOpen);
+    };
+
+    const filterItems = () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      const items = dropdownMenu.querySelectorAll('a');
+
+      items.forEach((item) => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    };
+
+    toggleDropdown();
+
+    dropdownButton.addEventListener('click', toggleDropdown);
+    searchInput.addEventListener('input', filterItems);
+
+    return () => {
+      dropdownButton.removeEventListener('click', toggleDropdown);
+      searchInput.removeEventListener('input', filterItems);
+    };
+  }, []);
+
+
     return (
         <>
         
@@ -47,7 +49,7 @@ export default function DropDownMenu() {
     <div className="relative group">
       <button
         id="dropdown-button"
-        className="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+        className="inline-flex justify-center w-full px-6 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
       >
         <span className="mr-2">필터</span>
         <svg
@@ -73,7 +75,7 @@ export default function DropDownMenu() {
           id="search-input"
           className="block w-full px-4 py-2 text-gray-800 border rounded-md  border-gray-300 focus:outline-none"
           type="text"
-          placeholder="Search items"
+          placeholder="필터검색"
           autoComplete="off"
         />
         {/* Dropdown content goes here */}
@@ -81,25 +83,19 @@ export default function DropDownMenu() {
           href="#"
           className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md"
         >
-          Uppercase
+          전체보기
         </a>
         <a
           href="#"
           className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md"
         >
-          Lowercase
+          부서별
         </a>
         <a
           href="#"
           className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md"
         >
-          Camel Case
-        </a>
-        <a
-          href="#"
-          className="block px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md"
-        >
-          Kebab Case
+          직급별
         </a>
       </div>
     </div>
