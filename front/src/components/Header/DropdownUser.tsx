@@ -9,6 +9,7 @@ const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
+  const member = queryClient.getQueryData(["member"]);
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
@@ -39,6 +40,7 @@ const DropdownUser = () => {
     return () => document.removeEventListener("keydown", keyHandler);
   });
 
+  // 로그아웃
   const logout = async () => {
     await api.post("/api/v1/members/logout").then((res) => {
       console.log(res.data.isSuccess);
@@ -50,6 +52,8 @@ const DropdownUser = () => {
     router.replace("/auth/signin");
   };
 
+  console.log(member);
+
   return (
     <div className="relative">
       <Link
@@ -60,9 +64,11 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {member.name}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">
+            {member.department.name} 부서 / {member.grade.name}
+          </span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
