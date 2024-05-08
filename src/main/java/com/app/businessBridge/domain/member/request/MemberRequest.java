@@ -33,7 +33,7 @@ public class MemberRequest {
         @NotNull
         private Long id;
         @NotNull
-        private Integer departmentcode;
+        private Integer departmentCode;
         @NotNull
         private Integer gradeCode;
         @NotBlank

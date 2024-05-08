@@ -21,8 +21,8 @@ public class ApiV1MemberController {
     private final Request rq;
 
     // 멤버 생성
-    @PostMapping("/signup")
-    public RsData<MemberResponse.GetMember> signup(@Valid @RequestBody MemberRequest.CreateRequest createRequest,
+    @PostMapping("")
+    public RsData signup(@Valid @RequestBody MemberRequest.CreateRequest createRequest,
                                                    BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
@@ -33,7 +33,7 @@ public class ApiV1MemberController {
                 createRequest.getUsername(), createRequest.getMemberNumber(), createRequest.getName(),
                 createRequest.getPassword(), createRequest.getEmail());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.GetMember(rsData.getData()));
+        return RsData.of(rsData.getRsCode(),rsData.getMsg());
     }
 
     // 멤버 로그인
@@ -68,10 +68,13 @@ public class ApiV1MemberController {
         if (bindingResult.hasErrors()) {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
-        RsData<Member> rsData = this.memberService.update(updateRequest.getId(), updateRequest.getDepartmentcode(), updateRequest.getGradeCode(),
+        RsData<Member> rsData = this.memberService.update(updateRequest.getId(), updateRequest.getDepartmentCode(), updateRequest.getGradeCode(),
                 updateRequest.getUsername(), updateRequest.getMemberNumber(), updateRequest.getName(),
                 updateRequest.getPassword(), updateRequest.getEmail());
 
+        if(rsData.getData()==null){
+            return RsData.of(rsData.getRsCode(),rsData.getMsg());
+        }
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.PatchedMember(rsData.getData()));
     }
 
