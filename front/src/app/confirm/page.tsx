@@ -5,7 +5,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import HorizontalLinearAlternativeLabelStepper from "@/components/Stepper/Stepper";
 import { Button } from "@mui/material";
 import { useState } from "react";
-
+import DatePicker from "react-datepicker";
 export default function ConfirmPage() {
   // 모달 버튼 클릭 유무를 저장할 state
   const [showModal, setShowModal] = useState(false);

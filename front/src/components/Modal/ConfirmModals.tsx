@@ -20,13 +20,19 @@ export const ConfirmModalContent = styled.div`
   width: 45.125rem;
   border-radius: 0.313rem;
   display: flex;
+  max-height: 650px;
   flex-direction: column;
   background-color: #ffffff;
+  overflow-y: auto;
 
   > div {
     display: flex;
-    justify-content: start;
+    justify-content: center;
     margin-top: 1.25rem;
     color: black;
+  }
+  .confirmFormType:hover {
+    background-color: #f3f4f7;
+    cursor: pointer;
   }
 `;

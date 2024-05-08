@@ -22,7 +22,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
   const renderFormDetails = () => {
     if (selectedForm === "휴가 신청") {
       return (
-        <div>
+        <div className="mx-auto flex w-full justify-items-center">
           {/* 휴가 신청 양식의 세부사항 작성 창 */}
           {/* 이 곳에 휴가 신청 양식에 대한 세부사항 작성 컴포넌트를 추가하세요 */}
           <VacationForm />
@@ -102,7 +102,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
           <div className="relative overflow-x-auto">
             <table className="text-gray-500 dark:text-gray-400 w-full text-left text-sm rtl:text-right">
               <thead className="text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 text-xs uppercase">
-                <tr>
+                <tr className="hover:bg-gray-200 dark:hover:bg-gray-700">
                   <th scope="col" className="px-6 py-3">
                     Form Type
                   </th>
@@ -113,14 +113,15 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
               </thead>
               <tbody>
                 {/* tr 반복 시키기 */}
-                <tr className="dark:bg-gray-800 dark:border-gray-700 border-b bg-white">
+                <tr
+                  className="confirmFormType dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 border-b bg-white"
+                  onClick={() => handleFormClick("휴가 신청")}
+                >
                   <th
                     scope="row"
                     className="text-gray-900 whitespace-nowrap px-6 py-4 font-medium dark:text-white"
                   >
-                    <button onClick={() => handleFormClick("휴가 신청")}>
-                      휴가 신청
-                    </button>
+                    휴가 신청
                   </th>
                   <td className="px-6 py-4">휴가 보내줘요</td>
                 </tr>
@@ -141,11 +142,11 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
           </div>
         )}
         {selectedForm && (
-          <div>
+          <div className="flex justify-start">
             <button
               onClick={() => handleFormClick("")}
               type="button"
-              className="mb-2 me-2 rounded-lg bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-800"
+              className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
             >
               뒤로가기
             </button>
