@@ -14,7 +14,7 @@ public class MemberRequest {
         @NotNull
         private Integer departmentCode;
         @NotNull
-        private Long gradeId;
+        private Integer gradeCode;
         @NotBlank
         private String username;
         @NotNull
@@ -35,7 +35,7 @@ public class MemberRequest {
         @NotNull
         private Integer departmentcode;
         @NotNull
-        private Long gradeId;
+        private Integer gradeCode;
         @NotBlank
         private String username;
         @NotNull
