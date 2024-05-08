@@ -45,8 +45,10 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         log.info(RsData.of(RsCode.S_01, "연결성공", session).toString());
         TextMessage textMessage = new TextMessage("%d 번 채팅방 입장".formatted(roomId));
 //        session.sendMessage(textMessage);
-        sessions.add(session);
-        chatSessionMap.put(roomId, sessions);
+        if (!chatSessionMap.containsKey(roomId)) {
+            chatSessionMap.put(roomId, new HashSet<>());
+        }
+        chatSessionMap.get(roomId).add(session);
     }
 
     @Override
@@ -54,12 +56,11 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         System.out.println("payload : " + payload);
         log.info("payload {}", payload);
-
         // 페이로드 -> chatMessageDto로 변환
         ChatLogDto chatLogDto = objectMapper.readValue(payload, ChatLogDto.class);
         System.out.println("chatlog : " + chatLogDto);
         log.info("session {}", chatLogDto.toString());
-        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom(chatLogDto.getRoomId()).getData();
+        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom((Long) chatLogDto.getRoomId()).getData();
         Member member = memberService.findByUsername(chatLogDto.getUsername()).getData();
 
         ChatLog chatLog = ChatLog.builder()
@@ -75,12 +76,11 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             chatSessionMap.put(chatRoomId, new HashSet<>());
         }
         Set<WebSocketSession> chatRoomSession = chatSessionMap.get(chatRoomId);
-//        System.out.println("sdsdasd채티방 아이디 :" + chatSessionMap.get(chatRoomId) );
+        System.out.println("채팅방 아이디 :" + chatSessionMap.get(chatRoomId));
 //        if (chatRoomSession.size() >= 3) {
 //            removeClosedSession(chatRoomSession);
 //        }
-//        System.out.println(chatRoomSession.toArray());
-        System.out.println(chatLogDto);
+        System.out.println("----------roomId: " + chatLogDto.getRoomId());
         sendMessageToChatRoom(chatLogDto, chatRoomSession);
     }
 
@@ -89,6 +89,10 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         // TODO Auto-generated method stub
         log.info("{} 연결 끊김", session.getId());
         sessions.remove(session);
+        // 모든 채팅방에서 세션 제거
+        for (Set<WebSocketSession> sessionSet : chatSessionMap.values()) {
+            sessionSet.remove(session);
+        }
     }
 
     // ====== 채팅 관련 메소드 ======
