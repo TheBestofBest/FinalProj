@@ -5,6 +5,7 @@ import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.grade.repository.GradeRepository;
 import com.app.businessBridge.domain.grade.service.GradeService;
+import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.member.repository.MemberRepository;
 import com.app.businessBridge.domain.member.response.MemberResponse;
@@ -204,8 +205,21 @@ public class MemberService {
     }
 
     @Transactional
-    public void invite() {
+    public void invite(Member member, MeetingRoom meetingRoom) {
+        Member invitedMember = member.toBuilder()
+                .meetingState(false)
+                .meetingRoom(meetingRoom)
+                .build();
+        memberRepository.save(invitedMember);
+    }
 
+    @Transactional
+    public void exit(Member member) {
+        Member invitedMember = member.toBuilder()
+                .meetingState(null)
+                .meetingRoom(null)
+                .build();
+        memberRepository.save(invitedMember);
     }
 
 }

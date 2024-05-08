@@ -33,6 +33,7 @@ public class MeetingRoomService {
                 "%d번 채팅방 없음".formatted(id)
         ));
     }
+
     @Transactional
     public RsData<MeetingRoom> create(String name, Member member) {
         try {
@@ -50,6 +51,23 @@ public class MeetingRoomService {
     }
 
     @Transactional
+    public RsData<MeetingRoom> modify(Long roomId, String name) {
+        RsData<MeetingRoom> rsData = this.getMeetingRoom(roomId);
+        if (!rsData.getIsSuccess()) {
+            return rsData;
+        }
+        try {
+            MeetingRoom modified = rsData.getData().toBuilder()
+                    .name(name)
+                    .build();
+            meetingRoomRepository.save(modified);
+            return RsData.of(RsCode.S_03, "방이름 수정", modified);
+        } catch (Exception e) {
+            return RsData.of(RsCode.F_01, "수정 실패");
+        }
+    }
+
+    @Transactional
     public RsData<MeetingRoom> invite(Long roomId, Member member) {
         RsData<MeetingRoom> rsData = this.getMeetingRoom(roomId);
         if (!rsData.getIsSuccess()) {
@@ -57,16 +75,48 @@ public class MeetingRoomService {
         }
         List<Member> members = rsData.getData().getMembers();
         try {
-//            return members.stream().filter(r -> r.equals(member))
-//                    .findAny()
-//                    .map(m -> RsData.of(
-//                            RsCode.F_01, "이미 초대됨", rsData.getData()
-//                    )).orElseGet(() -> {
-//                        memberService.create(rsData.getData(), member);
-//                        return RsData.of(RsCode.S_02, "초대 성공", getChattingRoom(chatRoomId).getData());
-//                    });
+            return members.stream().filter(r -> r.equals(member))
+                    .findAny()
+                    .map(m -> RsData.of(
+                            RsCode.F_01, "이미 초대됨", rsData.getData()
+                    )).orElseGet(() -> {
+                        memberService.invite(member, rsData.getData());
+                        return RsData.of(RsCode.S_02, "초대 성공", getMeetingRoom(roomId).getData());
+                    });
         } catch (Exception e) {
             return RsData.of(RsCode.F_01, "초대 실패");
+        }
+    }
+
+    @Transactional
+    public RsData<MeetingRoom> exit(Long roomId, Member member) {
+        RsData<MeetingRoom> rsData = this.getMeetingRoom(roomId);
+        if (!rsData.getIsSuccess()) {
+            return rsData;
+        }
+//        List<MemberChatRelation> members = memberChatService.getListByChatId(chatRoomId);
+        try {
+//            members.stream().filter(r -> r.getMember().equals(member))
+//                    .findFirst()
+//                    .ifPresent(memberChatService::delete);
+            memberService.exit(member);
+            return RsData.of(RsCode.S_03, "나가기 성공", getMeetingRoom(roomId).getData());
+        } catch (Exception e) {
+            return RsData.of(RsCode.F_01, "나가기 실패");
+        }
+    }
+
+    @Transactional
+    public RsData<MeetingRoom> delete(Long roomId) {
+        RsData<MeetingRoom> rsData = this.getMeetingRoom(roomId);
+        if (!rsData.getIsSuccess()) {
+            return rsData;
+        }
+        try {
+            meetingRoomRepository.delete(rsData.getData());
+            return RsData.of(RsCode.S_04, "회의방 삭제");
+        } catch (Exception e) {
+            return RsData.of(RsCode.F_01, "삭제 실패");
         }
     }
 }

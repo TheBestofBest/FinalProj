@@ -35,7 +35,7 @@ const Id = () => {
     }, [])
 
     const wsHandler = async () => {
-        ws.current = await new WebSocket(`ws://localhost:8090/ws/chats/${params.id}`)
+        ws.current = await new WebSocket(`ws://localhost:8090/chat/${params.id}`)
         ws.current.onopen = () => {
             console.log('웹 소켓 연결이 열렸습니다.');
         };

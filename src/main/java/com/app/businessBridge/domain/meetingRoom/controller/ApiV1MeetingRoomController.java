@@ -38,8 +38,20 @@ public class ApiV1MeetingRoomController {
                 new MeetingRoomResponse.getMeetingRoom(rsData.getData())
         );
     }
+    @PatchMapping("/{id}")
+    public RsData<MeetingRoomResponse.getMeetingRoom> modify(@PathVariable("id") Long id, @Valid @RequestBody MeetingRoomRequest.Create createRq) {
+        RsData<MeetingRoom> rsData = meetingRoomService.modify(id, createRq.getName());
+        if (!rsData.getIsSuccess()) {
+            return (RsData) rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
+                rsData.getMsg(),
+                new MeetingRoomResponse.getMeetingRoom(rsData.getData())
+        );
+    }
 
-    @PatchMapping("/{id}/invite") //해당 채팅방id에 username으로 초대
+    @PatchMapping("/{id}/invite") //해당 방id에 username으로 초대
     public RsData<MeetingRoomResponse.getMeetingRoom> invite(@PathVariable("id") Long id,@Valid @RequestBody MeetingRoomRequest.Invite inviteRq) {
         Member member = memberService.findByUsername(inviteRq.getUsername()).getData();
         RsData<MeetingRoom> rsData = meetingRoomService.invite(id, member);
@@ -47,13 +59,39 @@ public class ApiV1MeetingRoomController {
             return RsData.of(
                     rsData.getRsCode(),
                     rsData.getMsg(),
-                    new ChattingRoomResponse.getChattingRoom(rsData.getData())
+                    new MeetingRoomResponse.getMeetingRoom(rsData.getData())
             );
         }
         return RsData.of(
                 rsData.getRsCode(),
                 rsData.getMsg(),
-                new ChattingRoomResponse.getChattingRoom(rsData.getData())
+                new MeetingRoomResponse.getMeetingRoom(rsData.getData())
+        );
+    }
+
+    @PatchMapping("/{id}/exit")
+    public RsData<MeetingRoomResponse.getMeetingRoom> exit(@PathVariable("id") Long id) {
+        Member member = rq.getMember();
+        RsData<MeetingRoom> rsData = meetingRoomService.exit(id, member);
+        if (!rsData.getIsSuccess()) {
+            return (RsData) rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
+                rsData.getMsg(),
+                new MeetingRoomResponse.getMeetingRoom(rsData.getData())
+        );
+    }
+
+    @DeleteMapping("/{id}")
+    public RsData<MeetingRoomResponse.getMeetingRoom> delete(@PathVariable("id") Long id) {
+        RsData<MeetingRoom> rsData = meetingRoomService.delete(id);
+        if (!rsData.getIsSuccess()) {
+            return (RsData) rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
+                rsData.getMsg()
         );
     }
 }

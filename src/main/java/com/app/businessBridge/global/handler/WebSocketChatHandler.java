@@ -41,7 +41,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         System.out.println(session);
         String uri = String.valueOf(session.getUri());
-        Long roomId = Long.valueOf((uri.split("chats/", 2)[1]));
+        Long roomId = Long.valueOf((uri.split("chat/", 2)[1]));
         log.info(RsData.of(RsCode.S_01, "연결성공", session).toString());
         TextMessage textMessage = new TextMessage("%d 번 채팅방 입장".formatted(roomId));
 //        session.sendMessage(textMessage);
