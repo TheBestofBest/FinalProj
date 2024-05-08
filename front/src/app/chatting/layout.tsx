@@ -23,18 +23,17 @@ export default function ChattingLayout({
 }>) {
 
     const router = useRouter();
-    
+
 
     const [loading, setLoading] = useState<boolean>(true);
     const [chattingRooms, setChattingRooms] = useState<ChattingRoom[]>([]);
     const [isEmpty, setIsEmpty] = useState<boolean>();
-    
+
 
     const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
 
     useEffect(() => {
         setTimeout(() => setLoading(false), 1000);
-        
         fetchChattingRooms();
     }, []);
 
@@ -85,6 +84,7 @@ export default function ChattingLayout({
             if (chattingRoom?.members == null) {
                 deleteChattingRoom(id);
             }
+            fetchChattingRooms();
             offSelected();
             router.push("/chatting");
         } else {
@@ -102,6 +102,23 @@ export default function ChattingLayout({
     const deleteChattingRoom = async (id: number) => {
         const response = await api.delete(`/api/v1/chats/${id}`);
         if (response.status == 200) {
+            offSelected();
+            router.push("/chatting");
+        } else {
+            alert('나가기에 실패했습니다.');
+        }
+    }
+
+
+    //초대
+    const inviteChattingRoom = async (id: number) => {
+        const response = await api.patch(`/api/v1/chats/${id}/invite`);
+        if (response.status == 200) {
+            fetchChattingRoom(id);
+            if (chattingRoom?.members == null) {
+                deleteChattingRoom(id);
+            }
+            fetchChattingRooms();
             offSelected();
             router.push("/chatting");
         } else {
@@ -147,7 +164,9 @@ export default function ChattingLayout({
                     <div className="flex w-full justify-between">
                         <span>Chatting</span>
                         <button className="flex items-end" onClick={createChattingRoom}>
-                            <Image className="w-5" src={CreateBtn} alt=""></Image>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
                         </button>
                     </div>
                     <div>
@@ -161,6 +180,7 @@ export default function ChattingLayout({
                                      justify-between items-center`} href={"/chatting/" + chattingRoom.id}
                                         onMouseEnter={() => onMouseEnter(chattingRoom.id)} onMouseLeave={onMouseLeave}>
                                         <span className="p-1">{chattingRoom.name}</span>
+                                        
                                         {isHovered == chattingRoom.id ?
                                             <DropdownChattingRoom
                                                 onSelected={() => onSelected(chattingRoom.id, chattingRoom.name)}

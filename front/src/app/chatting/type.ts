@@ -7,6 +7,12 @@ export interface ChattingRoom {
     members: string[];
 }
 
+export interface ChatLog {
+    content: string;
+    username: string | undefined;
+    name: string;
+}
+
 
 export interface Message {
     roomId: number;
