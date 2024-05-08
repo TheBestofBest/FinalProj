@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { ConfirmModalBox, ConfirmModalContent } from "../Modal/ConfirmModals";
+import VacationForm from "../ConfirmForm/VacationForm";
+import SoftwarePurchaseRequestForm from "../ConfirmForm/SoftwarePurchaseRequestForm";
 
 interface ConfirmFormModalProps {
   clickModal: () => void;
@@ -23,7 +25,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
         <div>
           {/* 휴가 신청 양식의 세부사항 작성 창 */}
           {/* 이 곳에 휴가 신청 양식에 대한 세부사항 작성 컴포넌트를 추가하세요 */}
-          <h1>휴가 신청서!</h1>
+          <VacationForm />
         </div>
       );
     } else if (selectedForm === "Software 구매 신청") {
@@ -31,7 +33,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
         <div>
           {/* Software 구매 신청 양식의 세부사항 작성 창 */}
           {/* 이 곳에 Software 구매 신청 양식에 대한 세부사항 작성 컴포넌트를 추가하세요 */}
-          Software 구매 신청 양식의 세부사항 작성 창이 여기에 옵니다.
+          <SoftwarePurchaseRequestForm />
         </div>
       );
     } else {
@@ -42,13 +44,12 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
   return (
     <ConfirmModalBox onClick={clickModal}>
       {/* // 모달을 닫는 state함수가 아래로 전파되는 것을 막아줌 */}
-
       <ConfirmModalContent onClick={(e) => e.stopPropagation()}>
         {!selectedForm && (
           <div className=" text-xl font-bold">📑결재 양식 선택</div>
         )}
         {selectedForm && (
-          <div className=" text-xl font-bold">📑선택한 결재 양식 이름</div>
+          <div className=" text-xl font-bold">📑{selectedForm}</div>
         )}
         {/* 결재 양식 선택 시  양식 검색 숨기기 */}
         {!selectedForm && (
@@ -61,6 +62,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
               >
                 Search
               </label>
+              {/* 검색 창 */}
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                   <svg
@@ -110,6 +112,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
                 </tr>
               </thead>
               <tbody>
+                {/* tr 반복 시키기 */}
                 <tr className="dark:bg-gray-800 dark:border-gray-700 border-b bg-white">
                   <th
                     scope="row"
@@ -120,15 +123,6 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
                     </button>
                   </th>
                   <td className="px-6 py-4">휴가 보내줘요</td>
-                </tr>
-                <tr className="dark:bg-gray-800 dark:border-gray-700 border-b bg-white">
-                  <th
-                    scope="row"
-                    className="text-gray-900 whitespace-nowrap px-6 py-4 font-medium dark:text-white"
-                  >
-                    Software 구매 신청
-                  </th>
-                  <td className="px-6 py-4">Software 사줘요</td>
                 </tr>
               </tbody>
             </table>
