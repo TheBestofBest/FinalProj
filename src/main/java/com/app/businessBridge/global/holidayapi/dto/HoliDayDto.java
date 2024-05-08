@@ -14,12 +14,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HoliDayDto {
 
-    private List<item> items;
-
     private String totalCount;
-
-    public static class item {
-        private String locdate;
-    }
 
 }
