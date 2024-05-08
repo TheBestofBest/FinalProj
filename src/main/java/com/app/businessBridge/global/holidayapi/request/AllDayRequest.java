@@ -1,4 +1,4 @@
-package com.app.businessBridge.global.hoildayapi.request;
+package com.app.businessBridge.global.holidayapi.request;
 
 import lombok.Getter;
 import lombok.Setter;
