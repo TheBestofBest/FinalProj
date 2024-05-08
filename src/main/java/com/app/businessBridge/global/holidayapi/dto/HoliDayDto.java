@@ -1,6 +1,8 @@
 package com.app.businessBridge.global.holidayapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,36 +10,16 @@ import lombok.ToString;
 import java.util.List;
 
 
-
 @Getter
 @Setter
 @ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HoliDayDto {
-    private Response response;
 
-    @Getter
-    public static class Response {
-        private Body body;
-    }
+    private String totalCount;
 
-    @Getter
-    public static class Body {
-        private Items items;
+    private String locdate;
 
-        private String totalCount;
+    private List<String> locdate;
 
-    }
-
-    @Getter
-    public static class Items {
-        private List<Item> item;
-
-    }
-
-    @Getter
-    public static class Item {
-        private String locdate;
-
-    }
 }
