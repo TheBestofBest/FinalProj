@@ -19,14 +19,20 @@ const SignIn: React.FC = () => {
   const queryClient = useQueryClient();
   const router = useRouter();
 
+  // 로그인 상태일때, 홈으로 돌려 보냄.
+  if (queryClient.getQueryData(["member"]) !== undefined) {
+    alert("이미 로그인 상태 입니다.");
+    router.replace("/");
+  }
+
+  // 아이디, 비밀번호 입력 감지
   const loginFormHandleChange = (e: any) => {
     const { name, value } = e.target;
-    // const name: any = e.target.name;
-    // const value = e.target.value;
     setLoginForm({ ...loginForm, [name]: value });
     console.log({ ...loginForm, [name]: value });
   };
 
+  // 로그인 요청
   const login = async (e: any) => {
     e.preventDefault();
 

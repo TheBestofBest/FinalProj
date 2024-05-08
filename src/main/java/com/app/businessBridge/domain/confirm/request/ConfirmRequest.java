@@ -1,12 +1,8 @@
 package com.app.businessBridge.domain.confirm.request;
 
-import com.app.businessBridge.domain.confirm.entity.Confirm;
-import com.app.businessBridge.domain.confirmFormType.dto.ConfirmFormTypeDTO;
 import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
-import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.domain.member.entity.Member;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

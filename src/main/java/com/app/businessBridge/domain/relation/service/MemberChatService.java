@@ -7,6 +7,8 @@ import com.app.businessBridge.domain.relation.repository.MemberChatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 
@@ -20,5 +22,16 @@ public class MemberChatService {
                 .chattingRoom(chattingRoom)
                 .build();
         return memberChatRepository.save(relation);
+    }
+
+    public List<MemberChatRelation> getListByChatId(Long chatId) {
+        return memberChatRepository.findMemberChatRelationByChattingRoomId(chatId);
+    }
+    public List<MemberChatRelation> getListByMemberId(Long memberId) {
+        return memberChatRepository.findMemberChatRelationByMemberId(memberId);
+    }
+
+    public void delete(MemberChatRelation memberChatRelation) {
+        memberChatRepository.delete(memberChatRelation);
     }
 }

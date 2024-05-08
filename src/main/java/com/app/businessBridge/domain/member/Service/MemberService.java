@@ -1,8 +1,9 @@
 package com.app.businessBridge.domain.member.Service;
 
 import com.app.businessBridge.domain.department.entity.Department;
-import com.app.businessBridge.domain.department.service.DepartmentService;
+import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
+import com.app.businessBridge.domain.grade.repository.GradeRepository;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.member.repository.MemberRepository;
@@ -28,26 +29,25 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final DepartmentService departmentService;
-    private final GradeService gradeService;
+    private final DepartmentRepository departmentRepository;
+    private final GradeRepository gradeRepository;
     private final JwtProvider jwtProvider;
 
     // 회원 생성
-    public RsData create(Long departmentId, Long gradeId, String username,
+    public RsData create(Integer departmentCode, Integer gradeCode, String username,
                          Integer memberNumber, String name, String password, String email) {
-        RsData<Department> departmentRsData = this.departmentService.findById(departmentId);
-        RsData<Grade> gradeRsData = this.gradeService.findById(gradeId);
+        Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
+        Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
-        // 존재하는 부서, 직급인지 검증하는 if 문
-        if (departmentRsData.getData() == null) {
-            return RsData.of(departmentRsData.getRsCode(), departmentRsData.getMsg());
-        } else if (gradeRsData.getData() == null) {
-            return RsData.of(gradeRsData.getRsCode(), gradeRsData.getMsg());
+        if (findByUsername(username).getData() != null) {
+            return RsData.of(RsCode.F_06, "중복된 아이디가 존재합니다.");
+        } else if (findByMemberNumber(memberNumber).getData() != null) {
+            return RsData.of(RsCode.F_06, "중복된 사원번호가 존재합니다.");
         }
 
         Member member = Member.builder()
-                .department(departmentRsData.getData())
-                .grade(gradeRsData.getData())
+                .department(od.get())
+                .grade(og.get())
                 .username(username)
                 .memberNumber(memberNumber)
                 .name(name)
@@ -80,25 +80,49 @@ public class MemberService {
         return RsData.of(RsCode.S_05, "회원을 찾았습니다.", om.get());
     }
 
+    // memberNumber(사원번호)로 회원 찾기
+    public RsData<Member> findByMemberNumber(Integer memberNumber) {
+        Optional<Member> om = this.memberRepository.findByMemberNumber(memberNumber);
+
+        if (om.isEmpty()) {
+            return RsData.of(RsCode.F_04, "회원이 존재하지 않습니다.", null);
+        }
+        return RsData.of(RsCode.S_05, "회원을 찾았습니다.", om.get());
+    }
+
+    // email로 회원 찾기
+    public RsData<Member> findByEmail(String email) {
+        Optional<Member> om = this.memberRepository.findByEmail(email);
+
+        if (om.isEmpty()) {
+            return RsData.of(RsCode.F_04, "회원이 존재하지 않습니다.", null);
+        }
+        return RsData.of(RsCode.S_05, "회원을 찾았습니다.", om.get());
+    }
+
     // 회원 수정
-    public RsData<Member> update(Long id, Long departmentId, Long gradeId, String username,
+    public RsData<Member> update(Long id, Integer departmentCode, Integer gradeCode, String username,
                                  Integer memberNumber, String name, String password, String email) {
         RsData<Member> rsData = findById(id);
-        RsData<Department> departmentRsData = this.departmentService.findById(departmentId);
-        RsData<Grade> gradeRsData = this.gradeService.findById(gradeId);
+        Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
+        Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
-        // 존재하는 회원, 부서, 직급인지 검증하는 if 문
+        // 존재하는 회원인지 검증
         if (rsData.getData() == null) {
             return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
-        } else if (departmentRsData.getData() == null) {
-            return RsData.of(departmentRsData.getRsCode(), departmentRsData.getMsg(), null);
-        } else if (gradeRsData.getData() == null) {
-            return RsData.of(gradeRsData.getRsCode(), gradeRsData.getMsg(), null);
+        }
+
+        if (findByUsername(username).getData() != null && findByUsername(username).getData().getId() != id) {
+            return RsData.of(RsCode.F_06, "중복된 아이디가 존재합니다.", null);
+        } else if (findByMemberNumber(memberNumber).getData() != null && findByMemberNumber(memberNumber).getData().getId() != id) {
+            return RsData.of(RsCode.F_06, "중복된 사원번호가 존재합니다.", null);
+        } else if (findByEmail(email).getData() != null && findByEmail(email).getData().getId() != id) {
+            return RsData.of(RsCode.F_06, "중복된 이메일이 존재합니다.", null);
         }
 
         Member member = rsData.getData().toBuilder()
-                .department(departmentRsData.getData())
-                .grade(gradeRsData.getData())
+                .department(od.get())
+                .grade(og.get())
                 .username(username)
                 .memberNumber(memberNumber)
                 .name(name)
@@ -124,7 +148,7 @@ public class MemberService {
     public RsData<String> refreshAccessToken(String refreshToken) {
         Optional<Member> om = this.memberRepository.findByRefreshToken(refreshToken);
 
-        if (om.isEmpty()){
+        if (om.isEmpty()) {
             return RsData.of(RsCode.F_04, "리프레시 토큰이 존재하지 않습니다.", null);
         }
         Member member = om.get();
@@ -163,8 +187,8 @@ public class MemberService {
             return RsData.of(RsCode.F_04, "잘못된 ID 또는 비밀번호 입니다.", null);
         }
 
-        if(!passwordEncoder.matches(password,om.get().getPassword())){
-            return RsData.of(RsCode.F_02,"잘못된 ID 또는 비밀번호 입니다.",null);
+        if (!passwordEncoder.matches(password, om.get().getPassword())) {
+            return RsData.of(RsCode.F_02, "잘못된 ID 또는 비밀번호 입니다.", null);
         }
 
         Member member = om.get();
@@ -176,7 +200,7 @@ public class MemberService {
 
         System.out.println("accessToken : " + accessToken);
 
-        return RsData.of(RsCode.S_06, "로그인에 성공했습니다.", new MemberResponse.AuthAndMakeTokensResponseBody(member, accessToken,refreshToken));
+        return RsData.of(RsCode.S_06, "로그인에 성공했습니다.", new MemberResponse.AuthAndMakeTokensResponseBody(member, accessToken, refreshToken));
     }
 
 }

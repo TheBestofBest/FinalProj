@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class ChatLog extends BaseEntity {
     private String content;
-    private int isCheck; //확인한 인원 ex)카톡 숫자 1
+//    private int isCheck; //확인한 인원 ex)카톡 숫자 1
     @ManyToOne
     @JsonIgnore
     private ChattingRoom chattingRoom;

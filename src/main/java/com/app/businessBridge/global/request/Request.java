@@ -36,6 +36,11 @@ public class Request {
     public String getCookie(String name) {
         Cookie[] cookies = req.getCookies();
 
+        if (cookies == null) {
+            // 쿠키가 없는 경우 처리합니다.
+            return "";
+        }
+
         return Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals(name))
                 .findFirst()

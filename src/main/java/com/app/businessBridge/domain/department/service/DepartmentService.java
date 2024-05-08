@@ -16,10 +16,17 @@ public class DepartmentService {
     private final DepartmentRepository departmentRepository;
 
     // 부서 생성
-    public RsData create(Integer departmentCode, String departmentName) {
+    public RsData create(Integer code, String name) {
+        // 중복 검사
+        if (this.departmentRepository.findByCode(code).isPresent()) {
+            return RsData.of(RsCode.F_06, "이미 존재하는 부서코드 입니다.");
+        } else if (this.departmentRepository.findByName(name).isPresent()) {
+            return RsData.of(RsCode.F_06, "이미 존재하는 부서명 입니다.");
+        }
+
         Department department = Department.builder()
-                .departmentCode(departmentCode)
-                .departmentName(departmentName)
+                .code(code)
+                .name(name)
                 .build();
         this.departmentRepository.save(department);
 
@@ -34,29 +41,38 @@ public class DepartmentService {
     }
 
     // 부서 업데이트
-    public RsData<Department> update(Long id, Integer departmentCode, String departmentName) {
+    public RsData<Department> update(Long id, Integer code, String name) {
+        // 부서 찾기
         RsData<Department> rsData = findById(id);
 
         if (rsData.getData() == null) {
-            return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
+            return rsData;
+        }
+
+        // 중복 검사
+        if (this.departmentRepository.findByCode(code).isPresent()) {
+            return RsData.of(RsCode.F_06, "이미 존재하는 부서코드 입니다.");
+        } else if (this.departmentRepository.findByName(name).isPresent()) {
+            return RsData.of(RsCode.F_06, "이미 존재하는 부서명 입니다.");
         }
 
         Department department = rsData.getData().toBuilder()
-                .departmentCode(departmentCode)
-                .departmentName(departmentName)
+                .code(code)
+                .name(name)
                 .build();
 
         this.departmentRepository.save(department);
 
-        return RsData.of(RsCode.S_03, "부서가 업데이트되었습니다.",department);
+        return RsData.of(RsCode.S_03, "부서가 업데이트되었습니다.", department);
     }
 
     // 부서 삭제
     public RsData delete(Long id) {
+        // 부서 찾기
         RsData<Department> rsData = findById(id);
-
+        // 없으면 그냥 리턴
         if (rsData.getData() == null) {
-            return RsData.of(rsData.getRsCode(), rsData.getMsg());
+            return rsData;
         }
 
         this.departmentRepository.delete(rsData.getData());
