@@ -1,7 +1,7 @@
 package com.app.businessBridge.domain.member.Service;
 
 import com.app.businessBridge.domain.department.entity.Department;
-import com.app.businessBridge.domain.department.service.DepartmentService;
+import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.entity.Member;
@@ -28,25 +28,18 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final DepartmentService departmentService;
+    private final DepartmentRepository departmentRepository;
     private final GradeService gradeService;
     private final JwtProvider jwtProvider;
 
     // 회원 생성
-    public RsData create(Long departmentId, Long gradeId, String username,
+    public RsData create(Integer departmentCode, Long gradeId, String username,
                          Integer memberNumber, String name, String password, String email) {
-        RsData<Department> departmentRsData = this.departmentService.findById(departmentId);
+        Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         RsData<Grade> gradeRsData = this.gradeService.findById(gradeId);
 
-        // 존재하는 부서, 직급인지 검증하는 if 문
-        if (departmentRsData.getData() == null) {
-            return RsData.of(departmentRsData.getRsCode(), departmentRsData.getMsg());
-        } else if (gradeRsData.getData() == null) {
-            return RsData.of(gradeRsData.getRsCode(), gradeRsData.getMsg());
-        }
-
         Member member = Member.builder()
-                .department(departmentRsData.getData())
+                .department(od.get())
                 .grade(gradeRsData.getData())
                 .username(username)
                 .memberNumber(memberNumber)
@@ -81,23 +74,19 @@ public class MemberService {
     }
 
     // 회원 수정
-    public RsData<Member> update(Long id, Long departmentId, Long gradeId, String username,
+    public RsData<Member> update(Long id, Integer departmentCode, Long gradeId, String username,
                                  Integer memberNumber, String name, String password, String email) {
         RsData<Member> rsData = findById(id);
-        RsData<Department> departmentRsData = this.departmentService.findById(departmentId);
+        Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         RsData<Grade> gradeRsData = this.gradeService.findById(gradeId);
 
-        // 존재하는 회원, 부서, 직급인지 검증하는 if 문
+        // 존재하는 회원인지 검증
         if (rsData.getData() == null) {
             return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
-        } else if (departmentRsData.getData() == null) {
-            return RsData.of(departmentRsData.getRsCode(), departmentRsData.getMsg(), null);
-        } else if (gradeRsData.getData() == null) {
-            return RsData.of(gradeRsData.getRsCode(), gradeRsData.getMsg(), null);
         }
 
         Member member = rsData.getData().toBuilder()
-                .department(departmentRsData.getData())
+                .department(od.get())
                 .grade(gradeRsData.getData())
                 .username(username)
                 .memberNumber(memberNumber)
