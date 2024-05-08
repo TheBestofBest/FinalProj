@@ -1,6 +1,7 @@
 package com.app.businessBridge.global.holidayapi;
 
 import com.app.businessBridge.global.holidayapi.dto.HoliDayDto;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,14 +56,18 @@ public class ApiExplorer {
             }
             // JSON 응답을 HoliDayDto 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
-            holiDayDto = objectMapper.readValue(conn.getInputStream(), HoliDayDto.class);
+
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+            holiDayDto = objectMapper.readValue(sb.toString(), HoliDayDto.class);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         System.out.println(sb);
 
-        System.out.println(holiDayDto);
+        System.out.println(holiDayDto.getResponse().getBody().getTotalCount());
+        System.out.println(holiDayDto.getResponse().getBody().getItems().getItem().get(1).getLocdate());
 
         conn.disconnect();
 
