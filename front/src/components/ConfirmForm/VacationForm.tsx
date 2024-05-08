@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 const VacationForm = () => {
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
   // 결재 신청 메서드 컴포넌트에서 해결
   return (
     <div className=" min-w-90 ">
@@ -57,7 +57,7 @@ const VacationForm = () => {
             className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
             placeholderText="Select date start"
           />
-          <span className="text-gray-500 mx-4">to</span>
+          <span className="text-gray-500 mx-4">to2</span>
           <DatePicker
             selected={endDate}
             onChange={(date) => setEndDate(date)}
