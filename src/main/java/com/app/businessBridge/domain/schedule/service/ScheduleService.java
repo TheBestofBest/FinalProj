@@ -1,10 +1,12 @@
 package com.app.businessBridge.domain.schedule.service;
 
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.schedule.entity.Schedule;
 import com.app.businessBridge.domain.schedule.repository.ScheduleRepository;
 import com.app.businessBridge.domain.schedule.request.ScheduleRequest;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
+import com.app.businessBridge.global.request.Request;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,7 @@ import java.util.Optional;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
-
-    // 모든 메서드에 대해 권한 검사 해야함
+    private final Request request;
 
     @Transactional
     public RsData create(ScheduleRequest.CreateReq req) {
@@ -27,9 +28,15 @@ public class ScheduleService {
         if(timeValidation(req.getStartDate(), req.getEndDate())== -1){
             return RsData.of(RsCode.F_06,"끝시간은 시작시간보다 앞일 수 없습니다.");
         }
+        
+        Member loginedMember = request.getMember();
 
+        if(!authorized(loginedMember, req.getRelationName(), req.getRelationId())){
+            return RsData.of(RsCode.F_02,"권한이 없습니다.");
+        }
+        
         Schedule schedule = Schedule.builder()
-                .authorName("홍길동")
+                .authorName(loginedMember.getName())
                 .relationName(req.getRelationName())
                 .relationId(req.getRelationId())
                 .name(req.getName())
@@ -65,8 +72,14 @@ public class ScheduleService {
             return RsData.of(RsCode.F_06,"끝시간은 시작시간보다 앞일 수 없습니다.");
         }
 
+        Member loginedMember = request.getMember();
+
+        if(!authorized(loginedMember, schedule.get().getRelationName(), schedule.get().getRelationId())){
+            return RsData.of(RsCode.F_02,"권한이 없습니다.");
+        }
+
         Schedule tempSchedule = schedule.get().toBuilder()
-                .authorName("홍길동")
+                .authorName(loginedMember.getName())
                 .name(req.getName())
                 .startDate(req.getStartDate())
                 .endDate(req.getEndDate())
@@ -85,6 +98,12 @@ public class ScheduleService {
             return RsData.of(RsCode.F_04,"존재하지 않는 스케줄 입니다.");
         }
 
+        Member loginedMember = request.getMember();
+
+        if(!authorized(loginedMember, schedule.get().getRelationName(), schedule.get().getRelationId())){
+            return RsData.of(RsCode.F_02,"권한이 없습니다.");
+        }
+
         scheduleRepository.delete(schedule.get());
 
         return RsData.of(RsCode.S_05,"스케줄을 삭제 하였습니다.");
@@ -93,6 +112,26 @@ public class ScheduleService {
 
     public int timeValidation(LocalDate startDate, LocalDate endDate){
         return endDate.compareTo(startDate);
+    }
+
+    private boolean authorized(Member loginedMember, String relationName, Long relationId) {
+
+        // 관리직
+        if(relationName.equals("all") && (loginedMember.getDepartment().getId() == 1L)){
+            return true;
+        }
+
+        // 요청과 같은 부서 인지
+        if(relationName.equals("dept") && (loginedMember.getDepartment().getId() == relationId)){
+            return true;
+        }
+
+        // 요청과 같은 회원인지
+        if(relationName.equals("member") && (relationId == loginedMember.getId())){
+            return true;
+        }
+
+        return false;
     }
 
 }

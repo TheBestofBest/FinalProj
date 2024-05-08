@@ -5,12 +5,15 @@ import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "@/css/calendar.css";
 import { useEffect, useRef, useState } from "react";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import api from "@/util/api";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import SendModal from "./sendModal";
+import DetailModal from "./detailModal";
 
 // 종료일을 하루 더하는 함수
 const addOneDayToEnd = (endDateString) => {
@@ -20,15 +23,31 @@ const addOneDayToEnd = (endDateString) => {
 };
 
 const SchedulePage = () => {
+  const router = useRouter();
   const [schedules, setSchedules] = useState<any[]>([]);
   const [todaySchedules, setTodaySchedules] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [startDate, setStratDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const today = new Date();
+  const [detailModal, setDetailModal] = useState(false);
+  const [detailData, setDetailData] = useState({});
+  var today = new Date(
+    new Date().getFullYear() +
+      "-" +
+      (new Date().getMonth() + 1) +
+      "-" +
+      new Date().getDate() +
+      "-" +
+      "09:00:00",
+  );
+
+  const { isLoading, data } = useQuery({
+    queryKey: ["member"],
+  });
+
+  if (data == null) {
+    router.push("/");
+  }
 
   const handleCheckBox = () => {
-    console.log("돌아요");
     const checkList = document.querySelectorAll(
       'input[name="category"]:checked',
     );
@@ -38,10 +57,10 @@ const SchedulePage = () => {
         getSchedules("all", 0);
       }
       if (checkbox.id == "dept") {
-        getSchedules("dept", 1);
+        getSchedules("dept", data && data?.department.id);
       }
       if (checkbox.id == "member") {
-        getSchedules("member", 2);
+        getSchedules("member", data && data?.id);
       }
     });
   };
@@ -51,6 +70,7 @@ const SchedulePage = () => {
       .get(`/api/v1/schedules/getSchedules/${relationName}/${relationId}`)
       .then((res) => {
         const scheduleData = res.data.data.scheduleDTOs.map((schedule) => ({
+          originalId: schedule.id,
           title: schedule.name,
           start: schedule.startDate,
           end:
@@ -59,31 +79,32 @@ const SchedulePage = () => {
               : addOneDayToEnd(schedule.endDate),
           inclusive: true,
           category: schedule.relationName,
+          categoryId: schedule.relationId,
           originalEnd: schedule.endDate,
+          originalStart: schedule.startDate,
         }));
         setSchedules((schedules) => [...schedules, ...scheduleData]);
       });
   };
 
-  // useEffect(() => {
-  //   schedules.map((schedule) => {
-  //     console.log(today);
-  //     console.log(schedule.start);
-  //     console.log(today <= schedule.start);
-  //     if (today >= schedule.start && today <= schedule.originalEnd) {
-  //       console.log(schedule.title);
-  //       console.log(schedule.start);
-  //     }
-  //   });
-  // }, [schedules]);
+  useEffect(() => {
+    const todayData = schedules.filter((schedule) => {
+      var start = new Date(schedule.originalStart);
+      var end = new Date(schedule.originalEnd);
 
+      if (start <= today && end >= today) {
+        return schedule;
+      }
+    });
+    setTodaySchedules(todayData);
+  }, [schedules]);
   useEffect(() => {
     // 회사 일정
     getSchedules("all", 0);
     // 부서
-    getSchedules("dept", 1);
+    getSchedules("dept", data && data?.department.id);
     // 개인
-    getSchedules("member", 2);
+    getSchedules("member", data && data?.id);
   }, []);
 
   function renderEventContent(eventInfo) {
@@ -105,74 +126,68 @@ const SchedulePage = () => {
     return (
       <div className="flex">
         <div className={`${color} me-1 h-auto w-1`}></div>
-        <div className="fc-event-title font-satoshi">
+        <div className="fc-event-title overflow-auto font-satoshi">
           {eventInfo.event.title}
         </div>
       </div>
     );
   }
 
-  const handlerScheduleSend = () => {
-    const sendCategory = document.querySelector("#scheduleCategory").value;
-    const sendName = document.querySelector("#scheduleName").value;
-
-    if (sendName == "") {
-      alert("스케줄명을 입력해 주세요");
-      return;
+  function renderTodayContent(today) {
+    let color;
+    switch (today.category) {
+      case "all":
+        color = "bg-red";
+        break;
+      case "dept":
+        color = "bg-green-700";
+        break;
+      case "member":
+        color = "bg-blue-700";
+        break;
+      default:
+        color = "bg-gray-700";
+        break;
     }
+    return (
+      <div
+        onClick={() => handlerTodayEvent(today)}
+        className="flex cursor-pointer bg-blue-50"
+      >
+        <div className={`${color} me-1 h-auto w-1`}></div>
+        <div>
+          <div className="fc-event-title">{today.title}</div>
+          <div className="text-sm">
+            {today.originalStart} ~ {today.originalEnd}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-    if (startDate > endDate) {
-      alert("시작시간보다 종료시간이 늦을 수 없습니다.");
-      return;
-    }
+  const handlerEvent = (eventInfo) => {
+    const id = eventInfo.event.extendedProps.originalId;
 
-    if (!confirm("스케줄을 등록하시겠습니까?")) {
-      return;
-    }
+    const detailData = schedules.find((schedule) => schedule.originalId === id);
 
-    const sendData = {
-      relationName: sendCategory,
-      relationId: 0,
-      name: sendName,
-      startDate:
-        startDate.getFullYear() +
-        "-" +
-        (startDate.getMonth() + 1 <= 9
-          ? "0" + (startDate.getMonth() + 1)
-          : startDate.getMonth() + 1) +
-        "-" +
-        (startDate.getDate() <= 9
-          ? "0" + startDate.getDate()
-          : startDate.getDate()),
-      endDate:
-        endDate.getFullYear() +
-        "-" +
-        (endDate.getMonth() + 1 <= 9
-          ? "0" + (endDate.getMonth() + 1)
-          : endDate.getMonth() + 1) +
-        "-" +
-        (endDate.getDate() <= 9 ? "0" + endDate.getDate() : endDate.getDate()),
-    };
-    console.log(startDate.getMonth());
-    console.log(endDate);
+    setDetailData(detailData);
+    setDetailModal(true);
+  };
 
-    console.log(JSON.stringify(sendData));
-    api.post("api/v1/schedules", sendData).then((res) => {
-      console.log(res);
-      alert(res.data.msg);
-      if (res.data.isSuccess) {
-        console.log("돌아요2");
-        handleCheckBox();
-        setShowModal(false);
-      }
-    });
+  const handlerTodayEvent = (today) => {
+    const id = today.originalId;
+
+    const detailData = schedules.find((schedule) => schedule.originalId === id);
+
+    setDetailData(detailData);
+    setDetailModal(true);
   };
 
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Schedule" />
       <div className="flex gap-7">
-        <div className="w-1/5 bg-white p-3 shadow-3">
+        <div className="flex w-1/5 flex-grow flex-col justify-between  bg-white p-3 shadow-3">
           <div className="selectArea">
             <div>선택</div>
             <div className="mt-3 flex justify-between">
@@ -231,7 +246,13 @@ const SchedulePage = () => {
               </div>
             </div>
           </div>
-          <div className="createArea mt-10">
+          <div className="todayArea  ">
+            오늘 스케줄
+            <div className="borde mt-3 h-125 flex-col space-y-2 overflow-auto">
+              {todaySchedules.map((today) => renderTodayContent(today))}
+            </div>
+          </div>
+          <div className="createArea">
             <div
               onClick={() => setShowModal(true)}
               className="block items-center justify-center rounded-full bg-slate-500 py-1 text-center font-medium text-white hover:cursor-pointer hover:bg-opacity-90"
@@ -252,111 +273,23 @@ const SchedulePage = () => {
             events={schedules}
             height="700px"
             eventContent={renderEventContent}
+            eventClick={handlerEvent}
           />
         </div>
       </div>
       {showModal ? (
-        <>
-          <div className="  fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none focus:outline-none">
-            <div className="relative mx-auto my-6 w-180">
-              {/*content*/}
-              <div className="relative flex w-full flex-col rounded-lg border-0 bg-white shadow-lg outline-none focus:outline-none">
-                {/*header*/}
-                <div className="border-blueGray-200 flex items-start justify-between rounded-t border-b border-solid p-5">
-                  <h3 className="text-3xl font-semibold">스케줄 등록</h3>
-                  <button
-                    className="float-right ml-auto border-0 bg-transparent p-1 text-3xl font-semibold leading-none text-black opacity-5 outline-none focus:outline-none"
-                    onClick={() => setShowModal(false)}
-                  >
-                    <span className="block h-6 w-6 bg-transparent text-2xl text-black opacity-5 outline-none focus:outline-none">
-                      ×
-                    </span>
-                  </button>
-                </div>
-                {/*body*/}
-                <div className="relative  p-6">
-                  <div className="flex gap-3 ">
-                    <div className="w-1/2">
-                      <label
-                        htmlFor="scheduleCategory"
-                        className="block text-xl"
-                      >
-                        category
-                      </label>
-                      <div className="mt-1">
-                        <select
-                          id="scheduleCategory"
-                          name="scheduleCategory"
-                          className="text-gray-900 ring-gray-300 block w-full rounded-md border-0 py-2 shadow-sm ring-1 ring-inset focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                        >
-                          <option value="all">회사</option>
-                          <option value="dept">부서</option>
-                          <option value="member">개인</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div className="w-1/2">
-                      <label htmlFor="name" className="block text-xl">
-                        name
-                      </label>
-                      <div className="mt-1">
-                        <div className="ring-gray-300 flex rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
-                          <input
-                            type="text"
-                            name="scheduleName"
-                            id="scheduleName"
-                            className="text-gray-900 placeholder:text-gray-400 block flex-1 border-0 bg-transparent py-1.5 pl-1 focus:ring-0 sm:text-sm sm:leading-6"
-                            placeholder="스케줄명을 입력해 주세요"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-5 flex gap-3 ">
-                    <div className="w-1/2">
-                      <div>시작일</div>
-                      <DatePicker
-                        className="mt-1 inline-block rounded-md border border-blue-300 px-19 py-1"
-                        dateFormat={"yyyy년 MM월 dd일"}
-                        selected={startDate}
-                        onChange={(date) => setStratDate(date)}
-                        closeOnScroll={true}
-                      />
-                    </div>
-                    <div className="w-1/2">
-                      <div>종료일</div>
-                      <DatePicker
-                        className="mt-1 inline-block rounded-md border border-blue-300 px-20 py-1"
-                        dateFormat={"yyyy년 MM월 dd일"}
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date)}
-                        closeOnScroll={true}
-                      />
-                    </div>
-                  </div>
-                </div>
-                {/*footer*/}
-                <div className="border-blueGray-200 flex items-center justify-end rounded-b border-t border-solid p-3">
-                  <button
-                    className="text-red-500 background-transparent mb-1 mr-1 px-6 py-2 text-sm font-bold uppercase outline-none transition-all duration-150 ease-linear focus:outline-none"
-                    type="button"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Close
-                  </button>
-                  <button
-                    className="mb-1 mr-1 rounded bg-emerald-500 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-emerald-600"
-                    type="button"
-                    onClick={handlerScheduleSend}
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="fixed inset-0 z-40 bg-black opacity-25"></div>
-        </>
+        <SendModal
+          setShowModal={setShowModal}
+          handleCheckBox={handleCheckBox}
+          data={data}
+        />
+      ) : null}
+      {detailModal ? (
+        <DetailModal
+          setDetailModal={setDetailModal}
+          handleCheckBox={handleCheckBox}
+          detailData={detailData}
+        />
       ) : null}
     </DefaultLayout>
   );
