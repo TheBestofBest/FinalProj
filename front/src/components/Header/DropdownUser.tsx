@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import api from "@/util/api";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
@@ -33,6 +38,17 @@ const DropdownUser = () => {
     document.addEventListener("keydown", keyHandler);
     return () => document.removeEventListener("keydown", keyHandler);
   });
+
+  const logout = async () => {
+    await api.post("/api/v1/members/logout").then((res) => {
+      console.log(res.data.isSuccess);
+      if (res.data.isSuccess) {
+        queryClient.setQueryData(["member"], null);
+        alert(res.data.msg);
+      }
+    });
+    router.replace("/auth/signin");
+  };
 
   return (
     <div className="relative">
@@ -161,7 +177,10 @@ const DropdownUser = () => {
             </Link>
           </li>
         </ul>
-        <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <button
+          onClick={logout}
+          className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+        >
           <svg
             className="fill-current"
             width="22"

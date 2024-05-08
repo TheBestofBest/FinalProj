@@ -20,7 +20,7 @@ const SignIn: React.FC = () => {
   const router = useRouter();
 
   // 로그인 상태일때, 홈으로 돌려 보냄.
-  if (queryClient.getQueryData(["member"]) !== undefined) {
+  if (queryClient.getQueryData(["member"]) != null) {
     alert("이미 로그인 상태 입니다.");
     router.replace("/");
   }
