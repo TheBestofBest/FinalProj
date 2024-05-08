@@ -2,6 +2,7 @@ package com.app.businessBridge.domain.member.entity;
 
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.grade.entity.Grade;
+import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.domain.workingstate.entity.WorkingState;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import com.app.businessBridge.global.image.entity.Image;
@@ -12,6 +13,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,10 +46,11 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "working_state_id")
     @JsonIgnore
     private WorkingState workingState;
-    // 연봉 > 정산 시 필요
-    private Long salary;
 
+    private Long salary; // 연봉 > 정산 시 필요
 
-    // 리프레시 토큰
-    private String refreshToken;
+    private String refreshToken; // 리프레시 토큰
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<MemberChatRelation> chattingRooms;
 }

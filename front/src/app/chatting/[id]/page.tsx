@@ -1,8 +1,8 @@
 'use client'
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { ChattingRoom, Member, Message } from "../type";
+import React, { useEffect, useRef, useState } from "react";
+import { ChatLog, ChattingRoom, Member, Message } from "../type";
 import api from "@/util/api";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -12,19 +12,24 @@ const Id = () => {
     const params: Params = useParams();
     const router = useRouter();
     const queryClient = useQueryClient();
-    const memberData : any = queryClient.getQueryData(["member"]);
-
+    const memberData: any = queryClient.getQueryData(["member"]);
     const ws = useRef<WebSocket | null>(null);
-    const [chosenUsername, setChosenUsername] = useState(""); //선택된 유저 이름 지정 
 
     const [messages, setMessages] = useState<Message[]>([]); //매세지들 (채팅창에 전부 다 쳐서 쌓인 글들)
     const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
+    const [chattingLogs, setChattingLogs] = useState<ChatLog[]>([]);
+
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        // 새로운 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
+        containerRef.current ?.scrollTo(0, containerRef.current.scrollHeight);
+        // containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    }, [chattingLogs, messages]);
 
     useEffect(() => {
         fetchChattingRoom();
-        console.log(memberData);
-        console.log(memberData.memberDTO.name);
-        console.log(memberData.memberDTO.username);
+        fetchChatLogs();
         wsHandler();
     }, [])
 
@@ -54,11 +59,19 @@ const Id = () => {
             })
     }
 
+    const fetchChatLogs = () => {
+        api.get(`/api/v1/logs/${params.id}`)
+            .then(response => {
+                setChattingLogs(response.data.data.chatLogDtoList);
+            }).catch(err => {
+            })
+    }
+
     const [message, setMessage] = useState<Message>({
         roomId: parseInt(params.id),
         content: '',
-        username: memberData.memberDTO.username,
-        name: memberData.memberDTO.name,
+        username: memberData.username,
+        name: memberData.name,
         isCheck: chattingRoom?.members.length
     });
 
@@ -67,8 +80,8 @@ const Id = () => {
         setMessage({
             roomId: parseInt(params.id),
             content: '',
-            username: memberData.memberDTO.username,
-            name: memberData.memberDTO.name,
+            username: memberData.username,
+            name: memberData.name,
             isCheck: message.isCheck ? -1 : undefined
         });
     };
@@ -85,11 +98,28 @@ const Id = () => {
         <>
             <header className="bg-blue-700 text-white py-4 px-6 rounded">
                 <h1 className="text-2xl font-bold">{chattingRoom?.name}</h1>
+                <span className="text-sm">{chattingRoom?.members.map((name, index) =>
+                    <React.Fragment key={index}>
+                        {index == 0 ? name : `, ${name}`}
+                    </React.Fragment>)}
+                </span>
             </header>
-            <main className="flex-1 h-115 p-6 overflow-y-auto ">
+            <main className="flex-1 h-115 p-6 overflow-y-auto" ref={containerRef}>
                 <div className="flex flex-col gap-2">
+                    {chattingLogs?.map((chatLog: ChatLog) => <>
+                        {chatLog.username != memberData.username ?
+                            <div className="bg-gray-100 p-4 rounded-lg max-w-xs self-start border">
+                                <p className="text-sm">{chatLog.content}</p>
+                                <p className="text-sm">{chatLog.name}</p>
+                            </div> :
+                            <div className="bg-blue-200 p-4 rounded-lg max-w-xs self-end">
+                                <p className="text-sm">{chatLog.content}</p>
+                                <p className="text-sm">{chatLog.name}</p>
+                            </div>
+                        }
+                    </>)}
                     {messages?.map((message: Message) => <>
-                        {message.username != memberData.memberDTO.username ?
+                        {message.username != memberData.username ?
                             <div className="bg-gray-100 p-4 rounded-lg max-w-xs self-start border">
                                 <p className="text-sm">{message.content}</p>
                                 <p className="text-sm">{message.name}</p>
