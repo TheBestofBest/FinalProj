@@ -1,4 +1,10 @@
+"use client";
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const VacationForm = () => {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   // 결재 신청 메서드 컴포넌트에서 해결
   return (
     <div className=" min-w-90 ">
@@ -41,46 +47,27 @@ const VacationForm = () => {
         <label className="text-gray-900 mb-2 mt-2 block text-base font-bold dark:text-white">
           휴가 날짜 선택
         </label>
-        <div date-rangepicker className="flex items-center">
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-              <svg
-                className="text-gray-500 dark:text-gray-400 h-4 w-4"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-              </svg>
-            </div>
-            <input
-              name="start"
-              type="text"
-              className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-2.5 ps-10  text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Select date start"
-            />
-          </div>
+        <div className="flex items-center">
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            placeholderText="Select date start"
+          />
           <span className="text-gray-500 mx-4">to</span>
-          <div className="relative">
-            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-              <svg
-                className="text-gray-500 dark:text-gray-400 h-4 w-4"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-              </svg>
-            </div>
-            <input
-              name="end"
-              type="text"
-              className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-2.5 ps-10  text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Select date end"
-            />
-          </div>
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            minDate={startDate}
+            className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            placeholderText="Select date end"
+          />
         </div>
       </div>
     </div>
