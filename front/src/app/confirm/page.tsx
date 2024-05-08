@@ -25,7 +25,7 @@ export default function ConfirmPage() {
           결재 등록 modal 버튼
         </button>
       </div>
-      <div className="h-full w-full overflow-scroll">
+      <div className="h-full w-full overflow-y-auto">
         <ConfirmTable></ConfirmTable>
         {showModal && <ConfirmFormModal clickModal={clickModal} />}
       </div>
