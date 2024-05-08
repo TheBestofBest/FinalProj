@@ -23,11 +23,12 @@ const Id = () => {
 
     useEffect(() => {
         // 새로운 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
-        containerRef.current ?.scrollTo(0, containerRef.current.scrollHeight);
+        containerRef.current?.scrollTo(0, containerRef.current.scrollHeight);
         // containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }, [chattingLogs, messages]);
 
     useEffect(() => {
+        loginCheck();
         fetchChattingRoom();
         fetchChatLogs();
         wsHandler();
@@ -70,8 +71,8 @@ const Id = () => {
     const [message, setMessage] = useState<Message>({
         roomId: parseInt(params.id),
         content: '',
-        username: memberData.username,
-        name: memberData.name,
+        username: memberData?.username,
+        name: memberData?.name,
         isCheck: chattingRoom?.members.length
     });
 
@@ -80,8 +81,8 @@ const Id = () => {
         setMessage({
             roomId: parseInt(params.id),
             content: '',
-            username: memberData.username,
-            name: memberData.name,
+            username: memberData?.username,
+            name: memberData?.name,
             isCheck: message.isCheck ? -1 : undefined
         });
     };
@@ -92,6 +93,11 @@ const Id = () => {
         console.log({ ...message, [name]: value });
     };
 
+    const loginCheck = () => {
+        if (memberData == undefined) {
+            router.push("/auth/signin");
+        }
+    }
 
 
     return (
@@ -104,10 +110,10 @@ const Id = () => {
                     </React.Fragment>)}
                 </span>
             </header>
-            <main className="flex-1 h-115 p-6 overflow-y-auto" ref={containerRef}>
+            <main className="flex-1 h-150 p-6 overflow-y-auto" ref={containerRef}>
                 <div className="flex flex-col gap-2">
                     {chattingLogs?.map((chatLog: ChatLog) => <>
-                        {chatLog.username != memberData.username ?
+                        {chatLog.username != memberData?.username ?
                             <div className="bg-gray-100 p-4 rounded-lg max-w-xs self-start border">
                                 <p className="text-sm">{chatLog.content}</p>
                                 <p className="text-sm">{chatLog.name}</p>
@@ -119,7 +125,7 @@ const Id = () => {
                         }
                     </>)}
                     {messages?.map((message: Message) => <>
-                        {message.username != memberData.username ?
+                        {message.username != memberData?.username ?
                             <div className="bg-gray-100 p-4 rounded-lg max-w-xs self-start border">
                                 <p className="text-sm">{message.content}</p>
                                 <p className="text-sm">{message.name}</p>

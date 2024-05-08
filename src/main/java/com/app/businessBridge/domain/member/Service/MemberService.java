@@ -203,4 +203,9 @@ public class MemberService {
         return RsData.of(RsCode.S_06, "로그인에 성공했습니다.", new MemberResponse.AuthAndMakeTokensResponseBody(member, accessToken, refreshToken));
     }
 
+    @Transactional
+    public void invite() {
+
+    }
+
 }

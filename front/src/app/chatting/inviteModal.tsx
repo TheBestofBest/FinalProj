@@ -79,7 +79,7 @@ const InviteModal = ({ closeModal }: any) => {
                     </div>
                     <div className=" h-24 px-6 overflow-y-auto">
                         {chattingRooms.map((chattingRoom: ChattingRoom) =>
-                            <div className="p-2 border rounded m-2 flex justify-between items-center">
+                            <div className="p-2 border rounded m-2 flex justify-between items-center" key={chattingRoom.id}>
                                 <div className="flex justify-between items-center">
                                     <input className="w-5 h-5" type="checkbox" onChange={(e) => handleCheck(e, chattingRoom.id)} />
                                     <span className="ml-1 p-1">{chattingRoom.name}</span>

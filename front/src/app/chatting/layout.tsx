@@ -13,8 +13,9 @@ import Image from "next/image";
 import CreateBtn from "../../../public/images/chatiing/createButton.png"
 import DropdownChattingRoom from "./DropdownChattingRoom";
 import InviteModal from "./inviteModal";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
 export default function ChattingLayout({
     children,
@@ -23,17 +24,19 @@ export default function ChattingLayout({
 }>) {
 
     const router = useRouter();
+    const params: Params = useParams();
 
 
     const [loading, setLoading] = useState<boolean>(true);
     const [chattingRooms, setChattingRooms] = useState<ChattingRoom[]>([]);
     const [isEmpty, setIsEmpty] = useState<boolean>();
-
+    
 
     const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
 
     useEffect(() => {
         setTimeout(() => setLoading(false), 1000);
+        
         fetchChattingRooms();
     }, []);
 
@@ -86,7 +89,9 @@ export default function ChattingLayout({
             }
             fetchChattingRooms();
             offSelected();
-            router.push("/chatting");
+            if (params.id == id) {
+                router.push("/chatting");
+            }
         } else {
             alert('나가기에 실패했습니다.');
         }
@@ -103,7 +108,9 @@ export default function ChattingLayout({
         const response = await api.delete(`/api/v1/chats/${id}`);
         if (response.status == 200) {
             offSelected();
-            router.push("/chatting");
+            if (params.id == id) {
+                router.push("/chatting");
+            }
         } else {
             alert('나가기에 실패했습니다.');
         }
@@ -122,12 +129,12 @@ export default function ChattingLayout({
             offSelected();
             router.push("/chatting");
         } else {
-            alert('나가기에 실패했습니다.');
+            alert('초대에 실패했습니다.');
         }
     }
 
 
-    //modal 
+    //modal
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => {
         setModalIsOpen(true);
@@ -172,7 +179,7 @@ export default function ChattingLayout({
                     <div>
                         <button className="w-full border rounded mt-1 p-1 hover:bg-gray-200" onClick={openModal}>찾기 및 초대</button>
                     </div>
-                    <div className="mt-1">
+                    <div className="mt-2 h-171.5">
                         {isEmpty ? <></> :
                             chattingRooms.map((chattingRoom: ChattingRoom) =>
                                 <>
@@ -180,7 +187,7 @@ export default function ChattingLayout({
                                      justify-between items-center`} href={"/chatting/" + chattingRoom.id}
                                         onMouseEnter={() => onMouseEnter(chattingRoom.id)} onMouseLeave={onMouseLeave}>
                                         <span className="p-1">{chattingRoom.name}</span>
-                                        
+
                                         {isHovered == chattingRoom.id ?
                                             <DropdownChattingRoom
                                                 onSelected={() => onSelected(chattingRoom.id, chattingRoom.name)}
