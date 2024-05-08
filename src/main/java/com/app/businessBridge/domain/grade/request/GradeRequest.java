@@ -12,9 +12,9 @@ public class GradeRequest {
     @Setter
     public static class CreateRequest {
         @NotNull
-        private Integer gradeCode;
+        private Integer code;
         @NotBlank
-        private String gradeName;
+        private String name;
     }
 
     @Getter
@@ -23,9 +23,9 @@ public class GradeRequest {
         @NotNull
         private Long id;
         @NotNull
-        private Integer gradeCode;
+        private Integer code;
         @NotBlank
-        private String gradeName;
+        private String name;
     }
 
     @Getter

@@ -40,8 +40,8 @@ public class RebateDto {
     public RebateDto(Rebate rebate, Member member) {
         this.memberName = member.getName();
         this.memberId = String.valueOf(member.getMemberNumber());
-        this.grade = member.getGrade().getGradeName();
-        this.dept = member.getDepartment().getDepartmentName();
+        this.grade = member.getGrade().getName();
+        this.dept = member.getDepartment().getName();
 
         this.salary = rebate.getSalary();
         this.bonus = rebate.getBonus();;

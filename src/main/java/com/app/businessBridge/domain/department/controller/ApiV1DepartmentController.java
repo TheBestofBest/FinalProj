@@ -27,8 +27,8 @@ public class ApiV1DepartmentController {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
 
-        RsData rsData = this.departmentService.create(createRequest.getDepartmentCode(),
-                createRequest.getDepartmentName());
+        RsData rsData = this.departmentService.create(createRequest.getCode(),
+                createRequest.getName());
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
@@ -50,8 +50,8 @@ public class ApiV1DepartmentController {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
 
-        RsData<Department> rsData = this.departmentService.update(updateRequest.getId(), updateRequest.getDepartmentCode(),
-                updateRequest.getDepartmentName());
+        RsData<Department> rsData = this.departmentService.update(updateRequest.getId(), updateRequest.getCode(),
+                updateRequest.getName());
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new DepartmentResponse.PatchedDepartment(rsData.getData()));
     }
