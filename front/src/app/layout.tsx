@@ -6,6 +6,7 @@ import "@/css/style.css";
 import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import ReactQueryProviders from "@/util/reactQueryProvider";
+import MeApiWithReactQuery from "@/components/Api/MeApiWithReactQuery";
 
 export default function RootLayout({
   children,
@@ -22,10 +23,11 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en">
+    <html lang="ko">
       <body suppressHydrationWarning={true} className="h-screen">
         <ReactQueryProviders>
           <div className="dark:bg-boxdark-2 dark:text-bodydark">
+            <MeApiWithReactQuery />
             {loading ? <Loader /> : children}
           </div>
         </ReactQueryProviders>
