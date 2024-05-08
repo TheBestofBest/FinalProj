@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.mapping.ToOne;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class Member extends BaseEntity {
     private Department department;
 
     // 직급
-    @OneToOne
+    @ManyToOne
     private Grade grade;
 
     // 로그인 아이디
