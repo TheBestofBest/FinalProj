@@ -26,8 +26,8 @@ public class ApiV1GradeController {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
 
-        RsData rsData = this.gradeService.create(createRequest.getGradeCode(),
-                createRequest.getGradeName());
+        RsData rsData = this.gradeService.create(createRequest.getCode(),
+                createRequest.getName());
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
@@ -38,7 +38,8 @@ public class ApiV1GradeController {
     public RsData<GradeResponse.GetGrades> getAll() {
         RsData<List<Grade>> rsData = this.gradeService.findAll();
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse.GetGrades(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(),
+                new GradeResponse.GetGrades(rsData.getData()));
     }
 
     // 직급 수정
@@ -49,8 +50,8 @@ public class ApiV1GradeController {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
 
-        RsData<Grade> rsData = this.gradeService.update(updateRequest.getId(), updateRequest.getGradeCode(),
-                updateRequest.getGradeName());
+        RsData<Grade> rsData = this.gradeService.update(updateRequest.getId(), updateRequest.getCode(),
+                updateRequest.getName());
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse.PatchedGrade(rsData.getData()));
     }

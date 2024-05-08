@@ -17,9 +17,9 @@ import lombok.experimental.SuperBuilder;
 public class Grade extends BaseEntity {
 
     // 직급 코드
-    private Integer gradeCode;
+    private Integer code;
 
     // 직급명
-    private String gradeName;
+    private String name;
 
 }

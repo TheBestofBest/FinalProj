@@ -10,11 +10,11 @@ public class MemberRequest {
 
     @Getter
     @Setter
-    public static class CreateRequset {
+    public static class CreateRequest {
         @NotNull
-        private Long departmentId;
+        private Integer departmentCode;
         @NotNull
-        private Long gradeId;
+        private Integer gradeCode;
         @NotBlank
         private String username;
         @NotNull
@@ -33,9 +33,9 @@ public class MemberRequest {
         @NotNull
         private Long id;
         @NotNull
-        private Long departmentId;
+        private Integer departmentCode;
         @NotNull
-        private Long gradeId;
+        private Integer gradeCode;
         @NotBlank
         private String username;
         @NotNull

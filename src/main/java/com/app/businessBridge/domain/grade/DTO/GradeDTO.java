@@ -13,8 +13,8 @@ import java.util.List;
 public class GradeDTO {
 
     private Long id;
-    private Integer gradeCode;
-    private String gradeName;
+    private Integer code;
+    private String name;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -23,8 +23,8 @@ public class GradeDTO {
 
     public GradeDTO(Grade grade) {
         this.id = grade.getId();
-        this.gradeCode = grade.getGradeCode();
-        this.gradeName = grade.getGradeName();
+        this.code = grade.getCode();
+        this.name = grade.getName();
         this.createdDate = grade.getCreatedDate();
         this.modifiedDate = grade.getModifiedDate();
     }
