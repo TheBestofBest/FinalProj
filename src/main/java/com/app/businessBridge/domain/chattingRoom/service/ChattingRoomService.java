@@ -21,16 +21,22 @@ public class ChattingRoomService {
     private final ChattingRoomRepository chattingRoomRepository;
     private final MemberChatService memberChatService;
 
+
     //임시 : 해당 유저에 대한 리스트 가져오기 필요
     @Transactional
-    public RsData<List<ChattingRoom>> getListByUsername(String username) {
-        return chattingRoomRepository.findChattingRoomByUsername(username).isEmpty() ? RsData.of(
+    public RsData<List<ChattingRoom>> getListByMemberId(Long memberId) {
+        List<MemberChatRelation> chatRooms = memberChatService.getListByMemberId(memberId);
+        List<ChattingRoom> chattingRoomList = new ArrayList<>();
+        for (MemberChatRelation mcr : chatRooms) {
+            chattingRoomList.add(this.getChattingRoom(mcr.getChattingRoom().getId()).getData());
+        }
+        return chatRooms.isEmpty() ? RsData.of(
                 RsCode.F_04,
                 "해당 채팅방 없음"
         ) : RsData.of(
                 RsCode.S_01,
                 "불러오기 성공",
-                chattingRoomRepository.findChattingRoomByUsername(username)
+                chattingRoomList
         );
     }
 
@@ -64,10 +70,13 @@ public class ChattingRoomService {
     }
 
     @Transactional
-    public RsData<ChattingRoom> modify(Long id, String name) {
-        ChattingRoom chattingRoom = this.getChattingRoom(id).getData();
+    public RsData<ChattingRoom> modify(Long chatRoomId, String name) {
+        RsData<ChattingRoom> rsData = this.getChattingRoom(chatRoomId);
+        if (!rsData.getIsSuccess()) {
+            return rsData;
+        }
         try {
-            ChattingRoom modified = chattingRoom.toBuilder()
+            ChattingRoom modified = rsData.getData().toBuilder()
                     .name(name)
                     .build();
             chattingRoomRepository.save(modified);
@@ -80,15 +89,20 @@ public class ChattingRoomService {
 
     @Transactional
     public RsData<ChattingRoom> invite(Long chatRoomId, Member member) {
-        ChattingRoom chattingRoom = this.getChattingRoom(chatRoomId).getData();
+        RsData<ChattingRoom> rsData = this.getChattingRoom(chatRoomId);
+        if (!rsData.getIsSuccess()) {
+            return rsData;
+        }
+        List<MemberChatRelation> members = memberChatService.getListByChatId(chatRoomId);
         try {
-            List<MemberChatRelation> relations = chattingRoom.getMembers();
-            relations.add(memberChatService.create(chattingRoom, member));
-            chattingRoom = chattingRoom.toBuilder()
-                    .members(relations)
-                    .build();
-            chattingRoomRepository.save(chattingRoom);
-            return RsData.of(RsCode.S_02, "초대 성공", chattingRoom);
+            return members.stream().filter(r -> r.getMember().equals(member))
+                    .findAny()
+                    .map(m -> RsData.of(
+                            RsCode.F_01, "이미 초대됨", rsData.getData()
+                    )).orElseGet(() -> {
+                        memberChatService.create(rsData.getData(), member);
+                        return RsData.of(RsCode.S_02, "초대 성공", getChattingRoom(chatRoomId).getData());
+                    });
         } catch (Exception e) {
             return RsData.of(RsCode.F_01, "초대 실패");
         }
@@ -96,20 +110,16 @@ public class ChattingRoomService {
 
     @Transactional
     public RsData<ChattingRoom> exit(Long chatRoomId, Member member) {
-        ChattingRoom chattingRoom = this.getChattingRoom(chatRoomId).getData();
+        RsData<ChattingRoom> rsData = this.getChattingRoom(chatRoomId);
+        if (!rsData.getIsSuccess()) {
+            return rsData;
+        }
+        List<MemberChatRelation> members = memberChatService.getListByChatId(chatRoomId);
         try {
-            List<MemberChatRelation> relations = chattingRoom.getMembers();
-            relations = relations.stream()
-                    .filter(relation -> !relation.getMember().equals(member))
-                    .collect(Collectors.toList());
-            if (relations.isEmpty()) {
-                this.delete(chatRoomId);
-            }
-            chattingRoom = chattingRoom.toBuilder()
-                    .members(relations)
-                    .build();
-            chattingRoomRepository.save(chattingRoom);
-            return RsData.of(RsCode.S_03, "나가기 성공");
+            members.stream().filter(r -> r.getMember().equals(member))
+                    .findFirst()
+                    .ifPresent(memberChatService::delete);
+            return RsData.of(RsCode.S_03, "나가기 성공", getChattingRoom(chatRoomId).getData());
         } catch (Exception e) {
             return RsData.of(RsCode.F_01, "나가기 실패");
         }
@@ -117,10 +127,13 @@ public class ChattingRoomService {
 
     @Transactional
     public RsData<ChattingRoom> delete(Long chatRoomId) {
-        ChattingRoom chattingRoom = this.getChattingRoom(chatRoomId).getData();
+        RsData<ChattingRoom> rsData = this.getChattingRoom(chatRoomId);
+        if (!rsData.getIsSuccess()) {
+            return rsData;
+        }
         try {
-            chattingRoomRepository.delete(chattingRoom);
-            return RsData.of(RsCode.S_04,"채팅방 삭제");
+            chattingRoomRepository.delete(rsData.getData());
+            return RsData.of(RsCode.S_04, "채팅방 삭제");
         } catch (Exception e) {
             return RsData.of(RsCode.F_01, "삭제 실패");
         }
