@@ -17,20 +17,27 @@ public class GradeService {
 
     // 직급 생성
     public RsData create(Integer code, String name) {
+        // 중복 검사
+        if (this.gradeRepository.findByCode(code).isPresent()) {
+            return RsData.of(RsCode.F_06, "이미 존재하는 직급코드 입니다.");
+        } else if (this.gradeRepository.findByName(name).isPresent()) {
+            return RsData.of(RsCode.F_06, "이미 존재하는 직급명 입니다.");
+        }
+
         Grade grade = Grade.builder()
                 .code(code)
                 .name(name)
                 .build();
         this.gradeRepository.save(grade);
 
-        return RsData.of(RsCode.S_02, "새로운 리소스가 성공적으로 생성되었습니다.");
+        return RsData.of(RsCode.S_02, "직급이 생성되었습니다.");
     }
 
     // 직급 모두 불러오기
     public RsData<List<Grade>> findAll() {
         List<Grade> gradeDTOList = this.gradeRepository.findAll();
 
-        return RsData.of(RsCode.S_05, "요청한 리소스목록을 찾았습니다.", gradeDTOList);
+        return RsData.of(RsCode.S_05, "직급목록을 찾았습니다.", gradeDTOList);
     }
 
     // 직급 업데이트
@@ -38,7 +45,14 @@ public class GradeService {
         RsData<Grade> rsData = findById(id);
 
         if (rsData.getData() == null) {
-            return RsData.of(rsData.getRsCode(), rsData.getMsg(), null);
+            return rsData;
+        }
+
+        // 중복 검사
+        if (this.gradeRepository.findByCode(code).isPresent()) {
+            return RsData.of(RsCode.F_06, "이미 존재하는 직급코드 입니다.");
+        } else if (this.gradeRepository.findByName(name).isPresent()) {
+            return RsData.of(RsCode.F_06, "이미 존재하는 직급명 입니다.");
         }
 
         Grade grade = rsData.getData().toBuilder()

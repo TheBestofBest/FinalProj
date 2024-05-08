@@ -38,7 +38,8 @@ public class ApiV1GradeController {
     public RsData<GradeResponse.GetGrades> getAll() {
         RsData<List<Grade>> rsData = this.gradeService.findAll();
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new GradeResponse.GetGrades(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(),
+                new GradeResponse.GetGrades(rsData.getData()));
     }
 
     // 직급 수정

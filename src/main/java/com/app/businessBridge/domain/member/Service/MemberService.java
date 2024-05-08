@@ -3,6 +3,7 @@ package com.app.businessBridge.domain.member.Service;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
+import com.app.businessBridge.domain.grade.repository.GradeRepository;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.member.repository.MemberRepository;
@@ -29,18 +30,18 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final DepartmentRepository departmentRepository;
-    private final GradeService gradeService;
+    private final GradeRepository gradeRepository;
     private final JwtProvider jwtProvider;
 
     // 회원 생성
-    public RsData create(Integer departmentCode, Long gradeId, String username,
+    public RsData create(Integer departmentCode, Integer gradeCode, String username,
                          Integer memberNumber, String name, String password, String email) {
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
-        RsData<Grade> gradeRsData = this.gradeService.findById(gradeId);
+        Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
         Member member = Member.builder()
                 .department(od.get())
-                .grade(gradeRsData.getData())
+                .grade(og.get())
                 .username(username)
                 .memberNumber(memberNumber)
                 .name(name)
@@ -74,11 +75,11 @@ public class MemberService {
     }
 
     // 회원 수정
-    public RsData<Member> update(Long id, Integer departmentCode, Long gradeId, String username,
+    public RsData<Member> update(Long id, Integer departmentCode, Integer gradeCode, String username,
                                  Integer memberNumber, String name, String password, String email) {
         RsData<Member> rsData = findById(id);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
-        RsData<Grade> gradeRsData = this.gradeService.findById(gradeId);
+        Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
         // 존재하는 회원인지 검증
         if (rsData.getData() == null) {
@@ -87,7 +88,7 @@ public class MemberService {
 
         Member member = rsData.getData().toBuilder()
                 .department(od.get())
-                .grade(gradeRsData.getData())
+                .grade(og.get())
                 .username(username)
                 .memberNumber(memberNumber)
                 .name(name)
