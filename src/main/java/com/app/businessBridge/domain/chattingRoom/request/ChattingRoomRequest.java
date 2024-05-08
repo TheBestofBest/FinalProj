@@ -14,4 +14,11 @@ public class ChattingRoomRequest {
         @NotBlank
         private String name;
     }
+
+    @Getter
+    @Setter
+    public static class Invite {
+        @NotBlank
+        private String username;
+    }
 }

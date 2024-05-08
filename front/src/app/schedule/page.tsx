@@ -29,7 +29,15 @@ const SchedulePage = () => {
   const [showModal, setShowModal] = useState(false);
   const [detailModal, setDetailModal] = useState(false);
   const [detailData, setDetailData] = useState({});
-  var today = new Date();
+  var today = new Date(
+    new Date().getFullYear() +
+      "-" +
+      (new Date().getMonth() + 1) +
+      "-" +
+      new Date().getDate() +
+      "-" +
+      "09:00:00",
+  );
 
   const { isLoading, data } = useQuery({
     queryKey: ["member"],
@@ -84,17 +92,11 @@ const SchedulePage = () => {
       var start = new Date(schedule.originalStart);
       var end = new Date(schedule.originalEnd);
 
-      console.log("시작 : " + start);
-      console.log("오늘 : " + today);
-      console.log("종료 : " + end);
-
       if (start <= today && end >= today) {
         return schedule;
       }
     });
     setTodaySchedules(todayData);
-
-    console.log(todayData.length);
   }, [schedules]);
   useEffect(() => {
     // 회사 일정
@@ -131,8 +133,49 @@ const SchedulePage = () => {
     );
   }
 
+  function renderTodayContent(today) {
+    let color;
+    switch (today.category) {
+      case "all":
+        color = "bg-red";
+        break;
+      case "dept":
+        color = "bg-green-700";
+        break;
+      case "member":
+        color = "bg-blue-700";
+        break;
+      default:
+        color = "bg-gray-700";
+        break;
+    }
+    return (
+      <div
+        onClick={() => handlerTodayEvent(today)}
+        className="flex cursor-pointer bg-blue-50"
+      >
+        <div className={`${color} me-1 h-auto w-1`}></div>
+        <div>
+          <div className="fc-event-title">{today.title}</div>
+          <div className="text-sm">
+            {today.originalStart} ~ {today.originalEnd}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const handlerEvent = (eventInfo) => {
     const id = eventInfo.event.extendedProps.originalId;
+
+    const detailData = schedules.find((schedule) => schedule.originalId === id);
+
+    setDetailData(detailData);
+    setDetailModal(true);
+  };
+
+  const handlerTodayEvent = (today) => {
+    const id = today.originalId;
 
     const detailData = schedules.find((schedule) => schedule.originalId === id);
 
@@ -144,7 +187,7 @@ const SchedulePage = () => {
     <DefaultLayout>
       <Breadcrumb pageName="Schedule" />
       <div className="flex gap-7">
-        <div className="w-1/5 bg-white p-3 shadow-3">
+        <div className="flex w-1/5 flex-grow flex-col justify-between  bg-white p-3 shadow-3">
           <div className="selectArea">
             <div>선택</div>
             <div className="mt-3 flex justify-between">
@@ -203,7 +246,13 @@ const SchedulePage = () => {
               </div>
             </div>
           </div>
-          <div className="createArea mt-10">
+          <div className="todayArea  ">
+            오늘 스케줄
+            <div className="borde mt-3 h-125 flex-col space-y-2 overflow-auto">
+              {todaySchedules.map((today) => renderTodayContent(today))}
+            </div>
+          </div>
+          <div className="createArea">
             <div
               onClick={() => setShowModal(true)}
               className="block items-center justify-center rounded-full bg-slate-500 py-1 text-center font-medium text-white hover:cursor-pointer hover:bg-opacity-90"

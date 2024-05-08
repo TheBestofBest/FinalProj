@@ -12,12 +12,12 @@ public class ChatLogDto {
     private String content;
     private String name;
     private String username;
-    private int isCheck;
+//    private int isCheck;
     public ChatLogDto(ChatLog chatLog) {
         this.roomId = chatLog.getChattingRoom().getId();
         this.content = chatLog.getContent();
         this.name = chatLog.getMember().getName();
         this.username = chatLog.getMember().getUsername();
-        this.isCheck = chatLog.getIsCheck();
+//        this.isCheck = chatLog.getIsCheck();
     }
 }

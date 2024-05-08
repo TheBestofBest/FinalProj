@@ -2,6 +2,7 @@ package com.app.businessBridge.domain.member.entity;
 
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.grade.entity.Grade;
+import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.domain.workingstate.entity.WorkingState;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.mapping.ToOne;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -55,4 +58,8 @@ public class Member extends BaseEntity {
 
     // 연봉 > 정산 시 필요
     private Long salary;
+
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<MemberChatRelation> chattingRooms;
 }

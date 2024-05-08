@@ -24,9 +24,11 @@ const DetailModal: React.FC<DetailModalProps> = ({
   detailData,
 }) => {
   const [updateForm, setUpdateForm] = useState(false);
-  const [startDate, setStartDate] = useState(new Date(detailData.start));
-  const [endDate, setEndDate] = useState(new Date(detailData.end));
-
+  const [startDate, setStartDate] = useState(
+    new Date(detailData.originalStart),
+  );
+  const [endDate, setEndDate] = useState(new Date(detailData.originalEnd));
+  console.log(detailData);
   const { isLoading, data } = useQuery({
     queryKey: ["member"],
   });
@@ -300,8 +302,8 @@ const DetailModal: React.FC<DetailModalProps> = ({
                   {detailData && detailData.title}
                 </div>
                 <div className="flex justify-end">
-                  {detailData && detailData.start} ~{" "}
-                  {detailData && detailData.end}
+                  {detailData && detailData.originalStart} ~{" "}
+                  {detailData && detailData.originalEnd}
                 </div>
               </div>
             )}
