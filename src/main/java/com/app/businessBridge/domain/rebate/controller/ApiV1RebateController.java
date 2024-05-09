@@ -23,18 +23,20 @@ public class ApiV1RebateController {
 
     @GetMapping("/{year}/{month}")
     public String testGetHoilday(@PathVariable(value = "year") String year,
-                                             @PathVariable(value = "month") String month) throws IOException {
+                                 @PathVariable(value = "month") String month) throws IOException {
 
         System.out.println(apiExplorer.getHoilDay(year, month));
 
-        return apiExplorer.getHoilDay(year, month);
+        return "휴일 api";
     }
 
     @GetMapping("/all/{year}/{month}")
     public String testGetAllDay(@PathVariable(value = "year") String year,
                                 @PathVariable(value = "month") String month) throws IOException {
 
-        return apiExplorer.getAllDay(year, month);
+        System.out.println(apiExplorer.getAllDay(year, month));
+
+        return "모든 날짜 api";
     }
 
     @GetMapping("")
