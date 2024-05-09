@@ -59,7 +59,16 @@ public class ApiExplorer {
 
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            holiDayDto = objectMapper.readValue(sb.toString(), HoliDayDto.class);
+            // 휴일이 없는 달 dto 파싱에러 예외 처리 로직
+            String msb = sb.toString().replace("\"items\":\"\"","\"items\":null");
+
+            // 휴일이 하루만 있는 달 List<>형태로 DTO에서 받기위한 예외처리 로직
+            msb = msb.replace("\"item\":{","\"item\":[{");
+            msb = msb.replace("\"seq\":1}}","\"seq\":1}]}");
+
+            System.out.println(msb);
+
+            holiDayDto = objectMapper.readValue(msb, HoliDayDto.class);
 
             // 휴일 총 일수
             System.out.println(year + "년도 "+month+"월 휴일은 총 :"+holiDayDto.getResponse().getBody().getTotalCount()+"일");
