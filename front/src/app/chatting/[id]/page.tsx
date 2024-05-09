@@ -15,17 +15,15 @@ const Id = () => {
     const queryClient = useQueryClient();
     const memberData: any = queryClient.getQueryData(["member"]);
 
-    const [messages, setMessages] = useState<Message[]>([]); //매세지들 (채팅창에 전부 다 쳐서 쌓인 글들)
     const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
     const [chattingLogs, setChattingLogs] = useState<ChatLog[]>([]);
 
-    const containerRef = useRef(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         // 새로운 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
         containerRef.current?.scrollTo(0, containerRef.current.scrollHeight);
-        // containerRef.current.scrollTop = containerRef.current.scrollHeight;
-    }, [chattingLogs, messages]);
+    }, [chattingLogs]);
 
     useEffect(() => {
         loginCheck();
@@ -38,7 +36,6 @@ const Id = () => {
         api.get(`/api/v1/chats/${params.id}`)
             .then(response => {
                 setChattingRoom(response.data.data.chattingRoomDto);
-            }).catch(err => {
             })
     }
 
@@ -46,7 +43,6 @@ const Id = () => {
         api.get(`/api/v1/logs/${params.id}`)
             .then(response => {
                 setChattingLogs(response.data.data.chatLogDtoList);
-            }).catch(err => {
             })
     }
 
@@ -70,15 +66,8 @@ const Id = () => {
         chatClient.onConnect = () => {
             console.log('웹 소켓 연결이 열렸습니다.');
             chatClient.subscribe(`/sub/chat/${params.id}`, (data) => {
-                console.log("받은 메세지 : ", data.body);
                 fetchChatLogs();
             });
-            if (stomp) {
-                chatClient.publish({
-                    destination: `/pub/chat/send/${params.id}`,
-                    body: JSON.stringify(message)
-                });
-            }
         };
         chatClient.activate();
         setStomp(chatClient);
@@ -113,6 +102,13 @@ const Id = () => {
         }
     }
 
+    //enter입력
+    const handleEnterPress = (e: any) => {
+        if (e.keyCode == 13) {
+            sendMessage();
+        }
+    }
+
     return (
         <>
             <header className="bg-blue-700 text-white py-4 px-6 rounded">
@@ -137,7 +133,7 @@ const Id = () => {
                             </div>
                         }
                     </>)}
-                    {messages?.map((message: Message) => <>
+                    {/* {messages?.map((message: Message) => <>
                         {message.username != memberData?.username ?
                             <div className="bg-gray-100 p-4 rounded-lg max-w-xs self-start border">
                                 <p className="text-sm">{message.content}</p>
@@ -148,13 +144,13 @@ const Id = () => {
                                 <p className="text-sm">{message.name}</p>
                             </div>
                         }
-                    </>)}
+                    </>)} */}
                 </div>
             </main>
             <footer className="bg-gray-300 py-4 px-6 ">
                 <div className="flex">
                     <input type="text" placeholder="Type your message..." className="flex-1 rounded-l-lg p-2 focus:outline-none"
-                        name="content" value={message.content} onChange={handleChange} />
+                        name="content" value={message.content} onChange={handleChange} onKeyDown={handleEnterPress} />
                     <button className="bg-blue-700 text-white px-4 rounded-r-lg" type="button" onClick={sendMessage}>Send</button>
                 </div>
             </footer>
