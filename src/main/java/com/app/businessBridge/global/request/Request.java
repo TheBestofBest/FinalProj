@@ -60,6 +60,17 @@ public class Request {
         resp.addHeader("Set-Cookie", cookie.toString());
     }
 
+    public void removeCrossDomainCookie(String name) {
+        ResponseCookie cookie = ResponseCookie.from(name, null)
+                .path("/")
+                .maxAge(0)
+                .sameSite("None")
+                .secure(true)
+                .httpOnly(true)
+                .build();
+        resp.addHeader("Set-Cookie", cookie.toString());
+    }
+
     public void setLogin(SecurityUser securityUser) {
         SecurityContextHolder.getContext().setAuthentication(securityUser.genAuthentication());
     }
