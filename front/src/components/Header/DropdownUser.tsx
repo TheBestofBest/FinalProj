@@ -1,9 +1,25 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import api from "@/util/api";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+
+interface memberInfo {
+  name: String;
+  department: {
+    name: String;
+  };
+  grade: {
+    name: String;
+  };
+}
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const member = queryClient.getQueryData<memberInfo>(["member"]);
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
@@ -34,6 +50,20 @@ const DropdownUser = () => {
     return () => document.removeEventListener("keydown", keyHandler);
   });
 
+  // 로그아웃
+  const logout = async () => {
+    await api.post("/api/v1/members/logout").then((res) => {
+      console.log(res.data.isSuccess);
+      if (res.data.isSuccess) {
+        queryClient.setQueryData(["member"], null);
+        alert(res.data.msg);
+      }
+    });
+    router.replace("/auth/signin");
+  };
+
+  console.log(member);
+
   return (
     <div className="relative">
       <Link
@@ -44,9 +74,11 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {member?.name}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">
+            {member?.department.name} 부서 / {member?.grade.name}
+          </span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
@@ -161,7 +193,10 @@ const DropdownUser = () => {
             </Link>
           </li>
         </ul>
-        <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <button
+          onClick={logout}
+          className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+        >
           <svg
             className="fill-current"
             width="22"
