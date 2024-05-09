@@ -1,10 +1,8 @@
 package com.app.businessBridge.global.holidayapi;
 
-import com.app.businessBridge.global.holidayapi.dto.AllDayDto;
 import com.app.businessBridge.global.holidayapi.dto.HoliDayDto;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -24,7 +22,7 @@ public class ApiExplorer {
     private String api_key;
 
     // 연, 월을 매개변수로 받아 휴일만 return 하는 api
-    public HoliDayDto getHoilDay(String year, String month) throws IOException {
+    public String getHoilDay(String year, String month) throws IOException {
         // 9월로 입력한 경우 09월로 변경 필요
         if(month.length() == 1) {
             month = "0" + month;
@@ -47,6 +45,8 @@ public class ApiExplorer {
 
         HoliDayDto holiDayDto = new HoliDayDto();
 
+
+
         // 응답을 읽기 위한 버퍼
         StringBuilder sb = new StringBuilder();
         try (BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
@@ -60,31 +60,23 @@ public class ApiExplorer {
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
             holiDayDto = objectMapper.readValue(sb.toString(), HoliDayDto.class);
-
-            if(holiDayDto.getTotalCount().equals("0")) {
-                return holiDayDto;
-            }
-
-            // 휴일 총 일수
-            System.out.println(year + "년도 "+month+"월 휴일은 총 :"+holiDayDto.getTotalCount()+"일");
-
-            return holiDayDto;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         System.out.println(sb);
 
-
+        System.out.println(holiDayDto.getResponse().getBody().getTotalCount());
+        System.out.println(holiDayDto.getResponse().getBody().getItems().getItem().get(1).getLocdate());
 
         conn.disconnect();
 
-        return holiDayDto;
+        return sb.toString();
     }
 
     // 연, 월에 해당하는 모든 날짜 요청
     // 주말 구분을 위해 필요 ㅠ
-    public AllDayDto getAllDay(String year, String month) throws IOException {
+    public String getAllDay(String year, String month) throws IOException {
 
         if(month.length() == 1) {
             month = "0" + month;
@@ -101,44 +93,24 @@ public class ApiExplorer {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json");
-
         System.out.println("Response code: " + conn.getResponseCode());
-
-
-        conn.connect();
-
-        AllDayDto allDayDto = new AllDayDto();
-
-        // 응답을 읽기 위한 버퍼
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-            String line;
-            while ((line = rd.readLine()) != null) {
-                sb.append(line);
-            }
-            // JSON 응답을 HoliDayDto 객체로 변환
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-            allDayDto = objectMapper.readValue(sb.toString(), AllDayDto.class);
-
-            System.out.println(year + "년도 "+month+"월 일수는 총 :"+allDayDto.getResponse().getBody().getTotalCount()+"일");
-            System.out.println(allDayDto.getResponse().getBody().getItems().getItem().get(1).getSolWeek());
-
-            return allDayDto;
-        } catch (IOException e) {
-            e.printStackTrace();
+        BufferedReader rd;
+        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
         }
-
-        System.out.println(sb);
-
-
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        rd.close();
         conn.disconnect();
 
         System.out.println(sb);
 
-        return allDayDto;
+        return sb.toString();
     }
 
 

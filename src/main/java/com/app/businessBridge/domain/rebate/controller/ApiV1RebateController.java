@@ -27,16 +27,14 @@ public class ApiV1RebateController {
 
         System.out.println(apiExplorer.getHoilDay(year, month));
 
-        return "휴일 api";
+        return apiExplorer.getHoilDay(year, month);
     }
 
     @GetMapping("/all/{year}/{month}")
     public String testGetAllDay(@PathVariable(value = "year") String year,
                                 @PathVariable(value = "month") String month) throws IOException {
 
-        System.out.println(apiExplorer.getAllDay(year, month));
-
-        return "모든 날짜 api";
+        return apiExplorer.getAllDay(year, month);
     }
 
     @GetMapping("")
