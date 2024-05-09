@@ -22,7 +22,7 @@ export default function ConfirmDetailPage() {
                 </div>
               </div>
               {/* b table: 결재 신청자, 기안일, 부서, 직급 ,, 우측에는 승인 진행도  */}
-              <div className="relative mb-3 mt-2 flex w-full justify-between overflow-x-auto sm:rounded-lg">
+              <div className="relative mb-3 mt-2 flex w-full justify-between overflow-x-auto ">
                 <table className="text-gray-500 dark:text-gray-400 min-w-400 border text-left text-sm rtl:text-right">
                   <tbody>
                     <tr className="border-gray-200 dark:border-gray-700 border-b">
@@ -49,8 +49,25 @@ export default function ConfirmDetailPage() {
                   <HorizontalLinearAlternativeLabelStepper />
                 </div>
               </div>
-              {/* c table: 결재 간략설명, 상세 내용포함 테이블 */}
-              <div className="relative mt-2 flex w-full justify-between overflow-x-auto shadow-md sm:rounded-lg">
+              {/* c table: 결재 간략설명 */}
+              <div className="relative mt-2 flex w-full justify-between overflow-x-auto shadow-md">
+                <table className="text-gray-500 dark:text-gray-400 w-full border text-left text-sm rtl:text-right">
+                  <tbody>
+                    <tr className="border-gray-200 dark:border-gray-700 border-b">
+                      <td className="px-6 py-4">결재 설명</td>
+                      <th
+                        scope="row"
+                        className="text-gray-900 bg-gray-50 dark:bg-gray-800 whitespace-nowrap border px-6 py-4 font-medium dark:text-white"
+                      >
+                        결재 설명
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+                <div></div>
+              </div>
+              {/* d table:  상세 내용 테이블 => 양식별 component */}
+              <div className="relative mt-2 flex w-full justify-between overflow-x-auto shadow-md">
                 <table className="text-gray-500 dark:text-gray-400 w-full border text-left text-sm rtl:text-right">
                   <tbody>
                     <tr className="border-gray-200 dark:border-gray-700 border-b">
