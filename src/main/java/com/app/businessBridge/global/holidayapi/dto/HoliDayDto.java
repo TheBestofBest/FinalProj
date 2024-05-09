@@ -25,7 +25,7 @@ public class HoliDayDto {
     public static class Body {
         private Items items;
 
-        private String totalCount;
+        private Integer totalCount;
 
     }
 
@@ -37,7 +37,7 @@ public class HoliDayDto {
 
     @Getter
     public static class Item {
-
+        // '20240509'
         private String locdate;
 
     }

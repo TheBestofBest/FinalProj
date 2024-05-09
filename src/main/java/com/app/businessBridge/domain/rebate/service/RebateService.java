@@ -23,6 +23,7 @@ public class RebateService {
     private final ApiExplorer apiExplorer;
 
     public void createRebate(Member member, String year, String month) throws IOException {
+
         HoliDayDto holiDayDto = this.apiExplorer.getHoilDay(year, month);
         AllDayDto allDayDto = this.apiExplorer.getAllDay(year, month);
 
@@ -31,6 +32,7 @@ public class RebateService {
 
         // -----
         // member 결재내역 조회 하여 휴가 등 근무하지 않은 날 확인하는 로직 필요
+        // 또는 근태관련 결재 최종 승인 시 근무일을 빼는 방법으로 ????
         // -----
 
         Long salary = member.getSalary() / 12;
@@ -65,14 +67,16 @@ public class RebateService {
         for (int i = 0; i < allDayDto.getResponse().getBody().getItems().getItem().size(); i++) {
             if (allDayDto.getResponse().getBody().getItems().getItem().get(i).getSolWeek().equals("토") || allDayDto.getResponse().getBody().getItems().getItem().get(i).getSolWeek().equals("일")) {
                 holiDay++;
+                // '20240509' 형식으로 weekends에 추가
                 weekends.add(allDayDto.getResponse().getBody().getItems().getItem().get(i).getSolYear() + allDayDto.getResponse().getBody().getItems().getItem().get(i).getSolMonth() + allDayDto.getResponse().getBody().getItems().getItem().get(i).getSolDay());
             }
         }
 
         // 평일 중 공휴일 구하는 로직
-        for (int i = 0; i < holiDayDto.getResponse().getBody().getItems().getItem().size(); i++) {
-            for (int j = 0; j < weekends.size(); j++) {
-                if (!holiDayDto.getResponse().getBody().getItems().getItem().get(i).getLocdate().equals(weekends.get(j))) {
+        if(holiDayDto.getResponse().getBody().getItems() != null) {
+            for (int i = 0; i < holiDayDto.getResponse().getBody().getItems().getItem().size(); i++) {
+                // holiday '20240509' 형식의 locdate가 weekends에 포함되어 있지 않으면
+                if(!weekends.contains(holiDayDto.getResponse().getBody().getItems().getItem().get(i).getLocdate())) {
                     holiDay++;
                 }
             }

@@ -21,6 +21,7 @@ public class AllDayDto {
 
     @Getter
     public static class Body {
+
         private Items items;
 
         private Integer totalCount;
@@ -34,11 +35,11 @@ public class AllDayDto {
 
     @Getter
     public static class Item {
-
+        // '2024'
         private String solYear;
-
+        // '05'
         private String solMonth;
-
+        // '09'
         private String solDay;
 
         private String solWeek;
