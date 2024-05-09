@@ -1,5 +1,8 @@
+"use client";
 import { Package } from "@/types/package";
 import HorizontalLinearAlternativeLabelStepper from "../Stepper/Stepper";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 // 가 데이터
 const packageData: Package[] = [
   {
@@ -27,6 +30,13 @@ const packageData: Package[] = [
     status: "Pending",
   },
 ];
+const router = useRouter();
+
+const handleRouter = () => {
+  // 결재 아이디 받게 되면 바꾸기
+  router.push("/confirm/1");
+};
+
 // Props로 `결재 리스트` 받기
 const ConfirmTable = () => {
   return (
@@ -37,7 +47,11 @@ const ConfirmTable = () => {
           <tbody>
             {packageData.map((packageItem, key) => (
               //[] onClick 으로 상세 페이지로 전송하는 이벤트 만들기
-              <tr key={key} className="hover:cursor-pointer hover:bg-blue-200">
+              <tr
+                key={key}
+                className="hover:cursor-pointer hover:bg-blue-200"
+                onClick={() => handleRouter}
+              >
                 <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
                     {packageItem.name}

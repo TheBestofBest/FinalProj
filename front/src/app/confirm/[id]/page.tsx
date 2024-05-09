@@ -1,6 +1,7 @@
 "use client";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import HorizontalLinearAlternativeLabelStepper from "@/components/Stepper/Stepper";
+import Link from "next/link";
 import { useState } from "react";
 export default function ConfirmDetailPage() {
   // 모달 버튼 클릭 유무를 저장할 state
@@ -15,13 +16,13 @@ export default function ConfirmDetailPage() {
           <div className="flex max-w-full flex-col items-center justify-center overflow-x-auto text-neutral-950 dark:text-neutral-100">
             {/* 클릭 시 결재 메인 페이지로 이동 */}
             <div className="mb-3 mt-3 flex w-full justify-start">
-              <button
-                // onClick={() => handleForm("")}
+              <Link
+                href="/confirm"
                 type="button"
                 className="font-base mx-1 mb-2  me-2 rounded-lg bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 px-5 py-2.5 text-center text-base text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800"
               >
                 뒤로가기
-              </button>
+              </Link>
             </div>
             <div className="mb-3 max-w-3xl">
               {/* a Subject */}
