@@ -5,11 +5,21 @@ import api from "@/util/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
+interface memberInfo {
+  name: String;
+  department: {
+    name: String;
+  };
+  grade: {
+    name: String;
+  };
+}
+
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
-  const member = queryClient.getQueryData(["member"]);
+  const member = queryClient.getQueryData<memberInfo>(["member"]);
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
@@ -64,10 +74,10 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            {member.name}
+            {member?.name}
           </span>
           <span className="block text-xs">
-            {member.department.name} 부서 / {member.grade.name}
+            {member?.department.name} 부서 / {member?.grade.name}
           </span>
         </span>
 
