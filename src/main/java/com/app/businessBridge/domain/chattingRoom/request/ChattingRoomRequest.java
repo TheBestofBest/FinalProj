@@ -21,4 +21,15 @@ public class ChattingRoomRequest {
         @NotBlank
         private String username;
     }
+
+    @Getter
+    @Setter
+    public static class Message {
+        @NotBlank
+        private Long roomId;
+        @NotBlank
+        private String username;
+        @NotBlank
+        private String content;
+    }
 }

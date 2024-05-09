@@ -68,7 +68,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
                 .chattingRoom(chattingRoom)
                 .member(member)
                 .build();
-        chatLogService.save(chatLog);
+//        chatLogService.save(chatLog);
 
         Long chatRoomId = chattingRoom.getId();
         // 메모리 상에 채팅방에 대한 세션 없으면 만들어줌

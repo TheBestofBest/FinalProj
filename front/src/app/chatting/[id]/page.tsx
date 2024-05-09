@@ -6,6 +6,7 @@ import { ChatLog, ChattingRoom, Member, Message } from "../type";
 import api from "@/util/api";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Client } from '@stomp/stompjs';
 
 const Id = () => {
 
@@ -13,7 +14,6 @@ const Id = () => {
     const router = useRouter();
     const queryClient = useQueryClient();
     const memberData: any = queryClient.getQueryData(["member"]);
-    const ws = useRef<WebSocket | null>(null);
 
     const [messages, setMessages] = useState<Message[]>([]); //매세지들 (채팅창에 전부 다 쳐서 쌓인 글들)
     const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
@@ -33,24 +33,6 @@ const Id = () => {
         fetchChatLogs();
         wsHandler();
     }, [])
-
-    const wsHandler = async () => {
-        ws.current = await new WebSocket(`ws://localhost:8090/chat/${params.id}`)
-        ws.current.onopen = () => {
-            console.log('웹 소켓 연결이 열렸습니다.');
-        };
-        // 메시지를 수신했을 때 실행되는 콜백 함수
-        ws.current.onmessage = (event) => {
-            console.log('메시지를 수신했습니다:', event.data);
-            const receivedMessage = JSON.parse(event.data);
-            setMessages(messages => [...messages, receivedMessage]);
-        };
-        // 연결이 닫혔을 때 실행되는 콜백 함수
-        ws.current.onclose = () => {
-            console.log('웹 소켓 연결이 닫혔습니다.');
-        };
-    }
-
 
     const fetchChattingRoom = () => {
         api.get(`/api/v1/chats/${params.id}`)
@@ -76,8 +58,40 @@ const Id = () => {
         isCheck: chattingRoom?.members.length
     });
 
+
+    //채팅방
+    const [stomp, setStomp] = useState<Client>();
+
+    const wsHandler = () => {
+        const chatClient = new Client({
+            brokerURL: 'ws://localhost:8090/chat',
+            reconnectDelay: 5000,
+        });
+        chatClient.onConnect = () => {
+            console.log('웹 소켓 연결이 열렸습니다.');
+            chatClient.subscribe(`/sub/chat/${params.id}`, (data) => {
+                console.log("받은 메세지 : ", data.body);
+                fetchChatLogs();
+            });
+            if (stomp) {
+                chatClient.publish({
+                    destination: `/pub/chat/send/${params.id}`,
+                    body: JSON.stringify(message)
+                });
+            }
+        };
+        chatClient.activate();
+        setStomp(chatClient);
+        chatClient.onStompError = (frame) => {
+            console.error('STOMP 오류:', frame);
+        };
+    }
+
     const sendMessage = async () => {
-        ws.current?.send(JSON.stringify(message));
+        stomp?.publish({
+            destination: `/pub/chat/send/${params.id}`,
+            body: JSON.stringify(message)
+        });
         setMessage({
             roomId: parseInt(params.id),
             content: '',
@@ -98,7 +112,6 @@ const Id = () => {
             router.push("/auth/signin");
         }
     }
-
 
     return (
         <>

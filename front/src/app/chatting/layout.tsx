@@ -26,17 +26,14 @@ export default function ChattingLayout({
     const router = useRouter();
     const params: Params = useParams();
 
-
     const [loading, setLoading] = useState<boolean>(true);
     const [chattingRooms, setChattingRooms] = useState<ChattingRoom[]>([]);
     const [isEmpty, setIsEmpty] = useState<boolean>();
-    
 
     const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
 
     useEffect(() => {
         setTimeout(() => setLoading(false), 1000);
-        
         fetchChattingRooms();
     }, []);
 
