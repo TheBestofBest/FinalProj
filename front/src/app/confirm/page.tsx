@@ -6,7 +6,7 @@ import HorizontalLinearAlternativeLabelStepper from "@/components/Stepper/Steppe
 import { Button } from "@mui/material";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
-export default function ConfirmPage() {
+export default function ConfirmsPage() {
   // 모달 버튼 클릭 유무를 저장할 state
   const [showModal, setShowModal] = useState(false);
 

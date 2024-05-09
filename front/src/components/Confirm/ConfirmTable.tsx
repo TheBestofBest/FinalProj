@@ -36,7 +36,8 @@ const ConfirmTable = () => {
           {/* 추후 head 삭제 */}
           <tbody>
             {packageData.map((packageItem, key) => (
-              <tr key={key}>
+              //[] onClick 으로 상세 페이지로 전송하는 이벤트 만들기
+              <tr key={key} className="hover:cursor-pointer hover:bg-blue-200">
                 <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
                   <h5 className="font-medium text-black dark:text-white">
                     {packageItem.name}

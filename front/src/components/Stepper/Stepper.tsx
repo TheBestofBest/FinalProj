@@ -4,7 +4,7 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 
-const steps = ["반복문으로", "승인자 이름/직급", "Create an ad"];
+const steps = ["반복문으로", "승인자 이름/직급", "세 번째 승인자"];
 
 export default function HorizontalLinearAlternativeLabelStepper() {
   return (
