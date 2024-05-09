@@ -53,6 +53,19 @@ public class ApiV1MemberController {
                 new MemberResponse.LoginResponse(new MemberDTO(authAndMakeTokensRsData.getData().getMember())));
     }
 
+    @PostMapping("/logout")
+    public RsData logout() {
+        try{
+            rq.removeCrossDomainCookie("accessToken");
+            rq.removeCrossDomainCookie("refreshToken");
+        }catch (Exception e){
+            return RsData.of(RsCode.F_07,"로그아웃에 실패했습니다.");
+        }
+
+
+        return RsData.of(RsCode.S_07, "로그아웃되었습니다.");
+    }
+
     // 멤버 단건 조회
     @GetMapping("/{id}")
     public RsData<MemberResponse.GetMember> getMember(@PathVariable(value = "id") Long id) {
