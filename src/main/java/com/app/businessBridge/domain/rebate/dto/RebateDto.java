@@ -37,11 +37,11 @@ public class RebateDto {
     // 세후 실급여
     private Long totalSalary;
 
-    public RebateDto(Rebate rebate, Member member) {
-        this.memberName = member.getName();
-        this.memberId = String.valueOf(member.getMemberNumber());
-        this.grade = member.getGrade().getName();
-        this.dept = member.getDepartment().getName();
+    public RebateDto(Rebate rebate) {
+        this.memberName = rebate.getMember().getName();
+        this.memberId = String.valueOf(rebate.getMember().getMemberNumber());
+        this.grade = rebate.getMember().getGrade().getName();
+        this.dept = rebate.getMember().getDepartment().getName();
 
         this.salary = rebate.getSalary();
         this.bonus = rebate.getBonus();;

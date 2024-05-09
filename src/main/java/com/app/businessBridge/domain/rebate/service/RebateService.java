@@ -4,6 +4,8 @@ package com.app.businessBridge.domain.rebate.service;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.rebate.repository.RebateRepository;
+import com.app.businessBridge.global.RsData.RsCode;
+import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.holidayapi.ApiExplorer;
 import com.app.businessBridge.global.holidayapi.dto.AllDayDto;
 import com.app.businessBridge.global.holidayapi.dto.HoliDayDto;
@@ -22,7 +24,7 @@ public class RebateService {
 
     private final ApiExplorer apiExplorer;
 
-    public void createRebate(Member member, String year, String month) throws IOException {
+    public RsData<Rebate> createRebate(Member member, String year, String month) throws IOException {
 
         HoliDayDto holiDayDto = this.apiExplorer.getHoilDay(year, month);
         AllDayDto allDayDto = this.apiExplorer.getAllDay(year, month);
@@ -55,6 +57,8 @@ public class RebateService {
                 .build();
 
         this.rebateRepository.save(rebate);
+
+        return RsData.of(RsCode.S_01, "정산 생성 성공", rebate);
     }
 
     private static int getWorkDate(AllDayDto allDayDto, HoliDayDto holiDayDto) {

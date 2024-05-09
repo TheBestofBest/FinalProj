@@ -7,7 +7,7 @@ import lombok.Getter;
 public class RebateRequest {
 
     @NotBlank
-    private String yaer;
+    private String year;
     @NotBlank
     private String month;
 

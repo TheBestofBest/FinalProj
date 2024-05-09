@@ -2,9 +2,14 @@ package com.app.businessBridge.domain.rebate.controller;
 
 
 import com.app.businessBridge.domain.member.entity.Member;
+import com.app.businessBridge.domain.rebate.dto.RebateDto;
+import com.app.businessBridge.domain.rebate.entity.Rebate;
+import com.app.businessBridge.domain.rebate.request.RebateRequest;
 import com.app.businessBridge.domain.rebate.service.RebateService;
+import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.holidayapi.ApiExplorer;
 import com.app.businessBridge.global.request.Request;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,12 +51,15 @@ public class ApiV1RebateController {
 
     @GetMapping("/{id}")
     public void getRebate() {
-
     }
 
     @PostMapping("")
-    public void createRebate() {
+    public RsData<RebateDto> createRebate(@Valid @RequestBody RebateRequest rebateRequest) throws IOException {
         Member member = rq.getMember();
+
+        RsData<Rebate> rsData = this.rebateService.createRebate(member, rebateRequest.getYear(), rebateRequest.getMonth());
+
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new RebateDto(rsData.getData()));
     }
 
     @DeleteMapping("/{id}")
