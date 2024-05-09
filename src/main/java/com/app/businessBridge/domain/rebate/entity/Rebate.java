@@ -21,8 +21,17 @@ public class Rebate extends BaseEntity {
     @ManyToOne
     private Member member;
 
-    // 근무일
-    private Integer workingDate;
+    // 연도
+    private String year;
+
+    // 월
+    private String month;
+
+    // 근무 해야하는 일 수
+    private Integer workDate;
+
+    // 실제 근무일
+    private Integer workedDate;
 
     // 급여
     private Long salary;

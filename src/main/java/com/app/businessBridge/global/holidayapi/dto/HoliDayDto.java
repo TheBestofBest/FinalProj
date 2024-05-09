@@ -37,6 +37,7 @@ public class HoliDayDto {
 
     @Getter
     public static class Item {
+
         private String locdate;
 
     }

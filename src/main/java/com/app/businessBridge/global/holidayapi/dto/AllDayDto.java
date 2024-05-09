@@ -23,7 +23,7 @@ public class AllDayDto {
     public static class Body {
         private Items items;
 
-        private String totalCount;
+        private Integer totalCount;
 
     }
 

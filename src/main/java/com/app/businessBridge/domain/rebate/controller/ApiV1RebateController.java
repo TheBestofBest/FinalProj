@@ -51,7 +51,7 @@ public class ApiV1RebateController {
 
     @PostMapping("")
     public void createRebate() {
-
+        Member member = rq.getMember();
     }
 
     @DeleteMapping("/{id}")
