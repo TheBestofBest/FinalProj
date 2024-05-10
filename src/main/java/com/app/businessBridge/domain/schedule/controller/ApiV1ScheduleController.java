@@ -18,6 +18,7 @@ import java.util.List;
 public class ApiV1ScheduleController {
 
     private final ScheduleService scheduleService;
+    private final AlarmWebSocketController alarmWebSocketController;
 
     // 생성
     @PostMapping("")
@@ -26,8 +27,12 @@ public class ApiV1ScheduleController {
         if(br.hasErrors()){
             return RsData.of(RsCode.F_06,"유효하지 않은 요청입니다.");
         }
+        RsData result = scheduleService.create(req);
 
-        return scheduleService.create(req);
+        if(result.getIsSuccess()){
+            alarmWebSocketController.sendMessageToTopic(req.getRelationName(), req.getRelationId(), "일정이 등록되었습니다");
+        }
+        return result;
     }
 
     // 단건 조회
@@ -56,7 +61,13 @@ public class ApiV1ScheduleController {
             return RsData.of(RsCode.F_06,"유효하지 않은 요청입니다.");
         }
 
-        return scheduleService.update(req);
+        RsData<Schedule> result = scheduleService.update(req);
+
+        if(result.getIsSuccess()){
+            alarmWebSocketController.sendMessageToTopic(result.getData().getRelationName(), result.getData().getRelationId(), "일정이 수정되었습니다");
+        }
+
+        return result;
     }
 
     // 삭제
@@ -67,6 +78,12 @@ public class ApiV1ScheduleController {
             return RsData.of(RsCode.F_06,"유효하지 않은 요청입니다.");
         }
 
-        return scheduleService.delete(req);
+        RsData result = scheduleService.delete(req);
+
+        if(result.getIsSuccess()){
+            alarmWebSocketController.sendMessageToTopic(req.getRelationName(), req.getRelationId(), "일정이 삭제 되었습니다.");
+        }
+
+        return result;
     }
 }

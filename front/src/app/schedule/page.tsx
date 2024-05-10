@@ -4,16 +4,16 @@ import FullCalendar from "@fullcalendar/react";
 import interactionPlugin from "@fullcalendar/interaction";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import "@/css/calendar.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import api from "@/util/api";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import SendModal from "./sendModal";
 import DetailModal from "./detailModal";
+import { Client } from "@stomp/stompjs";
 
 // 종료일을 하루 더하는 함수
 const addOneDayToEnd = (endDateString) => {
@@ -23,7 +23,7 @@ const addOneDayToEnd = (endDateString) => {
 };
 
 const SchedulePage = () => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const [schedules, setSchedules] = useState<any[]>([]);
   const [todaySchedules, setTodaySchedules] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -39,13 +39,7 @@ const SchedulePage = () => {
       "09:00:00",
   );
 
-  const { isLoading, data } = useQuery({
-    queryKey: ["member"],
-  });
-
-  if (data == null) {
-    router.push("/");
-  }
+  const data: any = queryClient.getQueryData(["member"]);
 
   const handleCheckBox = () => {
     const checkList = document.querySelectorAll(
