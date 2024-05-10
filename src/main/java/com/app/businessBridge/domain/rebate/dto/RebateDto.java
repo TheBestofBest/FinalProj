@@ -59,7 +59,7 @@ public class RebateDto {
         this.workedDate = rebate.getWorkedDate();
 
         this.salary = rebate.getSalary();
-        this.bonus = rebate.getBonus();;
+        this.bonus = rebate.getBonus();
         this.tax = rebate.getTax();
         this.insurance = rebate.getInsurance();
         this.totalSalary = rebate.getTotalSalary();
