@@ -8,5 +8,8 @@ spring:
     url: jdbc:mariadb://127.0.0.1:3306/businessBridge_dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
     username: root
     password:
+  servlet:
+    multipart:
+      maxFileSize: 10MB
 custom:
   fileDirPath: C:\B-bridge\file_upload

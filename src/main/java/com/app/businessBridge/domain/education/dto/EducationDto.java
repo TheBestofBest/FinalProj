@@ -12,7 +12,7 @@ public class EducationDto {
 
     private Long id;
 
-//    private String authorName;
+    private String authorName;
 
     private String category;
 
@@ -28,7 +28,7 @@ public class EducationDto {
 
     public EducationDto(Education education) {
         this.id = education.getId();
-//        this.authorName = education.author.getName();
+        this.authorName = education.getAuthor().getName();
         this.category = education.getCategory();
         this.title = education.getTitle();
         this.content = education.getContent();

@@ -47,4 +47,28 @@ public class ImageService {
 
         return img;
     }
+
+    public Image createEduVideo(Education education, MultipartFile video) throws IOException {
+
+        // 프로젝트 외부 저장
+        // C://B-bridge//file_upload//education
+        String thumnailPath = "";
+        String thunmail = "";
+
+        thunmail = "education/" + UUID.randomUUID().toString() +"."+ video.getContentType().split("/")[1];
+        File representImgFile = new File(fileDirPath + "/" + thunmail);
+        video.transferTo(representImgFile);
+        thumnailPath = "http://localhost:8090/file/" + thunmail;
+
+        Image img = Image.builder()
+                .type("education")
+                .typeId(education.getId())
+                .filePath(thumnailPath)
+                .build();
+
+        this.imageRepository.save(img);
+
+        return img;
+    }
+
 }
