@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import Loader from "@/components/common/Loader";
 import ReactQueryProviders from "@/util/reactQueryProvider";
 import MeApiWithReactQuery from "@/components/Api/MeApiWithReactQuery";
+import Alarm from "@/components/Alarm/Alarm";
 
 export default function RootLayout({
   children,
@@ -28,6 +29,7 @@ export default function RootLayout({
         <ReactQueryProviders>
           <div className="dark:bg-boxdark-2 dark:text-bodydark">
             <MeApiWithReactQuery />
+            <Alarm />
             {loading ? <Loader /> : children}
           </div>
         </ReactQueryProviders>
