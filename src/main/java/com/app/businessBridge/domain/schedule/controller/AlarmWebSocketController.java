@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class AlarmWebSocketController {
-    @Autowired
+
     private final SimpMessagingTemplate messagingTemplate;
 
     //  전체 구독, 부서 구독, 개인 구독
@@ -29,7 +29,6 @@ public class AlarmWebSocketController {
     }
     @MessageMapping("/alarm")
     public void sendMessage(@Payload AlarmReq sq) {
-
         sendMessageToTopic(sq.getCategory(),sq.getCategoryId(),sq.getMessage());
     }
 

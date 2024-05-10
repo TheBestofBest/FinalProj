@@ -15,15 +15,9 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
 
 @Configuration
-@EnableWebSocket
-@RequiredArgsConstructor
+@EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-
-    @Bean
-    private SimpMessagingTemplate messagingTemplate() {
-        return new SimpMessagingTemplate();
-    }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -39,6 +33,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/alarm") // socket 연결 url
                 .setAllowedOriginPatterns("*"); // SockJS 지원을 활성화하여 모든 클라이언트에서 WebSocket 연결을 지원
         registry.addEndpoint("/chat")
+                .setAllowedOriginPatterns("*");
+        registry.addEndpoint("/meeting")
                 .setAllowedOriginPatterns("*");
     }
 }

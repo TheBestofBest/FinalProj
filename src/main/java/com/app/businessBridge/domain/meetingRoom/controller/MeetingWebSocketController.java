@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MeetingWebSocketController {
 
     @MessageMapping("/meeting/send/{roomId}")
-    @SendTo("/sub/meeting/{roomId}") //해당 채팅방을 구독한 유저에게 send
+    @SendTo("/topic/meeting/{roomId}") //해당 채팅방을 구독한 유저에게 send
     public String send(@Payload ChatLogDto message,
                        @DestinationVariable Long roomId) {
         return message.getContent();
