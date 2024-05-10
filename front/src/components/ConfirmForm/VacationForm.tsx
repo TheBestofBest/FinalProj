@@ -1,4 +1,5 @@
 "use client";
+import api from "@/util/api";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -6,8 +7,49 @@ const VacationForm = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   // 결재 신청 메서드 컴포넌트에서 해결
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+        const formData = new FormData(); // FormData 객체 생성
+
+        // 폼 데이터에 필드 추가
+
+        await api.post("/confirms", {
+            subject: ,
+            description: description ,
+            formData: formData,
+            formType: confirmFormType,
+            confirmRequestMember: member,
+            confirmMembers: : confirmMembers,
+        });
+        formData.append("subject", article.subject);
+        formData.append("content", article.content);
+        if (image) {
+            formData.append("image", image);
+        }
+        console.log("Gongcha Article created successfully!");
+        await fetch("http://localhost:8090/api/v1/image-data/articles", {
+            method: "POST",
+            body: formData,
+        });
+        router.push("/gongcha/articles");
+
+        // 추가적인 로직이 필요한 경우 여기에 작성
+    } catch (error) {
+        console.error("An error occurred while creating the Gongcha article:", error);
+        // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
+    }
+};
+
+const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setArticle({ ...article, [name]: value });
+    console.log({ ...article, [name]: value });
+};
+
   return (
-    <div className="  ">
+    <form onSubmit={handleSubmit}>
       <br />
       <div>
         <label className="text-gray-900 mb-2 block text-base font-bold dark:text-white">
@@ -92,7 +134,7 @@ const VacationForm = () => {
           </button>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
