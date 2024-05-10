@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,6 +22,10 @@ import java.util.List;
 @NoArgsConstructor
 public class MeetingRoom extends BaseEntity {
     private String name;
-    @OneToMany(mappedBy = "meetingRoom", cascade = CascadeType.REMOVE)
-    private List<Member> members;
+    @OneToMany(mappedBy = "meetingRoom", cascade = CascadeType.ALL)
+    private List<Member> members = new ArrayList<>();
+    public void addMember(Member member) {
+        members.add(member);
+        member.setMeetingRoom(this);
+    }
 }

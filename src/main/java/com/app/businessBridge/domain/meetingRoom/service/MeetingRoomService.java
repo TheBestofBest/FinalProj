@@ -37,14 +37,12 @@ public class MeetingRoomService {
     @Transactional
     public RsData<MeetingRoom> create(String name, Member member) {
         try {
-            List<Member> members = new ArrayList<>();
-            members.add(member);
             MeetingRoom meetingRoom = MeetingRoom.builder()
                     .name(name)
-                    .members(members)
                     .build();
+            meetingRoom.addMember(member);
             meetingRoomRepository.save(meetingRoom);
-            return RsData.of(RsCode.S_02, "방생성 성공", meetingRoom);
+            return RsData.of(RsCode.S_02, "방생성 성공", this.getMeetingRoom(meetingRoom.getId()).getData());
         } catch (Exception e) {
             return RsData.of(RsCode.F_01, "방생성 실패");
         }
@@ -80,7 +78,7 @@ public class MeetingRoomService {
                     .map(m -> RsData.of(
                             RsCode.F_01, "이미 초대됨", rsData.getData()
                     )).orElseGet(() -> {
-                        memberService.invite(member, rsData.getData());
+                        memberService.inviteMeeting(member, rsData.getData());
                         return RsData.of(RsCode.S_02, "초대 성공", getMeetingRoom(roomId).getData());
                     });
         } catch (Exception e) {
@@ -94,12 +92,11 @@ public class MeetingRoomService {
         if (!rsData.getIsSuccess()) {
             return rsData;
         }
-//        List<MemberChatRelation> members = memberChatService.getListByChatId(chatRoomId);
+        List<Member> members = rsData.getData().getMembers();
         try {
-//            members.stream().filter(r -> r.getMember().equals(member))
-//                    .findFirst()
-//                    .ifPresent(memberChatService::delete);
-            memberService.exit(member);
+            members.stream().filter(r -> r.equals(member))
+                    .findFirst()
+                    .ifPresent(memberService::exitMeeting);
             return RsData.of(RsCode.S_03, "나가기 성공", getMeetingRoom(roomId).getData());
         } catch (Exception e) {
             return RsData.of(RsCode.F_01, "나가기 실패");

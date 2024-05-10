@@ -23,7 +23,18 @@ public class ApiV1MeetingRoomController {
     private final MemberService memberService;
     private final Request rq;
 
-
+    @GetMapping("/{id}")
+    public RsData<MeetingRoomResponse.getMeetingRoom> getMeetingRoom(@PathVariable("id") Long id) {
+        RsData<MeetingRoom> rsData = meetingRoomService.getMeetingRoom(id);
+        if(!rsData.getIsSuccess()) {
+            return (RsData) rsData;
+        }
+        return RsData.of(
+                rsData.getRsCode(),
+                rsData.getMsg(),
+                new MeetingRoomResponse.getMeetingRoom(rsData.getData())
+        );
+    }
 
     @PostMapping("")
     public RsData<MeetingRoomResponse.getMeetingRoom> create(@Valid @RequestBody MeetingRoomRequest.Create createRq) {
@@ -38,6 +49,7 @@ public class ApiV1MeetingRoomController {
                 new MeetingRoomResponse.getMeetingRoom(rsData.getData())
         );
     }
+
     @PatchMapping("/{id}")
     public RsData<MeetingRoomResponse.getMeetingRoom> modify(@PathVariable("id") Long id, @Valid @RequestBody MeetingRoomRequest.Create createRq) {
         RsData<MeetingRoom> rsData = meetingRoomService.modify(id, createRq.getName());
@@ -52,7 +64,7 @@ public class ApiV1MeetingRoomController {
     }
 
     @PatchMapping("/{id}/invite") //해당 방id에 username으로 초대
-    public RsData<MeetingRoomResponse.getMeetingRoom> invite(@PathVariable("id") Long id,@Valid @RequestBody MeetingRoomRequest.Invite inviteRq) {
+    public RsData<MeetingRoomResponse.getMeetingRoom> invite(@PathVariable("id") Long id, @Valid @RequestBody MeetingRoomRequest.Invite inviteRq) {
         Member member = memberService.findByUsername(inviteRq.getUsername()).getData();
         RsData<MeetingRoom> rsData = meetingRoomService.invite(id, member);
         if (!rsData.getIsSuccess()) {

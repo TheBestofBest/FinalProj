@@ -204,8 +204,19 @@ public class MemberService {
         return RsData.of(RsCode.S_06, "로그인에 성공했습니다.", new MemberResponse.AuthAndMakeTokensResponseBody(member, accessToken, refreshToken));
     }
 
+    //회의 수락
     @Transactional
-    public void invite(Member member, MeetingRoom meetingRoom) {
+    public void approveMeeting(Member member, MeetingRoom meetingRoom) {
+        Member invitedMember = member.toBuilder()
+                .meetingState(true)
+                .meetingRoom(meetingRoom)
+                .build();
+        memberRepository.save(invitedMember);
+    }
+
+    //회의 초대
+    @Transactional
+    public void inviteMeeting(Member member, MeetingRoom meetingRoom) {
         Member invitedMember = member.toBuilder()
                 .meetingState(false)
                 .meetingRoom(meetingRoom)
@@ -213,13 +224,14 @@ public class MemberService {
         memberRepository.save(invitedMember);
     }
 
+    //회의 나가기
     @Transactional
-    public void exit(Member member) {
-        Member invitedMember = member.toBuilder()
+    public void exitMeeting(Member member) {
+        Member exitMember = member.toBuilder()
                 .meetingState(null)
                 .meetingRoom(null)
                 .build();
-        memberRepository.save(invitedMember);
+        memberRepository.save(exitMember);
     }
 
 }
