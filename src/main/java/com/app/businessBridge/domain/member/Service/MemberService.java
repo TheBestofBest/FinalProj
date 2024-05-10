@@ -11,6 +11,7 @@ import com.app.businessBridge.domain.member.response.MemberResponse;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.jwt.JwtProvider;
+import com.app.businessBridge.global.request.Request;
 import com.app.businessBridge.global.security.SecurityUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class MemberService {
     private final DepartmentRepository departmentRepository;
     private final GradeRepository gradeRepository;
     private final JwtProvider jwtProvider;
+    private final Request rq;
 
     // 회원 생성
     public RsData create(Integer departmentCode, Integer gradeCode, String username,
@@ -198,6 +200,8 @@ public class MemberService {
         // RefreshToken 생성
         String refreshToken = jwtProvider.genRefreshToken(member);
 
+        om.get().setRefreshToken(refreshToken);
+
         System.out.println("accessToken : " + accessToken);
 
         return RsData.of(RsCode.S_06, "로그인에 성공했습니다.", new MemberResponse.AuthAndMakeTokensResponseBody(member, accessToken, refreshToken));
@@ -229,6 +233,14 @@ public class MemberService {
         this.memberRepository.save(member);
 
         return RsData.of(RsCode.S_02, "회원이 성공적으로 등록되었습니다.");
+    }
+
+    // 로그아웃
+    public RsData logout(){
+            rq.removeCrossDomainCookie("accessToken");
+            rq.removeCrossDomainCookie("refreshToken");
+
+        return RsData.of(RsCode.S_07, "로그아웃되었습니다.");
     }
 
 }
