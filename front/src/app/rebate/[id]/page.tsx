@@ -11,12 +11,27 @@ export default function RebateDetailTest() {
 
     const params = useParams();
 
-    const [rebate, setRebate] = useState({ year: "", month: ""});
+    const [date, setDate] = useState({ year: "", month: ""});
+
+    const [rebate, setRebate] = useState();
+    // "rebateDto": {
+    //     "year": "2024",
+    //     "month": "6",
+    //     "memberName": "고길동",
+    //     "memberId": "20006",
+    //     "grade": "부장",
+    //     "dept": "영업",
+    //     "salary": 6666666,
+    //     "bonus": 0,
+    //     "tax": 399999,
+    //     "insurance": 50000,
+    //     "totalSalary": 6216667
+    // }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(rebate);
-        setRebate({ ...rebate, [name]: value });
+        console.log(date);
+        setDate({ ...date, [name]: value });
     };
 
     const handleSubmit = async (e) => {
@@ -28,14 +43,18 @@ export default function RebateDetailTest() {
             headers: {
                 'Content-Type': 'application/json' 
             },
-            body: JSON.stringify(rebate)
-        })
-    
+            body: JSON.stringify(date)
+        });
+
+        const parsedResponse = await response.json(); // 응답을 JSON으로 파싱
+
         if (response.ok) {
-            alert("정산 생성 성공.")
+            setRebate(parsedResponse.data.rebateDto); // 파싱된 응답을 처리
+            alert(date.year + "년 " + date.month + "월 급여정산내역");
         } else {
-            alert("정산 생성 실패.")
+            alert("정산 생성 실패.");
         }
+        
     }
 
     return (
@@ -78,7 +97,7 @@ export default function RebateDetailTest() {
                 </form>
             </div>
                 
-            <RebateTable/>
+            <RebateTable rebate = {rebate}/>
             
         </DefaultLayout>
         </>

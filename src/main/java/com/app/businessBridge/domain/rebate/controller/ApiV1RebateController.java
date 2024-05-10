@@ -5,6 +5,7 @@ import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.rebate.dto.RebateDto;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.rebate.request.RebateRequest;
+import com.app.businessBridge.domain.rebate.response.RebateResponse;
 import com.app.businessBridge.domain.rebate.service.RebateService;
 import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.holidayapi.ApiExplorer;
@@ -54,12 +55,12 @@ public class ApiV1RebateController {
     }
 
     @PostMapping("")
-    public RsData<RebateDto> createRebate(@Valid @RequestBody RebateRequest rebateRequest) throws IOException {
+    public RsData<RebateResponse> createRebate(@Valid @RequestBody RebateRequest rebateRequest) throws IOException {
         Member member = rq.getMember();
 
         RsData<Rebate> rsData = this.rebateService.createRebate(member, rebateRequest.getYear(), rebateRequest.getMonth());
 
-        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new RebateDto(rsData.getData()));
+        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new RebateResponse(new RebateDto(rsData.getData())));
     }
 
     @DeleteMapping("/{id}")

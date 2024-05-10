@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RebateDto {
 
+    private String year;
+
+    private String month;
+
     // 직원 이름
     private String memberName;
 
@@ -38,6 +42,9 @@ public class RebateDto {
     private Long totalSalary;
 
     public RebateDto(Rebate rebate) {
+        this.year = rebate.getYear();
+        this.month = rebate.getMonth();
+
         this.memberName = rebate.getMember().getName();
         this.memberId = String.valueOf(rebate.getMember().getMemberNumber());
         this.grade = rebate.getMember().getGrade().getName();

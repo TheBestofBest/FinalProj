@@ -58,7 +58,7 @@ public class RebateService {
 
         this.rebateRepository.save(rebate);
 
-        return RsData.of(RsCode.S_01, "정산 생성 성공", rebate);
+        return RsData.of(RsCode.S_01, year + "년 " + month + "월" + " 급여정산내역", rebate);
     }
 
     private static int getWorkDate(AllDayDto allDayDto, HoliDayDto holiDayDto) {
