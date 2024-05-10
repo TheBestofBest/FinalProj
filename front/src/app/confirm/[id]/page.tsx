@@ -57,7 +57,7 @@ export default function ConfirmDetailPage() {
                   </tbody>
                 </table>
                 <div className="dark:text-white">
-                  <HorizontalLinearAlternativeLabelStepper />
+                  <HorizontalLinearAlternativeLabelStepper activeStep={1} />
                 </div>
               </div>
               {/* c table: 결재 간략설명 */}

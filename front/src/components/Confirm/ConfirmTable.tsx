@@ -3,6 +3,7 @@ import { Package } from "@/types/package";
 import HorizontalLinearAlternativeLabelStepper from "../Stepper/Stepper";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+
 // 가 데이터
 const packageData: Package[] = [
   {
@@ -30,15 +31,14 @@ const packageData: Package[] = [
     status: "Pending",
   },
 ];
-const router = useRouter();
-
-const handleRouter = () => {
-  // 결재 아이디 받게 되면 바꾸기
-  router.push("/confirm/1");
-};
 
 // Props로 `결재 리스트` 받기
 const ConfirmTable = () => {
+  const router = useRouter();
+  const handleRouter = () => {
+    // 결재 아이디 받게 되면 바꾸기
+    router.push("/confirm/1");
+  };
   return (
     <div className="rounded-sm border border-stroke bg-white px-2 pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -79,7 +79,7 @@ const ConfirmTable = () => {
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <HorizontalLinearAlternativeLabelStepper />
+                    <HorizontalLinearAlternativeLabelStepper activeStep={2} />
                   </div>
                 </td>
               </tr>

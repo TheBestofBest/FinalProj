@@ -5,8 +5,13 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 
 const steps = ["반복문으로", "승인자 이름/직급", "세 번째 승인자"];
+interface StepperProps {
+  activeStep: number;
+}
 
-export default function HorizontalLinearAlternativeLabelStepper() {
+const HorizontalLinearAlternativeLabelStepper: React.FC<StepperProps> = ({
+  activeStep,
+}) => {
   return (
     <Box
       sx={{
@@ -14,7 +19,7 @@ export default function HorizontalLinearAlternativeLabelStepper() {
       }}
     >
       {/* activeStep에 따라 진행도 차이 */}
-      <Stepper activeStep={0} alternativeLabel>
+      <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -23,4 +28,5 @@ export default function HorizontalLinearAlternativeLabelStepper() {
       </Stepper>
     </Box>
   );
-}
+};
+export default HorizontalLinearAlternativeLabelStepper;
