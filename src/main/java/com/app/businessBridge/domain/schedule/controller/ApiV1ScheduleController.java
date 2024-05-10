@@ -61,7 +61,13 @@ public class ApiV1ScheduleController {
             return RsData.of(RsCode.F_06,"유효하지 않은 요청입니다.");
         }
 
-        return scheduleService.update(req);
+        RsData<Schedule> result = scheduleService.update(req);
+
+        if(result.getIsSuccess()){
+            alarmWebSocketController.sendMessageToTopic(result.getData().getRelationName(), result.getData().getRelationId(), "일정이 수정되었습니다");
+        }
+
+        return result;
     }
 
     // 삭제
@@ -72,6 +78,12 @@ public class ApiV1ScheduleController {
             return RsData.of(RsCode.F_06,"유효하지 않은 요청입니다.");
         }
 
-        return scheduleService.delete(req);
+        RsData result = scheduleService.delete(req);
+
+        if(result.getIsSuccess()){
+            alarmWebSocketController.sendMessageToTopic(req.getRelationName(), req.getRelationId(), "일정이 삭제 되었습니다.");
+        }
+
+        return result;
     }
 }

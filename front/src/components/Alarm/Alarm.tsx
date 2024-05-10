@@ -6,7 +6,12 @@ import { Client, IMessage } from "@stomp/stompjs";
 
 export default function Alarm() {
   const [stompClient, setStompClient] = useState<Client | null>(null);
-  const [color, setColor] = useState("");
+
+  const [titleBgColor, setTitleBgColor] = useState("");
+  const [bgColor, setBgColor] = useState("");
+  const [borderColor, setBorderColor] = useState("");
+  const [textColor, setTextColor] = useState("");
+
   const [categoryToKorean, setcategoryToKorean] = useState("");
 
   const [alarms, setAlarms] = useState({
@@ -18,16 +23,24 @@ export default function Alarm() {
     const receive = JSON.parse(message.body);
     console.log(receive);
     if (receive.category === "all") {
-      setColor("rose");
+      setTitleBgColor("bg-rose-500");
+      setBgColor("bg-rose-100");
+      setBorderColor("border-rose-400");
+      setTextColor("text-rose-700");
       setcategoryToKorean("전체");
     }
     if (receive.category === "dept") {
-      console.log("돌아요");
-      setColor("green");
+      setTitleBgColor("bg-green-500");
+      setBgColor("bg-green-100");
+      setBorderColor("border-green-400");
+      setTextColor("text-green-700");
       setcategoryToKorean("부서");
     }
     if (receive.category === "member") {
-      setColor("blue");
+      setTitleBgColor("bg-blue-500");
+      setBgColor("bg-blue-100");
+      setBorderColor("border-blue-400");
+      setTextColor("text-blue-700");
       setcategoryToKorean("개인");
     }
     setAlarms(receive);
@@ -75,17 +88,19 @@ export default function Alarm() {
   if (isLoading) {
     return;
   }
-  //
-  // ${color} ${alarms.message ? "block" : "hidden"}
+
   return (
-    <div role="alert" className={` absolute bottom-5 left-5 z-999999 w-fit`}>
+    <div
+      role="alert"
+      className={` absolute bottom-5 left-5 z-999999 w-fit ${alarms.message ? "block" : "hidden"}`}
+    >
       <div
-        className={`bg-${color}-500 rounded-t px-4 py-2 font-bold text-white`}
+        className={`${titleBgColor} rounded-t  px-4 py-2 font-bold text-white`}
       >
         {categoryToKorean}
       </div>
       <div
-        className={`border-${color}-400 bg-${color}-100 text-${color}-700 rounded-b border border-t-0 px-4 py-3`}
+        className={`${borderColor} ${bgColor} ${textColor} rounded-b border border-t-0 px-4 py-3`}
       >
         <p>{alarms.message}</p>
       </div>
