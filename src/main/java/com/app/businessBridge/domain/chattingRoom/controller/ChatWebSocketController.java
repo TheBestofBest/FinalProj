@@ -17,7 +17,7 @@ public class ChatWebSocketController {
     private final ChatLogService chatLogService;
 
     @MessageMapping("/chat/send/{roomId}")
-    @SendTo("/sub/chat/{roomId}") //해당 채팅방을 구독한 유저에게 send
+    @SendTo("/topic/chat/{roomId}") //해당 채팅방을 구독한 유저에게 send
     public String send(@Payload ChatLogDto message,
                         @DestinationVariable Long roomId) {
         chatLogService.save(message.getRoomId(), message.getUsername(), message);

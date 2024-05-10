@@ -65,7 +65,7 @@ const Id = () => {
         });
         chatClient.onConnect = () => {
             console.log('웹 소켓 연결이 열렸습니다.');
-            chatClient.subscribe(`/sub/chat/${params.id}`, (data) => {
+            chatClient.subscribe(`/topic/chat/${params.id}`, (data) => {
                 fetchChatLogs();
             });
         };
@@ -78,7 +78,7 @@ const Id = () => {
 
     const sendMessage = async () => {
         stomp?.publish({
-            destination: `/pub/chat/send/${params.id}`,
+            destination: `/app/chat/send/${params.id}`,
             body: JSON.stringify(message)
         });
         setMessage({
