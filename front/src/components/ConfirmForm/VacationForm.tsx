@@ -1,11 +1,13 @@
 "use client";
 import api from "@/util/api";
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 const VacationForm = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [confirm, setConfirm] = useState<>();
+  
   // 결재 신청 메서드 컴포넌트에서 해결
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
