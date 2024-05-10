@@ -24,19 +24,19 @@ public class ChatWebSocketController {
         return message.getContent();
     }
 
-    @MessageMapping("/chat/connect/{roomId}")
-    @SendTo("/sub/chat/{roomId}")
-    public String connect(@Payload ChatLogDto message,
-                       @DestinationVariable Long roomId) {
-        return message.getContent();
-    }
-
-    @MessageMapping("/chat/disconnect/{roomId}")
-    @SendTo("/sub/chat/{roomId}")
-    public String disconnect(@Payload ChatLogDto message,
-                       @DestinationVariable(value = "roomId") Long roomId) {
-        return message.getContent();
-    }
+//    @MessageMapping("/chat/connect/{roomId}")
+//    @SendTo("/sub/chat/{roomId}")
+//    public String connect(@Payload ChatLogDto message,
+//                       @DestinationVariable Long roomId) {
+//        return message.getContent();
+//    }
+//
+//    @MessageMapping("/chat/disconnect/{roomId}")
+//    @SendTo("/sub/chat/{roomId}")
+//    public String disconnect(@Payload ChatLogDto message,
+//                       @DestinationVariable(value = "roomId") Long roomId) {
+//        return message.getContent();
+//    }
 
 
 }

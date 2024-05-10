@@ -160,21 +160,37 @@ export default function ChattingLayout({
         setModifyName("");
     }
 
+
+    //confirm Meeting
+    const confirmMeeting = () => {
+        const result= window.confirm("모임을 시작하시겠습니까?");
+        if(result) {
+            router.push("/meeting");
+        }
+    }
+
     return (
         <DefaultLayout>
             <div className="w-full flex justify-between font-bold">
                 {modalIsOpen ? <InviteModal closeModal={closeModal} /> : <></>}
                 <div className="flex flex-col w-1/4 mr-2">
-                    <div className="flex w-full justify-between">
+                    <div className="flex w-full text-2xl justify-between mb-2">
                         <span>Chatting</span>
-                        <button className="flex items-end" onClick={createChattingRoom}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        <div className="flex">
+                        <button className="border p-2 rounded-full flex items-end bg-white hover:bg-gray" onClick={confirmMeeting}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z" />
                             </svg>
                         </button>
+                        <button className="ml-2 border p-2 rounded-full flex items-end bg-white hover:bg-gray" onClick={createChattingRoom}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                            </svg>
+                        </button>
+                        </div>
                     </div>
                     <div>
-                        <button className="w-full border rounded mt-1 p-1 hover:bg-gray-200" onClick={openModal}>찾기 및 초대</button>
+                        <button className="w-full border rounded mt-1 p-1 bg-white hover:bg-gray" onClick={openModal}>찾기 및 초대</button>
                     </div>
                     <div className="mt-2 h-171.5">
                         {isEmpty ? <></> :
