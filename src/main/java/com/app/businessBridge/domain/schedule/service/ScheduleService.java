@@ -60,7 +60,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public RsData update(ScheduleRequest.UpdateReq req) {
+    public RsData<Schedule> update(ScheduleRequest.UpdateReq req) {
 
         Optional<Schedule> schedule = scheduleRepository.findById(req.getId());
 
@@ -87,7 +87,7 @@ public class ScheduleService {
 
         scheduleRepository.save(tempSchedule);
 
-        return RsData.of(RsCode.S_03,"스케줄을 업데이트 하였습니다.");
+        return RsData.of(RsCode.S_03,"스케줄을 업데이트 하였습니다.",tempSchedule);
     }
 
     public RsData delete(ScheduleRequest.DeleteReq req) {
