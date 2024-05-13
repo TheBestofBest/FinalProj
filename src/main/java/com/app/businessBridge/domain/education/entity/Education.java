@@ -33,6 +33,10 @@ public class Education extends BaseEntity {
 
     private String filePath;
 
+    private String thumbnailPath;
+
+    private double videoLength;
+
 //    private Long mettingRoomId;
 
 }

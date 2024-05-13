@@ -6,179 +6,111 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import api from "@/util/api";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import ReactPlayer from "react-player";
 
-const EducationPage = () => {
+const EducationListPage = () => {
   const queryClient = useQueryClient();
   const data: any = queryClient.getQueryData(["member"]);
-  const [sendData, setSendData] = useState({
-    category: "",
-    title: "",
-    content: "",
-    video: "",
-  });
+  const searchParams = useSearchParams();
+  const [totalPages, setTotalPages] = useState(0);
+  const [videos, setVideos] = useState([]);
+  const [hover, setHover] = useState(false);
 
-  useEffect(() => {}, []);
+  const page: number =
+    searchParams.get("page") === null ? 0 : Number(searchParams.get("page"));
 
-  function inputFocus(inputName: string) {
-    const inputElement = document.getElementsByName(inputName);
-    inputElement[0]?.focus();
-  }
-
-  function inputValid() {
-    if (sendData.category == "") {
-      alert("카테고리를 입력해 주세요");
-      inputFocus("category");
-      return false;
-    }
-    if (sendData.title == "") {
-      alert("제목을 입력해 주세요");
-      inputFocus("title");
-      return false;
-    }
-    if (sendData.content == "") {
-      alert("내용을 입력해 주세요");
-      inputFocus("content");
-      return false;
-    }
-
-    if (sendData.video == "") {
-      alert("비디오를 첨부해주세요");
-      inputFocus("video");
-      return false;
-    }
-
-    return true;
-  }
-
-  const handlerVideo = (e) => {
-    var file = e.target.files[0];
-    setSendData({ ...sendData, video: file });
-
-    console.log(sendData);
+  const getVideos = async () => {
+    const data = await api
+      .get(`/api/v1/educations?page=${page}`)
+      .then((res) => {
+        console.log(res);
+        if (res.data.isSuccess) {
+          if (!res.data.data.empty) {
+            console.log(
+              "============================================================",
+            );
+            console.log(res.data.data.videos.content);
+            return res.data.data.videos;
+          }
+        }
+      });
+    setTotalPages(data.totalPages);
+    setVideos(data.content);
   };
 
-  const handlerSubmit = () => {
-    if (inputValid() == false) {
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("category", sendData.category);
-    formData.append("title", sendData.title);
-    formData.append("content", sendData.content);
-    formData.append("video", sendData.video);
-
-    api.post("/api/v1/educations", formData).then((res) => {
-      alert(res.data.msg);
-
-      if (res.data.isFail) {
-        inputFocus(res.data.data);
-        return;
-      }
-    });
-  };
-
-  const handlerChange = (e) => {
-    const { name, value } = e.target;
-    setSendData({ ...sendData, [name]: value });
-  };
+  useEffect(() => {
+    getVideos();
+    console.log(videos);
+  }, []);
 
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Education" />
-      <div className="">
-        <div className="flex flex-col gap-9">
-          {/* <!-- Contact Form --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
-              <h3 className="font-medium text-black dark:text-white">
-                영상 등록
-              </h3>
-            </div>
-            <div className="p-6.5">
-              <div className="mb-4.5">
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Category
-                  {/* <span className="text-meta-1">*</span> */}
-                </label>
-                <input
-                  type="text"
-                  name="category"
-                  onChange={handlerChange}
-                  placeholder="카테고리를 입력해주세요"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  required
-                />
-              </div>
-
-              <div className="mb-4.5">
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  onChange={handlerChange}
-                  placeholder="Select subject"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  required
-                />
-              </div>
-
-              <div className="mb-4.5">
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Content
-                </label>
-                <textarea
-                  rows={6}
-                  placeholder="Type your message"
-                  name="content"
-                  onChange={handlerChange}
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  required
-                ></textarea>
-              </div>
-              <div className="mb-4.5">
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Attach file
-                </label>
-                <input
-                  type="file"
-                  name="video"
-                  onChange={handlerVideo}
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  required
-                />
-              </div>
-              <button
-                onClick={handlerSubmit}
-                className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
-              >
-                등록
-              </button>
-            </div>
+      <div className="relative">
+        {data.username === "admin" ? (
+          <div className="absolute right-3 top-3">
+            <a
+              className="hover:bg-gray-100 text-gray-800 border-gray-400 z-99999 mt-3 rounded border bg-white px-3 py-1 font-semibold shadow"
+              href="/education/create"
+            >
+              등록
+            </a>{" "}
           </div>
-        </div>
+        ) : (
+          ""
+        )}
+        {/* <!-- Contact Form --> */}
 
-        <div className="bg-white p-3 shadow-3">
-          <div>등록</div>
-
-          <div className="max-w-2xl">
-            <div className="bg-gray-900 relative overflow-hidden rounded-lg">
-              <img src="" alt="" />
-              <video className="h-auto w-full" controls>
-                <source
-                  src="http://localhost:8090/file/education/a9539672-c3c5-484a-981f-5119b9834b9a.mp4"
-                  type="video/mp4"
-                />
-                Your browser does not support the video tag.
-              </video>
+        <div className="h-171.5 rounded-sm border-stroke bg-white shadow-3 dark:border-strokedark dark:bg-boxdark">
+          {videos.length > 0 ? (
+            <div className="grid h-full w-full grid-cols-4 grid-rows-2 gap-10 p-5 ">
+              {videos.map((video) => {
+                return (
+                  <div
+                    className="max-w-sm overflow-hidden rounded shadow-lg"
+                    onMouseOver={() => setHover(true)}
+                    onMouseOut={() => setHover(false)}
+                  >
+                    {hover ? (
+                      <div className="h-full w-full bg-slate-300">
+                        <ReactPlayer
+                          url={video.filePath}
+                          playing={true}
+                          muted={true}
+                          width="w-full"
+                        />
+                      </div>
+                    ) : (
+                      <figure className="relative h-50 bg-slate-300">
+                        <img
+                          src={video.thumbnailPath}
+                          className="h-50 w-full object-contain"
+                        />
+                        <span className="absolute">{video.videoLength}</span>
+                      </figure>
+                    )}
+                    <div className="px-6 py-4">
+                      <div className="mb-2 truncate text-xl font-bold">
+                        {video.title}
+                      </div>
+                      <p className="text-gray-700 truncate text-base">
+                        {video.content}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          </div>
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <div>아직 게시된 동영상이 없습니다.</div>
+            </div>
+          )}
         </div>
       </div>
     </DefaultLayout>
   );
 };
 
-export default EducationPage;
+export default EducationListPage;

@@ -1,5 +1,6 @@
 package com.app.businessBridge.global.image.service;
 
+import com.app.businessBridge.domain.education.DurationExtractor;
 import com.app.businessBridge.domain.education.entity.Education;
 import com.app.businessBridge.global.image.entity.Image;
 import com.app.businessBridge.global.image.repository.ImageRepository;
@@ -40,29 +41,6 @@ public class ImageService {
 
         Image img = Image.builder()
                 .type("education")
-                .filePath(thumnailPath)
-                .build();
-
-        this.imageRepository.save(img);
-
-        return img;
-    }
-
-    public Image createEduVideo(Education education, MultipartFile video) throws IOException {
-
-        // 프로젝트 외부 저장
-        // C://B-bridge//file_upload//education
-        String thumnailPath = "";
-        String thunmail = "";
-
-        thunmail = "education/" + UUID.randomUUID().toString() +"."+ video.getContentType().split("/")[1];
-        File representImgFile = new File(fileDirPath + "/" + thunmail);
-        video.transferTo(representImgFile);
-        thumnailPath = "http://localhost:8090/file/" + thunmail;
-
-        Image img = Image.builder()
-                .type("education")
-                .typeId(education.getId())
                 .filePath(thumnailPath)
                 .build();
 

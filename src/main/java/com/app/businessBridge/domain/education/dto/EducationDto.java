@@ -24,6 +24,10 @@ public class EducationDto {
 
     private String filePath;
 
+    private String thumbnailPath;
+
+    private double videoLength;
+
 //    private Long mettingRoomId;
 
     public EducationDto(Education education) {
@@ -34,6 +38,9 @@ public class EducationDto {
         this.content = education.getContent();
         this.hit = education.getHit();
         this.filePath = education.getFilePath();
+        this.thumbnailPath = education.getThumbnailPath();
+        this.videoLength = education.getVideoLength();
+
 //        this.mettingRoomId = education.getMettingRoom().getId();
     }
 
