@@ -5,6 +5,7 @@ import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
 import com.app.businessBridge.domain.meetingRoom.repository.MeetingRoomRepository;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
+import com.app.businessBridge.domain.member.repository.MemberRepository;
 import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MeetingRoomService {
     private final MeetingRoomRepository meetingRoomRepository;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
 
     @Transactional
@@ -40,7 +41,6 @@ public class MeetingRoomService {
             MeetingRoom meetingRoom = MeetingRoom.builder()
                     .name(name)
                     .build();
-            meetingRoom.addMember(member);
             meetingRoomRepository.save(meetingRoom);
             return RsData.of(RsCode.S_02, "방생성 성공", this.getMeetingRoom(meetingRoom.getId()).getData());
         } catch (Exception e) {
@@ -66,42 +66,22 @@ public class MeetingRoomService {
     }
 
     @Transactional
-    public RsData<MeetingRoom> invite(Long roomId, Member member) {
+    public RsData<MeetingRoom> updateMembers(Long roomId, List<Member> members) {
         RsData<MeetingRoom> rsData = this.getMeetingRoom(roomId);
         if (!rsData.getIsSuccess()) {
             return rsData;
         }
-        List<Member> members = rsData.getData().getMembers();
         try {
-            return members.stream().filter(r -> r.equals(member))
-                    .findAny()
-                    .map(m -> RsData.of(
-                            RsCode.F_01, "이미 초대됨", rsData.getData()
-                    )).orElseGet(() -> {
-                        memberService.inviteMeeting(member, rsData.getData());
-                        return RsData.of(RsCode.S_02, "초대 성공", getMeetingRoom(roomId).getData());
-                    });
+            MeetingRoom updated = rsData.getData().toBuilder()
+                    .members(members)
+                    .build();
+            meetingRoomRepository.save(updated);
+            return RsData.of(RsCode.S_03, "회원 목록 최신화", updated);
         } catch (Exception e) {
-            return RsData.of(RsCode.F_01, "초대 실패");
+            return RsData.of(RsCode.F_01, "수정 실패");
         }
     }
 
-    @Transactional
-    public RsData<MeetingRoom> exit(Long roomId, Member member) {
-        RsData<MeetingRoom> rsData = this.getMeetingRoom(roomId);
-        if (!rsData.getIsSuccess()) {
-            return rsData;
-        }
-        List<Member> members = rsData.getData().getMembers();
-        try {
-            members.stream().filter(r -> r.equals(member))
-                    .findFirst()
-                    .ifPresent(memberService::exitMeeting);
-            return RsData.of(RsCode.S_03, "나가기 성공", getMeetingRoom(roomId).getData());
-        } catch (Exception e) {
-            return RsData.of(RsCode.F_01, "나가기 실패");
-        }
-    }
 
     @Transactional
     public RsData<MeetingRoom> delete(Long roomId) {
@@ -116,4 +96,6 @@ public class MeetingRoomService {
             return RsData.of(RsCode.F_01, "삭제 실패");
         }
     }
+
+
 }
