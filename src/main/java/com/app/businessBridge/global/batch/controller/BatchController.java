@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/batch")
 @RequiredArgsConstructor
 public class BatchController {
+
     private final BatchService batchService;
 
     @GetMapping("/simple")
