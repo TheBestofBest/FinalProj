@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,6 +27,38 @@ import java.util.Optional;
 public class ApiV1AnswerController {
     private final ArticleService articleService;
     private final AnswerService answerService;
+
+    @GetMapping("")
+    public RsData<AnswersResponses> getAnswers() {
+        List<AnswerDto> answerDtoList = this.answerService
+                .getList()
+                .stream()
+                .map(answer -> new AnswerDto(answer))
+                .toList();
+
+        return RsData.of(RsCode.S_01, "성공", new AnswersResponses(answerDtoList));
+    }
+    @GetMapping("/{articleId}/articles")
+    public RsData<AnswersResponses> getAnswerAndArticle(@PathVariable(value = "articleId") Long articleId) {
+        List<Answer> answers = this.answerService.findAllByArticleId(articleId);
+        List<AnswerDto> answerDTOS = new ArrayList<>();
+        for (Answer answer : answers) {
+            answerDTOS.add(new AnswerDto(answer));
+        }
+
+        return RsData.of(RsCode.S_01, "성공", new AnswersResponses(answerDTOS));
+    }
+
+    @GetMapping("/{id}")
+    public RsData<AnswersResponse> getAnswer(@PathVariable("id") Long id) {
+        return answerService.getAnswer(id).map(answer -> RsData.of(RsCode.S_01,
+                "성공",
+                new AnswersResponse(new AnswerDto(answer))
+        )).orElseGet(() -> RsData.of(RsCode.F_01,
+                "%d 번  댓글은 존재하지 않습니다.".formatted(id),
+                null
+        ));
+    }
 
 
     @PostMapping("")
@@ -76,7 +110,17 @@ public class ApiV1AnswerController {
                 new ApiV1AnswerController.RemoveResponse(optionalAnswer.get())
         );
     }
+    @AllArgsConstructor
+    @Getter
+    public static class AnswersResponses {
+        private final List<AnswerDto> answers;
+    }
 
+    @AllArgsConstructor
+    @Getter
+    public static class AnswersResponse {
+        private final AnswerDto answer;
+    }
 
 
     @Data

@@ -1,5 +1,6 @@
 package com.app.businessBridge.global.RsData;
 
+import com.app.businessBridge.domain.Article.Controller.ApiV1ArticleController;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class RsData<T> {
 
         return new RsData<>(rsCode, msg, null, rsCode.getCode().startsWith("S-"));
     }
+
 
 
 }
