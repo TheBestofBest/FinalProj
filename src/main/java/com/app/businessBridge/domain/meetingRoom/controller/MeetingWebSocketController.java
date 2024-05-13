@@ -7,12 +7,15 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 public class MeetingWebSocketController {
+
+    private final SimpMessagingTemplate messagingTemplate;
 
     //offer 정보를 주고 받기 위한 websocket
     //camKey : 각 요청하는 캠의 key , roomId : 룸 아이디

@@ -129,7 +129,14 @@ export default function Alarm() {
   const rejectMeeting = () => {
     api.patch(`/api/v1/meetings/${roomId}/exit`)
       .then(res => {
-        queryClient.setQueryData(["member"], res.data.data.memberDTO);
+        api.get(`/api/v1/members/me`)
+          .then(res => {
+            if (!res.data.isSuccess) {
+              return alert(res.data.msg);
+            }
+            queryClient.setQueryData(["member"], res.data.data.memberDTO);
+          });
+        alert("회의를 거절하였습니다.");
         setOpenAlarm(false);
       })
   }

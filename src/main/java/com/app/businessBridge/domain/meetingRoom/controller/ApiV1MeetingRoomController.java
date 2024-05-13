@@ -61,13 +61,14 @@ public class ApiV1MeetingRoomController {
         RsData<MeetingRoom> rsData = meetingRoomService.create(createRq.getName(), member);
         memberService.inviteMeeting(member, rsData.getData().getId());
         memberService.approveMeeting(member, rsData.getData().getId());
+        RsData<MeetingRoom> result = meetingRoomService.getMeetingRoom(rsData.getData().getId());
         if (!rsData.getIsSuccess()) {
             return (RsData) rsData;
         }
         return RsData.of(
                 rsData.getRsCode(),
                 rsData.getMsg(),
-                new MeetingRoomResponse.getMeetingRoom(rsData.getData())
+                new MeetingRoomResponse.getMeetingRoom(result.getData())
         );
     }
 

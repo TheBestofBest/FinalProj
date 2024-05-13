@@ -7,24 +7,36 @@ import api from "@/util/api";
 import { Client } from "@stomp/stompjs";
 import InviteModal from "./inviteModal";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 
 const Meeting = () => {
 
+    const router = useRouter();
     const queryClient = useQueryClient();
     const memberData: any = queryClient.getQueryData(["member"]);
+    const [meetingRoom, setMeetingRoom] = useState<MeetingRoom>();
+
+    //ws연결
+    const [stompClient, setStompClient] = useState<Client>();
+    const myKey = Math.random().toString(36).substring(2, 11); //식별을 위한 key
+    let pcListMap = new Map();
+    let keyList: any[] = [];
 
     useEffect(() => {
         if (memberData.meetingState.includes("없음")) {
-            createChattingRoom();
+            createMeetingRoom();
+        } else if (memberData.meetingState.includes("중")) {
+            fetchMeetingRoom();
+        } else {
+            alert("초대여부를 확인하세요.");
+            router.back();
         }
         startCam();
         wsHandler();
-    }, []);
+    }, [keyList, pcListMap]);
 
-
-    const [meetingRoom, setMeetingRoom] = useState<MeetingRoom>();
-    const createChattingRoom = async () => {
+    const createMeetingRoom = async () => {
         api.post('/api/v1/meetings', { name: "새 회의" })
             .then(response => {
                 setMeetingRoom(response.data.data.meetingRoomDto);
@@ -37,65 +49,54 @@ const Meeting = () => {
                     })
             });
     }
+    const fetchMeetingRoom = () => {
+        const roomId = memberData.meetingState.split('번')[0];
+        api.get(`/api/v1/meetings/${roomId}`)
+            .then(response => {
+                setMeetingRoom(response.data.data.meetingRoomDto);
+            })
+    }
 
-    //캠 연결
+    //캠 연결 및 내 화면 출력
     const localVideoRef: any = useRef(null);
-    let localStream: any;
-
+    let localStream:any = undefined;
     const startCam = () => {
-        const mediaStreamConstraints = {
-            video: true,
-            audio: true
-        };
-        const gotLocalMediaStream = (mediaStream: any) => {
-            localStream = mediaStream;
-            localVideoRef.current.srcObject = mediaStream;
-        };
-        const handleLocalMediaStreamError = (error: any) => {
-            console.log('navigator.getUserMedia error: ', error);
-        };
-        const initializeMediaStream = async () => {
-            try {
-                const mediaStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
-                gotLocalMediaStream(mediaStream);
-            } catch (error) {
-                handleLocalMediaStreamError(error);
-            }
-        };
-        initializeMediaStream();
-        return () => {
-            if (localStream) {
-                localStream.getTracks().forEach((track: any) => {
-                    track.stop();
-                });
-            }
-        };
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(stream => {
+                localStream = stream;
+                localVideoRef.current.srcObject = stream;
+                console.log("캠 연결 성공")
+            })
+            .catch(err =>
+                console.error("캠 연결 에러:", err));
     }
 
     //ws연결
-    const [stomp, setStomp] = useState<Client>();
-    const myKey = Math.random().toString(36).substring(2, 11); //식별을 위한 key
-    let pcListMap = new Map();
-    let keyList: any[] = [];
-
     const wsHandler = () => {
-        const meetingClient = new Client({
+        const stomp = new Client({
             brokerURL: 'ws://localhost:8090/meeting',
             reconnectDelay: 5000,
         });
-        meetingClient.onConnect = () => {
+        setStompClient(stomp);
+        stomp.onConnect = () => {
             console.log('웹 소켓 연결이 열렸습니다.');
-            meetingClient.subscribe(`/topic/peer/iceCandidate/${myKey}/${meetingRoom?.id}`,
+            stomp.subscribe(`/topic/peer/iceCandidate/${myKey}/${meetingRoom?.id}`,
                 (iceCandidate) => {
                     const key = JSON.parse(iceCandidate.body).key;
                     const msg = JSON.parse(iceCandidate.body).body;
-                    pcListMap.get(key).addIceCandidate(new RTCIceCandidate({
-                        candidate: msg.candidate,
-                        sdpMLineIndex: msg.sdpMLineIndex,
-                        sdpMid: msg.sdpMid
-                    }))
+                    if (msg.type === 'candidate') {
+                        pcListMap.get(key).addIceCandidate(new RTCIceCandidate({
+                            candidate: msg.candidate,
+                            sdpMLineIndex: msg.sdpMLineIndex,
+                            sdpMid: msg.sdpMid
+                        })).then(() => {
+                            console.log("candidate 수신");
+                        }).catch((err: any) => {
+                            console.error("candidate 수신 에러:", err)
+                        });
+                    }
                 });
-            meetingClient.subscribe(`/topic/peer/offer/${myKey}/${meetingRoom?.id}`,
+            stomp.subscribe(`/topic/peer/offer/${myKey}/${meetingRoom?.id}`,
                 (offer) => {
                     const key = JSON.parse(offer.body).key;
                     const msg = JSON.parse(offer.body).body;
@@ -103,34 +104,46 @@ const Meeting = () => {
                     pcListMap.get(key).setRemoteDescription(new RTCSessionDescription({
                         type: msg.type,
                         sdp: msg.sdp
-                    }))
-                    sendAnswer(pcListMap.get(key), key);
+                    })).then(() => {
+                        console.log("offer수신/answer전송");
+                        sendAnswer(pcListMap.get(key), key);
+                    }).catch((err: any) => {
+                        console.error('offer 처리 에러:', err);
+                    });
                 });
-            meetingClient.subscribe(`/topic/peer/answer/${myKey}/${meetingRoom?.id}`,
+            stomp.subscribe(`/topic/peer/answer/${myKey}/${meetingRoom?.id}`,
                 (answer) => {
                     const key = JSON.parse(answer.body).key;
                     const msg = JSON.parse(answer.body).body;
-                    pcListMap.get(key).setRemoteDescription(new RTCSessionDescription(msg));
+                    pcListMap.get(key).setRemoteDescription(new RTCSessionDescription(msg))
+                        .then(() => {
+                            console.log("answer수신");
+                        }).catch((err: any) => {
+                            console.error('answer 수신 에러:', err);
+                        });
                 });
-            meetingClient.subscribe(`/topic/call/key/`,
-                (msg) => {
-                    meetingClient.publish({
+            stomp.subscribe(`/topic/call/key/`,
+                () => {
+                    stomp.publish({
                         destination: `/app/send/key`,
                         body: JSON.stringify(myKey)
                     })
                 });
-            meetingClient.subscribe(`/topic/send/key/`,
+            stomp.subscribe(`/topic/send/key/`,
                 (msg) => {
-                    const key = JSON.parse(msg.body);
-                    if (myKey != key && keyList.find((key) => key == myKey) == undefined) {
-                        keyList.push(key);
+                    const otherKey = JSON.parse(msg.body);
+                    if (myKey != otherKey && keyList.find((key) => key == myKey) == undefined) {
+                        keyList.push(otherKey);
                     }
                 });
         };
-        meetingClient.activate();
-        setStomp(meetingClient);
-        meetingClient.onStompError = (frame) => {
+        stomp.activate();
+        handleStartStream();
+        stomp.onStompError = (frame) => {
             console.error('STOMP 오류:', frame);
+        };
+        return () => {
+            stomp && stomp.deactivate();
         };
     }
 
@@ -144,7 +157,6 @@ const Meeting = () => {
             peerConnection.addEventListener("track", e => {
                 onTrack(e, key);
             });
-
             if (localStream != undefined) {
                 localStream.getTrack().forEach((track: any) => {
                     peerConnection.addTrack(track, localStream);
@@ -161,7 +173,7 @@ const Meeting = () => {
     let onIceCandidate = (e: any, key: any) => {
         if (e.candidate) {
             console.log("ICE Candidate");
-            stomp?.publish({
+            stompClient?.publish({
                 destination: `app/peer/iceCandidate/${key}/${meetingRoom?.id}`,
                 body: JSON.stringify({ key: myKey, body: e.candidate })
             });
@@ -187,7 +199,7 @@ const Meeting = () => {
     let sendOffer = (peerConnection: any, key: any) => {
         peerConnection.createOffer().then((offer: any) => {
             setLocalAndSendMessage(peerConnection, offer);
-            stomp?.publish({
+            stompClient?.publish({
                 destination: `app/peer/offer/${key}/${meetingRoom?.id}`,
                 body: JSON.stringify({ key: myKey, body: offer })
             });
@@ -198,7 +210,7 @@ const Meeting = () => {
     let sendAnswer = (peerConnection: any, key: any) => {
         peerConnection.createAnswer().then((answer: any) => {
             setLocalAndSendMessage(peerConnection, answer);
-            stomp?.publish({
+            stompClient?.publish({
                 destination: `app/peer/answer/${key}/${meetingRoom?.id}`,
                 body: JSON.stringify({ key: myKey, body: answer })
             });
@@ -210,10 +222,30 @@ const Meeting = () => {
         peerConnection.setLocalDescription(sessionDescription);
     }
 
+    const handleStartStream = () => {
+        console.log(stompClient);
+        stompClient?.publish({
+            destination: `/app/call/key`
+        });
+        console.log("offer 전송");
+        setTimeout(() => {
+            console.log(keyList);
+            console.log(pcListMap);
+            if (keyList.length == 0) {
+                keyList.push(myKey);
+            }
+            keyList.map((key) => {
+                if (!pcListMap.has(key)) {
+                    pcListMap.set(key, createPeerConnection(key));
+                    sendOffer(pcListMap.get(key), key);
+                }
+            });
+        }, 1000);
+    }
 
 
 
-
+    //초대
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => {
         setModalIsOpen(true);
@@ -221,24 +253,75 @@ const Meeting = () => {
     const closeModal = () => {
         setModalIsOpen(false);
     }
+
+    //나가기
+    const exitMeeting = () => {
+        const result = window.confirm("회의에서 나가시겠습니까?");
+        if (result) {
+            api.patch(`/api/v1/meetings/${meetingRoom?.id}/exit`)
+                .then(res => {
+                    api.get(`/api/v1/members/me`)
+                        .then(res => {
+                            if (!res.data.isSuccess) {
+                                return alert(res.data.msg);
+                            }
+                            queryClient.setQueryData(["member"], res.data.data.memberDTO);
+                        });
+                    alert("회의에서 퇴장하였습니다.");
+                    router.push("/chatting");
+                })
+        }
+    }
+
     return (
         <DefaultLayout>
             {modalIsOpen ? <InviteModal closeModal={closeModal} /> : <></>}
             <main>
-                <div>
-                    <button className="w-full border rounded mt-1 p-1 bg-white hover:bg-gray" onClick={openModal}>찾기 및 초대</button>
+                <div className="w-full flex justify-between m-2">
+                    <div className="flex flex-col w-1/4 mr-2">
+                        <div className="flex h-12 w-full items-center justify-between mb-2">
+                            <span className="text-2xl">Meeting</span>
+                            <div className="flex items-center">
+                                <button className="flex h-10 items-center border p-2 mt-1 rounded-xl flex items-end bg-white hover:bg-gray" onClick={openModal}>찾기 및 초대</button>
+                                <button className="flex h-10 items-center ml-2 w-1/8 border rounded-xl mt-1 px-2 bg-white hover:bg-gray"
+                                    onClick={exitMeeting}>
+                                    <svg
+                                        className="fill-current"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 20 22"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M15.5375 0.618744H11.6531C10.7594 0.618744 10.0031 1.37499 10.0031 2.26874V4.64062C10.0031 5.05312 10.3469 5.39687 10.7594 5.39687C11.1719 5.39687 11.55 5.05312 11.55 4.64062V2.23437C11.55 2.16562 11.5844 2.13124 11.6531 2.13124H15.5375C16.3625 2.13124 17.0156 2.78437 17.0156 3.60937V18.3562C17.0156 19.1812 16.3625 19.8344 15.5375 19.8344H11.6531C11.5844 19.8344 11.55 19.8 11.55 19.7312V17.3594C11.55 16.9469 11.2062 16.6031 10.7594 16.6031C10.3125 16.6031 10.0031 16.9469 10.0031 17.3594V19.7312C10.0031 20.625 10.7594 21.3812 11.6531 21.3812H15.5375C17.2219 21.3812 18.5625 20.0062 18.5625 18.3562V3.64374C18.5625 1.95937 17.1875 0.618744 15.5375 0.618744Z"
+                                            fill=""
+                                        />
+                                        <path
+                                            d="M6.05001 11.7563H12.2031C12.6156 11.7563 12.9594 11.4125 12.9594 11C12.9594 10.5875 12.6156 10.2438 12.2031 10.2438H6.08439L8.21564 8.07813C8.52501 7.76875 8.52501 7.2875 8.21564 6.97812C7.90626 6.66875 7.42501 6.66875 7.11564 6.97812L3.67814 10.4844C3.36876 10.7938 3.36876 11.275 3.67814 11.5844L7.11564 15.0906C7.25314 15.2281 7.45939 15.3312 7.66564 15.3312C7.87189 15.3312 8.04376 15.2625 8.21564 15.125C8.52501 14.8156 8.52501 14.3344 8.21564 14.025L6.05001 11.7563Z"
+                                            fill=""
+                                        />
+                                    </svg>
+                                    나가기
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-3/4">
+                        <header className="bg-blue-700 text-white py-4 px-6 rounded">
+                            <h1 className="text-2xl font-bold">{meetingRoom?.name}</h1>
+                            <span className="text-sm">{meetingRoom?.members.map((name, index) =>
+                                <React.Fragment key={index}>
+                                    {index == 0 ? name : `, ${name}`}
+                                </React.Fragment>)}
+                            </span>
+                        </header>
+                    </div>
                 </div>
-                <header className="bg-blue-700 text-white py-4 px-6 rounded">
-                    <h1 className="text-2xl font-bold">{meetingRoom?.name}</h1>
-                    <span className="text-sm">{meetingRoom?.members.map((name, index) =>
-                        <React.Fragment key={index}>
-                            {index == 0 ? name : `, ${name}`}
-                        </React.Fragment>)}
-                    </span>
-                </header>
+                <span className="text-xl">내 화면</span>
+                <video id="localStream" ref={localVideoRef} autoPlay playsInline className="display: none w-1/4 border"></video>
                 <div className="flex justify-between">
                     {/*controls 옵션이 있으면 f-screen/pause 가능*/}
-                    <video id="localStream" ref={localVideoRef} autoPlay playsInline controls className="display: none;"></video>
                     <div ref={remoteStreamRef} >
                     </div>
                 </div>
