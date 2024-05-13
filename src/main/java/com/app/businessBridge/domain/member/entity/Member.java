@@ -2,6 +2,7 @@ package com.app.businessBridge.domain.member.entity;
 
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.grade.entity.Grade;
+import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.domain.workingstate.entity.WorkingState;
 import com.app.businessBridge.global.Jpa.BaseEntity;
@@ -50,6 +51,9 @@ public class Member extends BaseEntity {
     private WorkingState workingState;
 
     private Long salary; // 연봉 > 정산 시 필요
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Rebate> rebates;
 
     private String refreshToken; // 리프레시 토큰
 

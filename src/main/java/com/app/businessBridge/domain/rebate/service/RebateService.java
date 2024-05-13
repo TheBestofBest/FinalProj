@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -93,5 +94,19 @@ public class RebateService {
 
     public List<Rebate> findAll() {
         return this.rebateRepository.findAll();
+    }
+
+    public RsData<Rebate> findById(Long id) {
+        Optional<Rebate> rebate = this.rebateRepository.findById(id);
+
+        if(rebate.isEmpty()) {
+            return RsData.of(RsCode.F_04,
+                    "존재하지 않는 정산내역 입니다.",
+                    null);
+        }
+
+        return RsData.of(RsCode.S_01,
+                "불러오기 성공",
+                rebate.get());
     }
 }

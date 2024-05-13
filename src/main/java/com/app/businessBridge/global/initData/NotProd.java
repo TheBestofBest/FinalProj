@@ -4,6 +4,7 @@ import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
 import com.app.businessBridge.domain.department.service.DepartmentService;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.Service.MemberService;
+import com.app.businessBridge.domain.rebate.service.RebateService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,12 +12,17 @@ import org.springframework.context.annotation.Profile;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.time.LocalDate;
 
 @Configuration
 @Profile({"dev", "test"})
 public class NotProd {
     @Bean
-    CommandLineRunner initData(DepartmentService departmentService, GradeService gradeService, MemberService memberService, ChattingRoomService chattingRoomService) {
+    CommandLineRunner initData(DepartmentService departmentService,
+                               GradeService gradeService,
+                               MemberService memberService,
+                               ChattingRoomService chattingRoomService,
+                               RebateService rebateService) {
 
         return args -> {
 
