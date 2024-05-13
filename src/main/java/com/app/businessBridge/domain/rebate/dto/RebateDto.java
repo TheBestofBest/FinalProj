@@ -10,6 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RebateDto {
 
+    private String year;
+
+    private String month;
+
     // 직원 이름
     private String memberName;
 
@@ -21,6 +25,12 @@ public class RebateDto {
 
     // 소속부서
     private String dept;
+
+    // 해당월 근무일 수
+    private Integer workDate;
+
+    // 실제 근무한 일 수
+    private Integer workedDate;
 
     // 급여
     private Long salary;
@@ -37,14 +47,19 @@ public class RebateDto {
     // 세후 실급여
     private Long totalSalary;
 
-    public RebateDto(Rebate rebate, Member member) {
-        this.memberName = member.getName();
-        this.memberId = String.valueOf(member.getMemberNumber());
-        this.grade = member.getGrade().getName();
-        this.dept = member.getDepartment().getName();
+    public RebateDto(Rebate rebate) {
+        this.year = rebate.getYear();
+        this.month = rebate.getMonth();
+
+        this.memberName = rebate.getMember().getName();
+        this.memberId = String.valueOf(rebate.getMember().getMemberNumber());
+        this.grade = rebate.getMember().getGrade().getName();
+        this.dept = rebate.getMember().getDepartment().getName();
+        this.workDate = rebate.getWorkDate();
+        this.workedDate = rebate.getWorkedDate();
 
         this.salary = rebate.getSalary();
-        this.bonus = rebate.getBonus();;
+        this.bonus = rebate.getBonus();
         this.tax = rebate.getTax();
         this.insurance = rebate.getInsurance();
         this.totalSalary = rebate.getTotalSalary();
