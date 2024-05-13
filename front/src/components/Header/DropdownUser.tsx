@@ -62,8 +62,6 @@ const DropdownUser = () => {
     router.replace("/auth/signin");
   };
 
-  console.log(member);
-
   return (
     <div className="relative">
       <Link
