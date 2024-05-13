@@ -5,15 +5,36 @@ import React, { useEffect, useRef, useState } from "react"
 import { MeetingRoom } from "./type";
 import api from "@/util/api";
 import { Client } from "@stomp/stompjs";
+import InviteModal from "./inviteModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 const Meeting = () => {
+
+    const queryClient = useQueryClient();
+    const memberData: any = queryClient.getQueryData(["member"]);
+
+    useEffect(() => {
+        if (memberData.meetingState.includes("없음")) {
+            createChattingRoom();
+        }
+        startCam();
+        wsHandler();
+    }, []);
+
 
     const [meetingRoom, setMeetingRoom] = useState<MeetingRoom>();
     const createChattingRoom = async () => {
         api.post('/api/v1/meetings', { name: "새 회의" })
             .then(response => {
                 setMeetingRoom(response.data.data.meetingRoomDto);
+                api.get(`/api/v1/members/me`)
+                    .then(res => {
+                        if (!res.data.isSuccess) {
+                            return alert(res.data.msg);
+                        }
+                        queryClient.setQueryData(["member"], res.data.data.memberDTO);
+                    })
             });
     }
 
@@ -190,15 +211,23 @@ const Meeting = () => {
     }
 
 
-    useEffect(() => {
-        createChattingRoom();
-        startCam();
-        wsHandler();
-    }, []);
 
+
+
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const openModal = () => {
+        setModalIsOpen(true);
+    }
+    const closeModal = () => {
+        setModalIsOpen(false);
+    }
     return (
         <DefaultLayout>
+            {modalIsOpen ? <InviteModal closeModal={closeModal} /> : <></>}
             <main>
+                <div>
+                    <button className="w-full border rounded mt-1 p-1 bg-white hover:bg-gray" onClick={openModal}>찾기 및 초대</button>
+                </div>
                 <header className="bg-blue-700 text-white py-4 px-6 rounded">
                     <h1 className="text-2xl font-bold">{meetingRoom?.name}</h1>
                     <span className="text-sm">{meetingRoom?.members.map((name, index) =>

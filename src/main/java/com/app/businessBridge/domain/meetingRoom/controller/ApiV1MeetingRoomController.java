@@ -10,6 +10,7 @@ import com.app.businessBridge.domain.meetingRoom.service.MeetingRoomService;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.member.response.MemberResponse;
+import com.app.businessBridge.domain.schedule.controller.AlarmWebSocketController;
 import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.request.Request;
 import jakarta.validation.Valid;
@@ -25,11 +26,12 @@ public class ApiV1MeetingRoomController {
     private final MeetingRoomService meetingRoomService;
     private final MemberService memberService;
     private final Request rq;
+    private final AlarmWebSocketController alarmWebSocketController;
 
     @GetMapping("/{id}")
     public RsData<MeetingRoomResponse.getMeetingRoom> getMeetingRoom(@PathVariable("id") Long id) {
         RsData<MeetingRoom> rsData = meetingRoomService.getMeetingRoom(id);
-        if(!rsData.getIsSuccess()) {
+        if (!rsData.getIsSuccess()) {
             return (RsData) rsData;
         }
         return RsData.of(
@@ -42,7 +44,7 @@ public class ApiV1MeetingRoomController {
     @GetMapping("/{id}/members")
     public RsData<MemberResponse.GetMembers> getMembers(@PathVariable("id") Long id) {
         RsData<List<Member>> rsData = memberService.getApprovedMembersByMeetingRoom(id);
-        if(!rsData.getIsSuccess()) {
+        if (!rsData.getIsSuccess()) {
             return (RsData) rsData;
         }
         return RsData.of(
@@ -85,6 +87,7 @@ public class ApiV1MeetingRoomController {
     @PatchMapping("/{id}/invite") //해당 회의 id에 username으로 초대
     public RsData<MemberResponse.GetMember> invite(@PathVariable("id") Long id, @Valid @RequestBody MeetingRoomRequest.Invite inviteRq) {
         Member member = memberService.findByUsername(inviteRq.getUsername()).getData();
+        alarmWebSocketController.sendMessageToTopic("meeting", member.getId(), "%s 님이 회의에 초대하였습니다.".formatted(rq.getMember().getName()));
         RsData<Member> rsData = memberService.inviteMeeting(member, id);
         if (!rsData.getIsSuccess()) {
             return RsData.of(

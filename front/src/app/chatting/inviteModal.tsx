@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from "react";
-import styles from "./Background.module.css"
+import styles from "../../components/Chat/Background.module.css"
 import { ChattingRoom } from "./type";
 import api from "@/util/api";
 import { useRouter } from "next/navigation";

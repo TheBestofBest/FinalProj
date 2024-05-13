@@ -3,6 +3,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useEffect, useState } from "react";
 import { Client, IMessage } from "@stomp/stompjs";
+import { useRouter } from "next/navigation";
+import api from "@/util/api";
 
 export default function Alarm() {
   const [stompClient, setStompClient] = useState<Client | null>(null);
@@ -11,6 +13,12 @@ export default function Alarm() {
   const [bgColor, setBgColor] = useState("");
   const [borderColor, setBorderColor] = useState("");
   const [textColor, setTextColor] = useState("");
+
+  //회의참석
+  const router = useRouter();
+  const [roomId, setRoomId] = useState("");
+  const [openAlarm, setOpenAlarm] = useState<boolean>(true);
+  const queryClient = useQueryClient();
 
   const [categoryToKorean, setcategoryToKorean] = useState("");
 
@@ -23,6 +31,7 @@ export default function Alarm() {
     const receive = JSON.parse(message.body);
     console.log(receive);
     if (receive.category === "all") {
+      setOpenAlarm(true);
       setTitleBgColor("bg-rose-500");
       setBgColor("bg-rose-100");
       setBorderColor("border-rose-400");
@@ -30,6 +39,7 @@ export default function Alarm() {
       setcategoryToKorean("전체");
     }
     if (receive.category === "dept") {
+      setOpenAlarm(true);
       setTitleBgColor("bg-green-500");
       setBgColor("bg-green-100");
       setBorderColor("border-green-400");
@@ -37,22 +47,41 @@ export default function Alarm() {
       setcategoryToKorean("부서");
     }
     if (receive.category === "member") {
+      setOpenAlarm(true);
       setTitleBgColor("bg-blue-500");
       setBgColor("bg-blue-100");
       setBorderColor("border-blue-400");
       setTextColor("text-blue-700");
       setcategoryToKorean("개인");
     }
+    if (receive.category === "meeting") {
+      setOpenAlarm(true);
+      setTitleBgColor("bg-blue-500");
+      setBgColor("bg-blue-100");
+      setBorderColor("border-blue-400");
+      setTextColor("text-blue-700");
+      setcategoryToKorean("회의 초대");
+      api.get(`/api/v1/members/me`)
+        .then(res => {
+          if (!res.data.isSuccess) {
+            return alert(res.data.msg);
+          }
+          const memberData = queryClient.setQueryData(["member"], res.data.data.memberDTO);
+          setRoomId(memberData.meetingState.split('번')[0]);
+        })
+    }
     setAlarms(receive);
-    setTimeout(() => {
-      setAlarms({ category: "", categoryId: "", message: "" });
-    }, 5000);
+    if (receive.category !== "meeting") {
+      setTimeout(() => {
+        setAlarms({ category: "", categoryId: "", message: "" });
+      }, 5000);
+    }
   };
 
   const { data, isLoading } = useQuery({
     queryKey: ["member"],
   });
-  const queryClient = useQueryClient();
+
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -64,6 +93,10 @@ export default function Alarm() {
         // 구독 활성화
         client.subscribe(
           `/topic/public/alarm/member/${data.id}`,
+          handleMessage,
+        );
+        client.subscribe(
+          `/topic/public/alarm/meeting/${data.id}`,
           handleMessage,
         );
         client.subscribe(
@@ -84,26 +117,57 @@ export default function Alarm() {
       };
     }
   }, [isLoading, data, queryClient]);
-  //
+
+  //회의참석
+  const approveMeeting = () => {
+    api.patch(`/api/v1/meetings/${roomId}/approve`)
+      .then(res => queryClient.setQueryData(["member"], res.data.data.memberDTO));
+    setOpenAlarm(false);
+    router.push("/meeting");
+  }
+
+  const rejectMeeting = () => {
+    api.patch(`/api/v1/meetings/${roomId}/exit`)
+      .then(res => {
+        queryClient.setQueryData(["member"], res.data.data.memberDTO);
+        setOpenAlarm(false);
+      })
+  }
+
+
   if (isLoading) {
     return;
   }
 
   return (
-    <div
-      role="alert"
-      className={` absolute bottom-5 left-5 z-999999 w-fit ${alarms.message ? "block" : "hidden"}`}
-    >
-      <div
-        className={`${titleBgColor} rounded-t  px-4 py-2 font-bold text-white`}
-      >
-        {categoryToKorean}
-      </div>
-      <div
-        className={`${borderColor} ${bgColor} ${textColor} rounded-b border border-t-0 px-4 py-3`}
-      >
-        <p>{alarms.message}</p>
-      </div>
-    </div>
+    <>
+      {openAlarm &&
+        <div
+          role="alert"
+          className={` absolute bottom-5 left-5 z-999999 w-fit ${alarms.message ? "block" : "hidden"}`}
+        >
+          <div
+            className={`${titleBgColor} rounded-t  px-4 py-2 font-bold text-white`}
+          >
+            {categoryToKorean}
+          </div>
+          <div
+            className={`${borderColor} ${bgColor} ${textColor} rounded-b border border-t-0 px-4 py-3`}
+          >
+            <p>{alarms.message}</p>
+            {categoryToKorean.includes("회의") ?
+              <div className="flex justify-between items-center mt-1">
+                <p>수락하시겠습니까?</p>
+                <div>
+                  <button className="border rounded px-1 mx-1 hover:bg-gray"
+                    onClick={rejectMeeting}>거절</button>
+                  <button className="border rounded px-1 mx-1 bg-blue-500 hover:bg-blue-400 text-white"
+                    onClick={approveMeeting}>참여</button>
+                </div>
+              </div> : <></>}
+          </div>
+        </div>
+      }
+    </>
   );
 }
