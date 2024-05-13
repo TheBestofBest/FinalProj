@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { Product } from "@/types/product";
+
 
 const RebateTable = ({rebate}) => {
   return (
@@ -10,7 +9,7 @@ const RebateTable = ({rebate}) => {
         </h4>
       </div>
 
-      <div className="grid grid-cols-3 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-7 md:px-6 2xl:px-7.5">
+      <div className="grid grid-cols-4 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-7 md:px-6 2xl:px-7.5">
         <div className="col-span-3 flex items-center">
           <p className="font-medium">직원명 : {rebate?.memberName}</p>
         </div>
@@ -19,6 +18,9 @@ const RebateTable = ({rebate}) => {
         </div>
         <div className="col-span-1 flex items-center">
           <p className="font-medium">사원번호 : {rebate?.memberId}</p>
+        </div>
+        <div className="col-span-1 flex items-center">
+          <p className="font-medium">근무일수 : {rebate?.workedDate}/{rebate?.workDate}</p>
         </div>
       </div>
 
