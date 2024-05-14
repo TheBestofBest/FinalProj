@@ -53,9 +53,9 @@ public class ApiV1ChatRoomController {
         );
     }
 
-    @PostMapping
+    @PostMapping("")
     public RsData<ChattingRoomResponse.getChattingRoom> create(@Valid @RequestBody ChattingRoomRequest.Create createRq) {
-        Member member = rq.getMember(); //getMember 로 바꾸기
+        Member member = rq.getMember();
         RsData<ChattingRoom> rsData = chattingRoomService.create(createRq.getName(), member);
         if (!rsData.getIsSuccess()) {
             return (RsData) rsData;

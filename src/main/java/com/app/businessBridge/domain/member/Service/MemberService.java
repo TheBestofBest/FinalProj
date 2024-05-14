@@ -5,6 +5,8 @@ import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.grade.repository.GradeRepository;
 import com.app.businessBridge.domain.grade.service.GradeService;
+import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
+import com.app.businessBridge.domain.meetingRoom.service.MeetingRoomService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.member.repository.MemberRepository;
 import com.app.businessBridge.domain.member.response.MemberResponse;
@@ -33,6 +35,7 @@ public class MemberService {
     private final DepartmentRepository departmentRepository;
     private final GradeRepository gradeRepository;
     private final JwtProvider jwtProvider;
+    private final MeetingRoomService meetingRoomService;
     private final Request rq;
 
     // 회원 생성
@@ -235,6 +238,80 @@ public class MemberService {
         this.memberRepository.save(member);
 
         return RsData.of(RsCode.S_02, "회원이 성공적으로 등록되었습니다.");
+    }
+
+
+    //회의에 수락한 members
+    @Transactional
+    public RsData<List<Member>> getApprovedMembersByMeetingRoom(Long roomId) {
+        List<Member> members = memberRepository.findByApprovedMeetingRoomId(roomId);
+        return members.isEmpty() ? RsData.of(
+                RsCode.F_04,
+                "해당 회원 없음"
+        ) : RsData.of(
+                RsCode.S_01,
+                "불러오기 성공",
+                members
+        );
+    }
+
+
+    //회의 수락
+    @Transactional
+    public RsData<Member> approveMeeting(Member member, Long roomId) {
+        RsData<MeetingRoom> rsData = meetingRoomService.getMeetingRoom(roomId);
+        if (!rsData.getIsSuccess()) {
+            return RsData.of(RsCode.F_04,
+                    "%d번 회의 없음".formatted(roomId));
+        }
+        if (!member.getMeetingRoom().getId().equals(roomId)) {
+            return RsData.of(RsCode.F_01,
+                    "초대받은 회의와 다른 요청입니다.");
+        }
+        Member approvedMember = member.toBuilder()
+                .meetingState(true)
+                .build();
+        memberRepository.save(approvedMember);
+        List<Member> members = this.getApprovedMembersByMeetingRoom(roomId).getData();
+        meetingRoomService.updateMembers(roomId, members);
+        return RsData.of(RsCode.S_01,
+                "회의 수락", member);
+    }
+
+    //회의 초대
+    @Transactional
+    public RsData<Member> inviteMeeting(Member member, Long roomId) {
+        RsData<MeetingRoom> rsData = meetingRoomService.getMeetingRoom(roomId);
+        if (!rsData.getIsSuccess()) {
+            return RsData.of(RsCode.F_04,
+                    "%d번 회의 없음".formatted(roomId));
+        }
+        if (member.getMeetingRoom() != null) {
+            return RsData.of(RsCode.F_01,
+                    "%d번 회의 참여중".formatted(member.getMeetingRoom().getId()),
+                    member);
+        }
+        Member invitedMember = member.toBuilder()
+                .meetingState(false)
+                .meetingRoom(rsData.getData())
+                .build();
+        memberRepository.save(invitedMember);
+        return RsData.of(RsCode.S_01,
+                "초대 완료", member);
+    }
+
+    //회의 나가기
+    @Transactional
+    public RsData<List<Member>> exitMeeting(Member member, Long roomId) {
+        Member exitMember = member.toBuilder()
+                .meetingState(null)
+                .meetingRoom(null)
+                .build();
+        memberRepository.save(exitMember);
+        List<Member> members = this.getApprovedMembersByMeetingRoom(roomId).getData();
+        meetingRoomService.updateMembers(roomId, members);
+        return RsData.of(RsCode.S_01,
+                "나가기 완료", members);
     }
 
     // 로그아웃
