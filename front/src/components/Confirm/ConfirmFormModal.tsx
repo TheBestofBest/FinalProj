@@ -124,13 +124,13 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
                 {confirmFormTypes?.map((confirmFormType) => (
                   <tr
                     className="confirmFormType dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 border-b bg-white"
-                    onClick={() => handleFormClick("휴가 신청")}
+                    onClick={() => handleFormClick(``)}
                   >
                     <th
                       scope="row"
                       className="text-gray-900 whitespace-nowrap px-6 py-4 font-medium dark:text-white"
                     >
-                      휴가 신청
+                      {/* d여기서부터 */}
                     </th>
                     <td className="px-6 py-4">휴가 보내줘요</td>
                   </tr>
