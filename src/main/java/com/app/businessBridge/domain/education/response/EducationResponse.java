@@ -21,4 +21,15 @@ public class EducationResponse {
         }
 
     }
+
+    @Getter
+    @Setter
+    public static class getVideo {
+        EducationDto video;
+
+        public getVideo(Education video){
+            this.video = new EducationDto(video);
+        }
+
+    }
 }

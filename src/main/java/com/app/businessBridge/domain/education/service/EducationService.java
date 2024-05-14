@@ -7,6 +7,7 @@ import com.app.businessBridge.domain.education.dto.EducationDto;
 import com.app.businessBridge.domain.education.entity.Education;
 import com.app.businessBridge.domain.education.repository.EducationRepository;
 import com.app.businessBridge.domain.education.request.EducationRequest;
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.request.Request;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -37,13 +39,18 @@ public class EducationService {
 
     public RsData<Education> saveVideo(EducationRequest.SaveVideo videoReq, MultipartFile video) throws IOException {
 
+        Member member = request.getMember();
+
+        if(!member.getUsername().equals("admin")){
+            RsData.of(RsCode.F_02, "권한이 없습니다.");
+        }
+
         if(educationRepository.existsByTitle(videoReq.getTitle())){
             return RsData.of(RsCode.F_06,"중복된 제목입니다.");
         }
 
         Education education = Education.builder()
                 .author(request.getMember())
-                .category(videoReq.getCategory())
                 .title(videoReq.getTitle())
                 .content(videoReq.getContent())
                 .hit(0L)
@@ -90,5 +97,82 @@ public class EducationService {
         Page<Education> videos = educationRepository.findAll(pageable);
 
         return  RsData.of(RsCode.S_05,"데이터 조회 성공",videos);
+    }
+
+    public RsData<Education> findById(Long id) {
+        
+        Optional<Education> education = educationRepository.findById(id);
+
+        if(education.isEmpty()){
+            RsData.of(RsCode.F_04, "존재하지 않습니다.");
+        }
+
+        Education temp = education.get().toBuilder().hit(education.get().getHit()+1).build();
+        educationRepository.save(temp);
+
+        return  RsData.of(RsCode.S_05, "조회 완료.", temp);
+
+    }
+
+    public RsData deleteById(Long id) {
+
+        Member member = request.getMember();
+
+        if(!member.getUsername().equals("admin")){
+            RsData.of(RsCode.F_02, "권한이 없습니다.");
+        }
+
+        Optional<Education> education = educationRepository.findById(id);
+
+        if(education.isEmpty()){
+            RsData.of(RsCode.F_04, "존재하지 않습니다.");
+        }
+
+        educationRepository.delete(education.get());
+
+        return  RsData.of(RsCode.S_01, "해당 동영상을 삭제 했습니다.");
+    }
+
+    public RsData editVideo(EducationRequest.EditVideo videoReq, MultipartFile video) throws IOException {
+
+        Member member = request.getMember();
+
+        if(!member.getUsername().equals("admin")){
+            RsData.of(RsCode.F_02, "권한이 없습니다.");
+        }
+
+        Optional<Education> education = educationRepository.findById(videoReq.getId());
+
+        if(education.isEmpty()){
+            RsData.of(RsCode.F_04, "존재하지 않습니다.");
+        }
+
+        Education temp = education.get().toBuilder().title(videoReq.getTitle()).content(videoReq.getContent()).build();
+
+        if(video != null){
+            // 비디오 저장
+            String videoName = "";
+            String videoPath = "";
+
+            videoName = "education/" + UUID.randomUUID().toString() +"."+ video.getContentType().split("/")[1];
+            File representImgFile = new File(fileDirPath + "/" + videoName);
+            video.transferTo(representImgFile);
+            videoPath = "http://localhost:8090/file/" + videoName;
+
+            // 썸네일 및  저장
+            String thumbnailPath = ThumbnailExtractor.extract(representImgFile);
+            double videoLength = DurationExtractor.extract(representImgFile);
+
+            temp = temp.toBuilder()
+                    .videoLength(videoLength)
+                    .filePath(videoPath)
+                    .thumbnailPath("http://localhost:8090/file/education/" + thumbnailPath)
+                    .build();
+        }
+
+
+        educationRepository.save(temp);
+
+        return RsData.of(RsCode.S_03,"수정하였습니다.");
     }
 }

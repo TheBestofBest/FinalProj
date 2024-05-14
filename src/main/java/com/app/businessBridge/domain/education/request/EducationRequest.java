@@ -9,7 +9,14 @@ public class EducationRequest {
     @Getter
     @Setter
     public static class SaveVideo {
-        private String category;
+        private String title;
+        private String content;
+    }
+
+    @Getter
+    @Setter
+    public static class EditVideo {
+        private Long id;
         private String title;
         private String content;
     }

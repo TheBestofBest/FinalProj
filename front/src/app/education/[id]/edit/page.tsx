@@ -6,13 +6,16 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import api from "@/util/api";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-const EducationCreatePage = () => {
+const EducationEditPage = () => {
+  const params = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
   const data: any = queryClient.getQueryData(["member"]);
+
   const [sendData, setSendData] = useState({
+    id: "",
     title: "",
     content: "",
     video: "",
@@ -22,6 +25,11 @@ const EducationCreatePage = () => {
     if (data.username !== "admin") {
       router.back();
     }
+
+    api.get("/api/v1/educations/" + params.id).then((res) => {
+      console.log();
+      setSendData({ ...res.data.data.video, video: "" });
+    });
   }, []);
 
   function inputFocus(inputName: string) {
@@ -38,12 +46,6 @@ const EducationCreatePage = () => {
     if (sendData.content == "") {
       alert("내용을 입력해 주세요");
       inputFocus("content");
-      return false;
-    }
-
-    if (sendData.video == "") {
-      alert("비디오를 첨부해주세요");
-      inputFocus("video");
       return false;
     }
 
@@ -73,11 +75,12 @@ const EducationCreatePage = () => {
     }
 
     const formData = new FormData();
+    formData.append("id", sendData.id);
     formData.append("title", sendData.title);
     formData.append("content", sendData.content);
     formData.append("video", sendData.video);
 
-    api.post("/api/v1/educations", formData).then((res) => {
+    api.patch("/api/v1/educations/" + params.id, formData).then((res) => {
       alert(res.data.msg);
 
       if (res.data.isSuccess) {
@@ -100,7 +103,7 @@ const EducationCreatePage = () => {
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
               <h3 className="font-medium text-black dark:text-white">
-                영상 등록
+                영상 수정
               </h3>
             </div>
             <div className="p-6.5">
@@ -112,6 +115,7 @@ const EducationCreatePage = () => {
                   type="text"
                   name="title"
                   onChange={handlerChange}
+                  defaultValue={sendData.title}
                   placeholder="Select subject"
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   required
@@ -127,6 +131,7 @@ const EducationCreatePage = () => {
                   placeholder="Type your message"
                   name="content"
                   onChange={handlerChange}
+                  defaultValue={sendData.content}
                   className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                   required
                 ></textarea>
@@ -158,4 +163,4 @@ const EducationCreatePage = () => {
   );
 };
 
-export default EducationCreatePage;
+export default EducationEditPage;

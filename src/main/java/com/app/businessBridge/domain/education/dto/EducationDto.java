@@ -14,8 +14,6 @@ public class EducationDto {
 
     private String authorName;
 
-    private String category;
-
     private String title;
 
     private String content;
@@ -33,7 +31,6 @@ public class EducationDto {
     public EducationDto(Education education) {
         this.id = education.getId();
         this.authorName = education.getAuthor().getName();
-        this.category = education.getCategory();
         this.title = education.getTitle();
         this.content = education.getContent();
         this.hit = education.getHit();

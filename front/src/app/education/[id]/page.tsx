@@ -5,185 +5,75 @@ import "react-datepicker/dist/react-datepicker.css";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import api from "@/util/api";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import { useParams, useRouter } from "next/navigation";
+import ReactPlayer from "react-player";
 import { useQueryClient } from "@tanstack/react-query";
 
 const EducationDetailPage = () => {
+  const router = useRouter();
+  const params = useParams();
   const queryClient = useQueryClient();
   const data: any = queryClient.getQueryData(["member"]);
-  const [sendData, setSendData] = useState({
-    category: "",
-    title: "",
-    content: "",
-    video: "",
-  });
+  const [video, setVideo] = useState({});
 
-  useEffect(() => {}, []);
-
-  function inputFocus(inputName: string) {
-    const inputElement = document.getElementsByName(inputName);
-    inputElement[0]?.focus();
-  }
-
-  function inputValid() {
-    if (sendData.category == "") {
-      alert("카테고리를 입력해 주세요");
-      inputFocus("category");
-      return false;
-    }
-    if (sendData.title == "") {
-      alert("제목을 입력해 주세요");
-      inputFocus("title");
-      return false;
-    }
-    if (sendData.content == "") {
-      alert("내용을 입력해 주세요");
-      inputFocus("content");
-      return false;
-    }
-
-    if (sendData.video == "") {
-      alert("비디오를 첨부해주세요");
-      inputFocus("video");
-      return false;
-    }
-
-    return true;
-  }
-
-  const handlerVideo = (e) => {
-    var file = e.target.files[0];
-
-    var maxSize = 50 * 1024 * 1024;
-
-    if (file.size > maxSize) {
-      alert("최대 동영상 크기는 50MB 입니다.");
-      e.target = null;
-      document.getElementsByName("video")[0].value = "";
-      return;
-    }
-
-    setSendData({ ...sendData, video: file });
-
-    console.log(sendData);
-  };
-
-  const handlerSubmit = () => {
-    if (inputValid() == false) {
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("category", sendData.category);
-    formData.append("title", sendData.title);
-    formData.append("content", sendData.content);
-    formData.append("video", sendData.video);
-
-    api.post("/api/v1/educations", formData).then((res) => {
-      alert(res.data.msg);
-
-      if (res.data.isFail) {
-        inputFocus(res.data.data);
-        return;
-      }
+  useEffect(() => {
+    api.get("/api/v1/educations/" + params.id).then((res) => {
+      setVideo(res.data.data.video);
     });
-  };
+  }, []);
 
-  const handlerChange = (e) => {
-    const { name, value } = e.target;
-    setSendData({ ...sendData, [name]: value });
+  const handlerDelete = () => {
+    if (!confirm("해당 동영상을 삭제 하시겠습니까?")) {
+      return;
+    }
+    api.delete("/api/v1/educations/" + params.id).then((res) => {
+      alert(res.data.msg);
+      router.push("/education");
+    });
   };
 
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Education" />
-      <div className="">
-        <div className="flex flex-col gap-9">
-          {/* <!-- Contact Form --> */}
-          <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div className="border border-stroke px-3 dark:border-strokedark">
-              <h3 className=" text-black dark:text-white">등록</h3>
-            </div>
-            <div className="p-6.5">
-              <div className="mb-4.5">
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Category
-                  {/* <span className="text-meta-1">*</span> */}
-                </label>
-                <input
-                  type="text"
-                  name="category"
-                  onChange={handlerChange}
-                  placeholder="카테고리를 입력해주세요"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  required
-                />
-              </div>
 
-              <div className="mb-4.5">
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  onChange={handlerChange}
-                  placeholder="Select subject"
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  required
-                />
-              </div>
-
-              <div className="mb-4.5">
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Content
-                </label>
-                <textarea
-                  rows={6}
-                  placeholder="Type your message"
-                  name="content"
-                  onChange={handlerChange}
-                  className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  required
-                ></textarea>
-              </div>
-              <div className="mb-4.5">
-                <label className="mb-3 block font-medium text-black dark:text-white">
-                  Attach file{" "}
-                  <span className="text-xs text-red">* max 50MB</span>
-                </label>
-                <input
-                  type="file"
-                  name="video"
-                  onChange={handlerVideo}
-                  className="w-full cursor-pointer rounded-lg border-[1.5px] border-stroke bg-transparent outline-none transition file:mr-5 file:border-collapse file:cursor-pointer file:border-0 file:border-r file:border-solid file:border-stroke file:bg-whiter file:px-5 file:py-3 file:hover:bg-primary file:hover:bg-opacity-10 focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:file:border-form-strokedark dark:file:bg-white/30 dark:file:text-white dark:focus:border-primary"
-                  required
-                />
-              </div>
-              <button
-                onClick={handlerSubmit}
-                className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90"
+      <div className="h-171.5 gap-9 bg-white p-3 shadow-3">
+        {/* <!-- Contact Form --> */}
+        <div className="relative h-115">
+          <ReactPlayer
+            url={video.filePath}
+            controls={true}
+            width="w-full"
+            height="h-full"
+            className="h-full w-full"
+          />
+          {data.username == "admin" ? (
+            <div className="absolute right-0 top-0">
+              <a
+                className="text-gray-800 border-gray-400 me-2 rounded border bg-white px-2 py-1 shadow"
+                href={"/education/" + params.id + "/edit"}
               >
-                등록
-              </button>
+                수정
+              </a>
+              <a
+                className="text-gray-800 border-gray-400 rounded border bg-white px-2 py-1 shadow hover:cursor-pointer"
+                // href="/education/create"
+                onClick={handlerDelete}
+              >
+                삭제
+              </a>
             </div>
-          </div>
+          ) : (
+            ""
+          )}
         </div>
-
-        <div className="bg-white p-3 shadow-3">
-          <div>등록</div>
-
-          <div className="max-w-2xl">
-            <div className="bg-gray-900 relative overflow-hidden rounded-lg">
-              <img src="" alt="" />
-              <video className="h-auto w-full" controls>
-                <source
-                  src="http://localhost:8090/file/education/a9539672-c3c5-484a-981f-5119b9834b9a.mp4"
-                  type="video/mp4"
-                />
-                Your browser does not support the video tag.
-              </video>
-            </div>
+        <div className="video-discription mt-5 overflow-auto p-3">
+          <div className="text-xl font-bold">{video.title}</div>
+          <div className="text-end text-sm">
+            <p>{video.authorName}</p>
+            <p>조회수 {video.hit}</p>
           </div>
+
+          <p className="mt-3 text-base">{video.content}</p>
         </div>
       </div>
     </DefaultLayout>
