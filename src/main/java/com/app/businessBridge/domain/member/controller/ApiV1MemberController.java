@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.member.controller;
 
+import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
@@ -10,6 +11,7 @@ import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.request.Request;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Parameter;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -115,11 +117,15 @@ public class ApiV1MemberController {
 
     @GetMapping("")
     public RsData<MemberResponse.GetMembers> getMembers(){
-//         RsData<Member> rsData = this.memberService.findById(id);
-//
-//        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.GetMember(rsData.getData()));
         List<Member> memberList = this.memberService.getAll();
 
         return RsData.of(RsCode.S_01,"회원 리스트를 성공적으로 불러왔습니다.", new MemberResponse.GetMembers(memberList));
+    }
+
+    @GetMapping("/search")
+    public RsData<MemberResponse.MemberSearchResponse> searchArticleByKeyword(@RequestParam(value = "keyword") String keyword) {
+        List<Member> MemberList = this.memberService.searchMember( keyword);
+
+        return RsData.of(RsCode.S_05, "멤버 검색 성공", new MemberResponse.MemberSearchResponse(MemberList));
     }
 }

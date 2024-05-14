@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.member.Service;
 
+import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
@@ -237,6 +238,10 @@ public class MemberService {
 
     public List<Member> getAll(){
         return this.memberRepository.findAll();
+    }
+
+    public List<Member> searchMember( String keyword) {
+        return this.memberRepository.findByKeyword(keyword);
     }
 
 }
