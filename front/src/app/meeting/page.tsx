@@ -4,10 +4,11 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout"
 import React, { useEffect, useRef, useState } from "react"
 import { MeetingRoom } from "./type";
 import api from "@/util/api";
-import { Client } from "@stomp/stompjs";
+import { Client, IMessage } from "@stomp/stompjs";
 import InviteModal from "./inviteModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+
 
 
 const Meeting = () => {
@@ -16,12 +17,13 @@ const Meeting = () => {
     const queryClient = useQueryClient();
     const memberData: any = queryClient.getQueryData(["member"]);
     const [meetingRoom, setMeetingRoom] = useState<MeetingRoom>();
-
-    //ws연결
-    const [stompClient, setStompClient] = useState<Client>();
     const myKey = Math.random().toString(36).substring(2, 11); //식별을 위한 key
-    let pcListMap = new Map();
-    let keyList: any[] = [];
+    const [stompClient, setStompClient] = useState<Client | null>(null);
+    const localVideoRef: any = useRef(null);
+    let localStream: any = undefined;
+    const [pcListMap, setPcListMap] = useState<Map<string, RTCPeerConnection>>(new Map());
+    const [otherKeyList, setOtherKeyList] = useState<any[]>([]);
+    const remoteStreamRef: any = useRef(null);
 
     useEffect(() => {
         if (memberData.meetingState.includes("없음")) {
@@ -33,59 +35,21 @@ const Meeting = () => {
             router.back();
         }
         startCam();
-        wsHandler();
-    }, [keyList, pcListMap]);
 
-    const createMeetingRoom = async () => {
-        api.post('/api/v1/meetings', { name: "새 회의" })
-            .then(response => {
-                setMeetingRoom(response.data.data.meetingRoomDto);
-                api.get(`/api/v1/members/me`)
-                    .then(res => {
-                        if (!res.data.isSuccess) {
-                            return alert(res.data.msg);
-                        }
-                        queryClient.setQueryData(["member"], res.data.data.memberDTO);
-                    })
-            });
-    }
-    const fetchMeetingRoom = () => {
-        const roomId = memberData.meetingState.split('번')[0];
-        api.get(`/api/v1/meetings/${roomId}`)
-            .then(response => {
-                setMeetingRoom(response.data.data.meetingRoomDto);
-            })
-    }
-
-    //캠 연결 및 내 화면 출력
-    const localVideoRef: any = useRef(null);
-    let localStream:any = undefined;
-    const startCam = () => {
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then(stream => {
-                localStream = stream;
-                localVideoRef.current.srcObject = stream;
-                console.log("캠 연결 성공")
-            })
-            .catch(err =>
-                console.error("캠 연결 에러:", err));
-    }
-
-    //ws연결
-    const wsHandler = () => {
         const stomp = new Client({
             brokerURL: 'ws://localhost:8090/meeting',
             reconnectDelay: 5000,
         });
-        setStompClient(stomp);
         stomp.onConnect = () => {
-            console.log('웹 소켓 연결이 열렸습니다.');
-            stomp.subscribe(`/topic/peer/iceCandidate/${myKey}/${meetingRoom?.id}`,
+            // 구독 활성화
+            stomp.subscribe(
+                `/topic/peer/iceCandidate/${myKey}/${meetingRoom?.id}`,
                 (iceCandidate) => {
                     const key = JSON.parse(iceCandidate.body).key;
                     const msg = JSON.parse(iceCandidate.body).body;
                     if (msg.type === 'candidate') {
-                        pcListMap.get(key).addIceCandidate(new RTCIceCandidate({
+                        const pc: any = pcListMap.get(key);
+                        pc.addIceCandidate(new RTCIceCandidate({
                             candidate: msg.candidate,
                             sdpMLineIndex: msg.sdpMLineIndex,
                             sdpMid: msg.sdpMid
@@ -101,7 +65,8 @@ const Meeting = () => {
                     const key = JSON.parse(offer.body).key;
                     const msg = JSON.parse(offer.body).body;
                     pcListMap.set(key, createPeerConnection(key));
-                    pcListMap.get(key).setRemoteDescription(new RTCSessionDescription({
+                    const pc: any = pcListMap.get(key);
+                    pc.setRemoteDescription(new RTCSessionDescription({
                         type: msg.type,
                         sdp: msg.sdp
                     })).then(() => {
@@ -115,38 +80,43 @@ const Meeting = () => {
                 (answer) => {
                     const key = JSON.parse(answer.body).key;
                     const msg = JSON.parse(answer.body).body;
-                    pcListMap.get(key).setRemoteDescription(new RTCSessionDescription(msg))
+                    const pc: any = pcListMap.get(key);
+                    pc.setRemoteDescription(new RTCSessionDescription(msg))
                         .then(() => {
                             console.log("answer수신");
                         }).catch((err: any) => {
                             console.error('answer 수신 에러:', err);
                         });
                 });
-            stomp.subscribe(`/topic/call/key/`,
+            stomp.subscribe(`/topic/call/key`,
                 () => {
                     stomp.publish({
                         destination: `/app/send/key`,
                         body: JSON.stringify(myKey)
                     })
                 });
-            stomp.subscribe(`/topic/send/key/`,
+            stomp.subscribe(`/topic/send/key`,
                 (msg) => {
+                    console.log("key받음 : ", msg);
                     const otherKey = JSON.parse(msg.body);
-                    if (myKey != otherKey && keyList.find((key) => key == myKey) == undefined) {
-                        keyList.push(otherKey);
+                    if (myKey != otherKey && otherKeyList.find((key) => key == myKey) == undefined) {
+                        otherKeyList.push(otherKey);
                     }
                 });
+            // 연결된 상태에서 메시지 전송
+            if (stomp.connected) {
+                console.log("화상회의 연결됨");
+            }
         };
         stomp.activate();
-        handleStartStream();
-        stomp.onStompError = (frame) => {
-            console.error('STOMP 오류:', frame);
-        };
+        setStompClient(stomp);
         return () => {
-            stomp && stomp.deactivate();
+            stomp.deactivate();
         };
-    }
+    }, []);
 
+
+    //webRTC
     //peer connection 생성
     const createPeerConnection = (key: any) => {
         const peerConnection = new RTCPeerConnection();
@@ -158,10 +128,12 @@ const Meeting = () => {
                 onTrack(e, key);
             });
             if (localStream != undefined) {
-                localStream.getTrack().forEach((track: any) => {
+                localStream.getTracks().forEach((track: any) => {
                     peerConnection.addTrack(track, localStream);
+                    console.log("track 전송!!!")
                 });
             }
+            console.log('PeerConnection + track :', peerConnection);
             console.log('PeerConnection created');
         } catch (err) {
             console.error('PeerConnection failed:', err);
@@ -180,18 +152,16 @@ const Meeting = () => {
         }
     };
     //Track Event
-    const remoteStreamRef = useRef<HTMLDivElement>(null);
     let onTrack = (e: any, key: any) => {
+        console.log("track!!!!");
         if (document.getElementById(`${key}`) === null) {
             const video = document.createElement('video');
             video.autoplay = true;
             video.controls = true;
             video.id = key;
             video.srcObject = e.streams[0];
-            (video: any) => {
-                if (remoteStreamRef.current) {
-                    remoteStreamRef.current.appendChild(video);
-                }
+            if (remoteStreamRef.current) {
+                remoteStreamRef.current.appendChild(video);
             }
         }
     };
@@ -225,16 +195,17 @@ const Meeting = () => {
     const handleStartStream = () => {
         console.log(stompClient);
         stompClient?.publish({
-            destination: `/app/call/key`
+            destination: `/app/call/key`,
+            body: "key 발송",
         });
         console.log("offer 전송");
         setTimeout(() => {
-            console.log(keyList);
+            console.log(otherKeyList);
             console.log(pcListMap);
-            if (keyList.length == 0) {
-                keyList.push(myKey);
-            }
-            keyList.map((key) => {
+            // if (otherKeyList.length == 0) {
+            //     otherKeyList.push(myKey);
+            // }
+            otherKeyList.map((key) => {
                 if (!pcListMap.has(key)) {
                     pcListMap.set(key, createPeerConnection(key));
                     sendOffer(pcListMap.get(key), key);
@@ -242,6 +213,52 @@ const Meeting = () => {
             });
         }, 1000);
     }
+
+    const createMeetingRoom = () => {
+        api.post('/api/v1/meetings', { name: "새 회의" })
+            .then(response => {
+                setMeetingRoom(response.data.data.meetingRoomDto);
+                api.get(`/api/v1/members/me`)
+                    .then(res => {
+                        if (!res.data.isSuccess) {
+                            return alert(res.data.msg);
+                        }
+                        queryClient.setQueryData(["member"], res.data.data.memberDTO);
+                    })
+            });
+    }
+    const fetchMeetingRoom = () => {
+        const roomId = memberData.meetingState.split('번')[0];
+        api.get(`/api/v1/meetings/${roomId}`)
+            .then(response => {
+                setMeetingRoom(response.data.data.meetingRoomDto);
+            })
+    }
+
+    //캠 연결 및 내 화면 출력
+
+    const startCam = async () => {
+        await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then(async (stream) => {
+                localStream = stream;
+                stream.getAudioTracks()[0].enabled = true;
+                localVideoRef.current.srcObject = localStream;
+                console.log("캠 연결 성공 localStream:", localStream);
+                console.log(stream);
+            })
+            .catch(err =>
+                console.error("캠 연결 에러:", err));
+    }
+    // const onMute = () => {
+    //     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+    //         .then(stream => {
+    //             localStream = stream;
+    //             localVideoRef.current.srcObject = stream;
+    //         })
+    //         .catch(err =>
+    //             console.error("캠 연결 에러:", err));
+    // }
+
 
 
 
@@ -320,6 +337,7 @@ const Meeting = () => {
                 </div>
                 <span className="text-xl">내 화면</span>
                 <video id="localStream" ref={localVideoRef} autoPlay playsInline className="display: none w-1/4 border"></video>
+                <button className="border" onClick={handleStartStream}>mute</button>
                 <div className="flex justify-between">
                     {/*controls 옵션이 있으면 f-screen/pause 가능*/}
                     <div ref={remoteStreamRef} >
