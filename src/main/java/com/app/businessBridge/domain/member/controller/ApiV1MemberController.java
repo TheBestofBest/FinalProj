@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/members")
@@ -109,5 +111,15 @@ public class ApiV1MemberController {
             return RsData.of(RsCode.F_02,"로그아웃 상태입니다.",null);
         }
         return RsData.of(RsCode.S_06, "로그인 상태 입니다.",new MemberResponse.GetMember(rq.getMember()));
+    }
+
+    @GetMapping("")
+    public RsData<MemberResponse.GetMembers> getMembers(){
+//         RsData<Member> rsData = this.memberService.findById(id);
+//
+//        return RsData.of(rsData.getRsCode(), rsData.getMsg(), new MemberResponse.GetMember(rsData.getData()));
+        List<Member> memberList = this.memberService.getAll();
+
+        return RsData.of(RsCode.S_01,"회원 리스트를 성공적으로 불러왔습니다.", new MemberResponse.GetMembers(memberList));
     }
 }

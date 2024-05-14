@@ -235,4 +235,8 @@ public class MemberService {
         return RsData.of(RsCode.S_02, "회원이 성공적으로 등록되었습니다.");
     }
 
+    public List<Member> getAll(){
+        return this.memberRepository.findAll();
+    }
+
 }

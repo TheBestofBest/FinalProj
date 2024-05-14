@@ -5,6 +5,8 @@ import com.app.businessBridge.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 public class MemberResponse {
@@ -46,6 +48,15 @@ public class MemberResponse {
 
         public LoginResponse(MemberDTO memberDTO) {
             this.memberDTO = memberDTO;
+        }
+    }
+
+    @Getter
+    public static class GetMembers {
+        private List<MemberDTO> memberDTOs;
+
+        public GetMembers(List<Member> memberList) {
+            this.memberDTOs = memberList.stream().map(MemberDTO::new).toList();
         }
     }
 }

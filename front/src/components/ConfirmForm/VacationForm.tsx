@@ -1,57 +1,76 @@
 "use client";
+import { ConfirmFormType } from "@/types/Confirm/ConfirmTypes";
+import { MemberType } from "@/types/Member/MemberTypes";
 import api from "@/util/api";
 import React, { ChangeEvent, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 const VacationForm = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [confirm, setConfirm] = useState<>();
-  
+  const [confirm, setConfirm] = useState<ConfirmFormType>();
+  const [members, setMembers] = useState<MemberType[]>([]);
+
+  const getMembers = async () => {
+    return await api
+      .get("/members")
+      .then(
+        (res: { data: { data: { memberDTOs: MemberType[] } } }) =>
+          res.data.data.memberDTOs,
+      );
+  };
+
+  const { isLoading, error, data } = useQuery({
+    queryKey: ["membersKey"],
+    queryFn: getMembers,
+  });
+
   // 결재 신청 메서드 컴포넌트에서 해결
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  //   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  //     e.preventDefault();
 
-    try {
-        const formData = new FormData(); // FormData 객체 생성
+  //     try {
+  //         const formData = new FormData(); // FormData 객체 생성
 
-        // 폼 데이터에 필드 추가
+  //         // 폼 데이터에 필드 추가
 
-        await api.post("/confirms", {
-            subject: ,
-            description: description ,
-            formData: formData,
-            formType: confirmFormType,
-            confirmRequestMember: member,
-            confirmMembers: : confirmMembers,
-        });
-        formData.append("subject", article.subject);
-        formData.append("content", article.content);
-        if (image) {
-            formData.append("image", image);
-        }
-        console.log("Gongcha Article created successfully!");
-        await fetch("http://localhost:8090/api/v1/image-data/articles", {
-            method: "POST",
-            body: formData,
-        });
-        router.push("/gongcha/articles");
+  //         await api.post("/confirms", {
+  //             subject: ,
+  //             description: description ,
+  //             formData: formData,
+  //             formType: confirmFormType,
+  //             confirmRequestMember: member,
+  //             confirmMembers: : confirmMembers,
+  //         });
+  //         formData.append("subject", article.subject);
+  //         formData.append("content", article.content);
+  //         if (image) {
+  //             formData.append("image", image);
+  //         }
+  //         console.log("Gongcha Article created successfully!");
+  //         await fetch("http://localhost:8090/api/v1/image-data/articles", {
+  //             method: "POST",
+  //             body: formData,
+  //         });
+  //         router.push("/gongcha/articles");
 
-        // 추가적인 로직이 필요한 경우 여기에 작성
-    } catch (error) {
-        console.error("An error occurred while creating the Gongcha article:", error);
-        // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
-    }
-};
+  //         // 추가적인 로직이 필요한 경우 여기에 작성
+  //     } catch (error) {
+  //         console.error("An error occurred while creating the Gongcha article:", error);
+  //         // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
+  //     }
+  // };
 
-const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setArticle({ ...article, [name]: value });
-    console.log({ ...article, [name]: value });
-};
+  // const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //     const { name, value } = e.target;
+  //     setArticle({ ...article, [name]: value });
+  //     console.log({ ...article, [name]: value });
+  // };
 
   return (
-    <form onSubmit={handleSubmit}>
+    // onSubmit={handleSubmit} form에 넣기
+    <form>
       <br />
       <div>
         <label className="text-gray-900 mb-2 block text-base font-bold dark:text-white">
@@ -126,6 +145,7 @@ const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
           placeholder="상세 내용을 작성해주세요"
           defaultValue={""}
         />
+        {/* 멤버 선택 넣기 */}
         <div className="mt-3 flex justify-end">
           <button
             // onClick={() => handleForm("")}
