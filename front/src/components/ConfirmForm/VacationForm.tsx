@@ -7,7 +7,12 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
-const VacationForm = () => {
+
+interface VacationFormProps {
+  confirmFormType: ConfirmFormType;
+}
+
+const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [confirm, setConfirm] = useState<ConfirmType>({
@@ -99,34 +104,35 @@ const VacationForm = () => {
   const member = queryClient.getQueryData<MemberType>(["member"]);
 
   // 결재 신청 메서드 컴포넌트에서 해결
-  //   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //     e.preventDefault();
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
 
-  //     try {
-  //
-  //         await api.post("/confirms", {
-  //             subject: ,
-  //             description: description ,
-  //             formData: formData,
-  //             formType: confirmFormType,
-  //             confirmRequestMember: member,
-  //             confirmMembers: : confirmMembers,
-  //         });
-  //         formData.append("subject", article.subject);
-  //         formData.append("content", article.content);
-  //         if (image) {
-  //             formData.append("image", image);
-  //         }
-  //         console.log("결재 등록 성공");
+      try {
+        setFormData({...formData, startDate: startDate || new Date()})
+        setFormData({...formData, endDate: endDate || new Date()})
+  
+          await api.post("/confirms", {
+              subject: confirm.subject,
+              description: confirm.description ,
+              formData: formData,
+              formType: confirmFormType,
+              confirmRequestMember: member,
+              confirmMembers: : confirmMembers,
+          });
+          
+          if (image) {
+              formData.append("image", image);
+          }
+          console.log("결재 등록 성공");
 
-  //         // modal 창 닫기
+          // modal 창 닫기
 
-  //         // 추가적인 로직이 필요한 경우 여기에 작성
-  //     } catch (error) {
-  //         console.error("An error occurred while creating the Gongcha article:", error);
-  //         // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
-  //     }
-  // };
+          // 추가적인 로직이 필요한 경우 여기에 작성
+      } catch (error) {
+          console.error("An error occurred while creating the Gongcha article:", error);
+          // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
+      }
+  };
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,

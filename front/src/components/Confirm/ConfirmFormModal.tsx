@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ConfirmModalBox, ConfirmModalContent } from "../Modal/ConfirmModals";
 import VacationForm from "../ConfirmForm/VacationForm";
 import SoftwarePurchaseRequestForm from "../ConfirmForm/SoftwarePurchaseRequestForm";
+import { ConfirmFormType } from "@/types/Confirm/ConfirmTypes";
 
 interface ConfirmFormModalProps {
   clickModal: () => void;
@@ -11,6 +12,13 @@ interface ConfirmFormModalProps {
 
 const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
   const [selectedForm, setSelectedForm] = useState<string | null>(null);
+  const [confirmFormTypes, setConfirmFormTypes] = useState<ConfirmFormType[]>(
+    [],
+  );
+  const [confirmFormType, setConfirmFormType] = useState<ConfirmFormType>({
+    formName: "",
+    formDescription: "",
+  });
 
   // 선택된 양식에 따라 세부사항 작성 창으로 전환하는 함수
   const handleFormClick = (formType: string) => {
@@ -25,7 +33,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
         <div className="mx-auto flex w-full justify-items-center">
           {/* 휴가 신청 양식의 세부사항 작성 창 */}
           {/* 이 곳에 휴가 신청 양식에 대한 세부사항 작성 컴포넌트를 추가하세요 */}
-          <VacationForm />
+          <VacationForm confirmFormType={} />
         </div>
       );
     } else if (selectedForm === "Software 구매 신청") {
@@ -113,18 +121,20 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
               </thead>
               <tbody>
                 {/* tr 반복 시키기 */}
-                <tr
-                  className="confirmFormType dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 border-b bg-white"
-                  onClick={() => handleFormClick("휴가 신청")}
-                >
-                  <th
-                    scope="row"
-                    className="text-gray-900 whitespace-nowrap px-6 py-4 font-medium dark:text-white"
+                {confirmFormTypes?.map((confirmFormType) => (
+                  <tr
+                    className="confirmFormType dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 border-b bg-white"
+                    onClick={() => handleFormClick("휴가 신청")}
                   >
-                    휴가 신청
-                  </th>
-                  <td className="px-6 py-4">휴가 보내줘요</td>
-                </tr>
+                    <th
+                      scope="row"
+                      className="text-gray-900 whitespace-nowrap px-6 py-4 font-medium dark:text-white"
+                    >
+                      휴가 신청
+                    </th>
+                    <td className="px-6 py-4">휴가 보내줘요</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

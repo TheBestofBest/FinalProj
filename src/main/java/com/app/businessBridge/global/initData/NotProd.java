@@ -1,6 +1,8 @@
 package com.app.businessBridge.global.initData;
 
 import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
+import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
+import com.app.businessBridge.domain.confirmFormType.service.ConfirmFormTypeService;
 import com.app.businessBridge.domain.department.service.DepartmentService;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.Service.MemberService;
@@ -16,7 +18,7 @@ import java.nio.file.*;
 @Profile({"dev", "test"})
 public class NotProd {
     @Bean
-    CommandLineRunner initData(DepartmentService departmentService, GradeService gradeService, MemberService memberService, ChattingRoomService chattingRoomService) {
+    CommandLineRunner initData(DepartmentService departmentService, GradeService gradeService, MemberService memberService, ChattingRoomService chattingRoomService, ConfirmFormTypeService confirmFormTypeService) {
 
         return args -> {
 
@@ -73,6 +75,10 @@ public class NotProd {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            // 결재 타입 생성
+            confirmFormTypeService.create("휴가 신청", "휴가를 신청합니다.");
         };
+
     }
 }
