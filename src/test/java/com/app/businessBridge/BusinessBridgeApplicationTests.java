@@ -13,15 +13,11 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-
 @SpringBootTest
 class BusinessBridgeApplicationTests {
 
-    @Autowired
-    RebateService rebateService;
-
+//    @Autowired
+//    WebSocketChatHandler webSocketChatHandler;
     @Test
     void contextLoads() {
     }

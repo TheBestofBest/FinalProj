@@ -12,9 +12,7 @@ public class EducationDto {
 
     private Long id;
 
-//    private String authorName;
-
-    private String category;
+    private String authorName;
 
     private String title;
 
@@ -24,16 +22,22 @@ public class EducationDto {
 
     private String filePath;
 
+    private String thumbnailPath;
+
+    private double videoLength;
+
 //    private Long mettingRoomId;
 
     public EducationDto(Education education) {
         this.id = education.getId();
-//        this.authorName = education.author.getName();
-        this.category = education.getCategory();
+        this.authorName = education.getAuthor().getName();
         this.title = education.getTitle();
         this.content = education.getContent();
         this.hit = education.getHit();
         this.filePath = education.getFilePath();
+        this.thumbnailPath = education.getThumbnailPath();
+        this.videoLength = education.getVideoLength();
+
 //        this.mettingRoomId = education.getMettingRoom().getId();
     }
 
