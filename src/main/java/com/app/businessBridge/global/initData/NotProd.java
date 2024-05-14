@@ -36,6 +36,16 @@ public class NotProd {
             memberService.create(102,1002,"user2",30001,"박영대","1234","user2@email.com");
             memberService.create(102,1002,"user3",30002,"홍길동","1234","user3@email.com");
 
+            // 정산, 통계 테스트용 회원 생성
+            for(int i = 4; i < 104; i++) {
+                int randomNum = (int) (Math.random()*100+1);
+                int randomAge = (int) (Math.random()*100+1);
+                if(i%2==0) {
+                    memberService.createRebateTest(101,1002,"user"+i,20000+i,"직원"+i,"1234","user"+i+"@email.com",randomNum*1000000L,'남', String.valueOf(randomAge));
+                }
+                memberService.createRebateTest(102,1001,"user"+i,20000+i,"직원"+i,"1234","user"+i+"@email.com",randomNum*1000000L,'여', String.valueOf(randomAge));
+            }
+
             chattingRoomService.create("채팅방1", memberService.findByUsername("admin").getData());
             chattingRoomService.create("채팅방2", memberService.findByUsername("admin").getData());
             chattingRoomService.create("채팅방3", memberService.findByUsername("user1").getData());

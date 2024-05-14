@@ -36,10 +36,12 @@ public class Member extends BaseEntity {
     private Integer memberNumber; // 사원번호
     private String name; // 사원명
     private String assignedTask; // 담당 업무
-    private String workStatus; // 근무 상태 ( 온라인, 오프라인, 부재중 )
     private String extensionNumber; // 내선 전화 번호
     private String phoneNumber; // 개인 연락처
     private String statusMessage; // 상태메세지
+
+    private char sex; // 성별 '남' or '여'
+    private String age; // 나이
 
     // 직원 근태
     @OneToOne(mappedBy = "member",cascade = CascadeType.REMOVE)
