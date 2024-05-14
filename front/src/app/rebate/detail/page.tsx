@@ -3,13 +3,9 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import RebateTable from "./RebateTable";
 import { useState } from "react";
-import { useRouter } from "next/router";
-import { useParams } from "next/navigation";
 
 
 export default function RebateDetailTest() {
-
-    const params = useParams();
 
     const [date, setDate] = useState({ year: "", month: ""});
 
@@ -46,10 +42,10 @@ export default function RebateDetailTest() {
             body: JSON.stringify(date)
         });
 
-        const parsedResponse = await response.json(); // 응답을 JSON으로 파싱
+        const parsedResponse = await response.json();
 
         if (response.ok) {
-            setRebate(parsedResponse.data.rebateDto); // 파싱된 응답을 처리
+            setRebate(parsedResponse.data.rebateDto);
             alert(date.year + "년 " + date.month + "월 급여정산내역");
         } else {
             alert("정산 생성 실패.");
@@ -61,7 +57,7 @@ export default function RebateDetailTest() {
         <>
         <DefaultLayout>
             <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-                정산 테스트 페이지 /reabte/member_id
+                정산 테스트 페이지 /reabte/detail
             </h4>
 
             <div className="flex">

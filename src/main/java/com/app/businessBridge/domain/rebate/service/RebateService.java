@@ -90,4 +90,8 @@ public class RebateService {
 
         return workDate;
     }
+
+    public List<Rebate> findAll() {
+        return this.rebateRepository.findAll();
+    }
 }

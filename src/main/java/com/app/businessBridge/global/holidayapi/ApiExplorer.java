@@ -78,10 +78,6 @@ public class ApiExplorer {
             e.printStackTrace();
         }
 
-        System.out.println(sb);
-
-
-
         conn.disconnect();
 
         return holiDayDto;
@@ -136,12 +132,7 @@ public class ApiExplorer {
             e.printStackTrace();
         }
 
-        System.out.println(sb);
-
-
         conn.disconnect();
-
-        System.out.println(sb);
 
         return allDayDto;
     }
