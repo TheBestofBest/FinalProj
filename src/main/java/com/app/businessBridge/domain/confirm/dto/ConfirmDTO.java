@@ -2,13 +2,8 @@ package com.app.businessBridge.domain.confirm.dto;
 
 import com.app.businessBridge.domain.confirm.entity.Confirm;
 import com.app.businessBridge.domain.confirmFormType.dto.ConfirmFormTypeDTO;
-import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmStatus.dto.ConfirmStatusDTO;
-import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.domain.member.entity.Member;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

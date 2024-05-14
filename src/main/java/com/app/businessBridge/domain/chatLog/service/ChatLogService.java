@@ -1,8 +1,12 @@
 package com.app.businessBridge.domain.chatLog.service;
 
+import com.app.businessBridge.domain.chatLog.dto.ChatLogDto;
 import com.app.businessBridge.domain.chatLog.entity.ChatLog;
 import com.app.businessBridge.domain.chatLog.repository.ChatLogRepository;
 import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
+import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
+import com.app.businessBridge.domain.member.Service.MemberService;
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
@@ -17,8 +21,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ChatLogService {
     private final ChatLogRepository chatLogRepository;
+    private final ChattingRoomService chattingRoomService;
+    private final MemberService memberService;
 
-    public void save(ChatLog chatLog) {
+
+    public void save(Long roomId, String username, ChatLogDto chatLogDto) {
+        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom((Long) chatLogDto.getRoomId()).getData();
+        Member member = memberService.findByUsername(chatLogDto.getUsername()).getData();
+        ChatLog chatLog = ChatLog.builder()
+                .content(chatLogDto.getContent())
+                .chattingRoom(chattingRoom)
+                .member(member)
+                .build();
         chatLogRepository.save(chatLog);
     }
 
