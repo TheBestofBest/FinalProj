@@ -52,9 +52,6 @@ public class Member extends BaseEntity {
 
     private Long salary; // 연봉 > 정산 시 필요
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<Rebate> rebates;
-
     private String refreshToken; // 리프레시 토큰
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)

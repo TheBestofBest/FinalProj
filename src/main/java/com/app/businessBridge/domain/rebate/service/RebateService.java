@@ -109,4 +109,8 @@ public class RebateService {
                 "불러오기 성공",
                 rebate.get());
     }
+
+    public List<Rebate> findMyRebates(Long id) {
+        return this.rebateRepository.findMyRebates(String.valueOf(id));
+    }
 }

@@ -3,8 +3,8 @@
 import { BRAND } from "@/types/brand";
 import Image from "next/image";
 import Link from "next/link";
-import DropDownMenu from "./DropDownMenu";
 import { useEffect, useState } from "react";
+import RebateDropDown from "./RebateDropDown";
 
 const MemberTable = ({rebates}) => {
 
@@ -32,11 +32,11 @@ const MemberTable = ({rebates}) => {
         {currentYear}년 {currentMonth}월 급여 정산 내역
       </h4>
       <div className="flex justify-between py-4">
-        <DropDownMenu></DropDownMenu>
+        <RebateDropDown/>
         <div>
           <Link
               href="#"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-2 text-center font-medium text-white hover:bg-opacity-90">
+              className="flex items-center whitespace-nowrap rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
               저장하기
           </Link>
 
@@ -107,8 +107,9 @@ const MemberTable = ({rebates}) => {
             <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
             <Link
               href={`/rebate/${rebate.id}`}
-              className="rounded-md bg-meta-3 px-3 py-2 text-center text-white hover:bg-opacity-90"
+              className="flex items-center whitespace-nowrap rounded-md bg-meta-3 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
+              {/* className="rounded-md bg-meta-3 px-3 py-2 text-center text-white hover:bg-opacity-90" */}
               상세보기
             </Link>
             </div>

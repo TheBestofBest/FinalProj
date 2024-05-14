@@ -3,11 +3,12 @@
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import RebateNumber from "./RebateNumber";
 import Loader from "@/components/common/Loader";
+import MyRebate from "./MyRebate";
+import RebateLists from "./RebateLists";
 
 
-export default function RebateDetail() {
+export default function MeRebate() {
 
     const params = useParams();
 
@@ -15,7 +16,7 @@ export default function RebateDetail() {
 
     const router = useRouter();
 
-    const [rebate, setRebate] = useState([]);
+    const [rebates, setRebates] = useState([]);
     // "rebateDto": {
     //     "year": "2024",
     //     "month": "6",
@@ -30,12 +31,12 @@ export default function RebateDetail() {
     //     "totalSalary": 6216667
     // }
     useEffect(() => {
-        fetchRebate()
+        fetchRebates()
     }, [])
     
-    const fetchRebate = async () => {
+    const fetchRebates = async () => {
         try {
-            const response = await fetch(`http://localhost:8090/api/v1/rebates/${params.id}`,{
+            const response = await fetch('http://localhost:8090/api/v1/rebates/me',{
               method: 'GET',
               credentials: "include",
             })
@@ -44,7 +45,7 @@ export default function RebateDetail() {
             if (!response.ok || data.rsCode.code.startsWith("F")) {
                 throw new Error(data.msg);
             }
-            setRebate(data.data.rebateDto);
+            setRebates(data.data.rebates);
         } catch (error) {
             console.error('Error fetching data:', error);
             alert(error.message);
@@ -61,7 +62,7 @@ export default function RebateDetail() {
             <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
                 정산 상세보기
             </h4>   
-            {isLoading ? <Loader/> : <RebateNumber rebate = {rebate}/>}
+            {isLoading ? <Loader/> : <RebateLists rebates = {rebates}/>}
             
             
         </DefaultLayout>

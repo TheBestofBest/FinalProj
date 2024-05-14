@@ -35,13 +35,16 @@ public class ApiV1RebateController {
 
     @GetMapping("")
     public RsData<RebatesResponse> getRebates() throws IOException {
-        LocalDate currentDate = LocalDate.now();
-        int year = currentDate.getYear();
-        int month = currentDate.getMonthValue();
 
-//        for(int i = 5; i < 105; i++) {
-//            rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month));
-//        }
+        Member member = rq.getMember();
+
+        if (member.getGrade().getCode() != 1 || !member.getGrade().getName().equals("슈퍼관리자")) {
+            return RsData.of(
+                    RsCode.F_02,
+                    "접근 권한이 없습니다.",
+                    null
+            );
+        }
 
         List<RebatesDto> rebates = new ArrayList<>();
 
@@ -58,9 +61,22 @@ public class ApiV1RebateController {
 
     @GetMapping("/{id}")
     public RsData<RebateResponse> getRebate(@PathVariable(value = "id") Long id) {
+
+        Member member = rq.getMember();
+
+        // 자신의 급여명세서 목록만 볼 수 있거나 관리자 일때만 볼 수 있도록
+        if (!member.getId().equals(this.rebateService.findById(id).getData().getMember().getId()) && (member.getGrade().getCode() != 1 || !member.getGrade().getName().equals("슈퍼관리자"))) {
+            return RsData.of(
+                    RsCode.F_02,
+                    "접근 권한이 없습니다.",
+                    null
+            );
+        }
+
         RsData<Rebate> rsData = this.rebateService.findById(id);
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new RebateResponse(new RebateDto(rsData.getData())));
+
     }
 
     @GetMapping("/me")
@@ -68,18 +84,13 @@ public class ApiV1RebateController {
 
         Member member = rq.getMember();
 
-        if(member.getRebates()==null) {
-            return RsData.of(
-                    RsCode.F_04,
-                    "정산 내역이 없습니다.",
-                    null
-            );
-        }
+        // 로그인한 유저의 급여명세서만 불러오기
+        List<Rebate> myRebates = this.rebateService.findMyRebates(member.getId());
 
         List<RebatesDto> rebates = new ArrayList<>();
 
-        for (int i = 0; i < member.getRebates().size(); i++) {
-            rebates.add(new RebatesDto(member.getRebates().get(i)));
+        for (int i = 0; i < myRebates.size(); i++) {
+            rebates.add(new RebatesDto(myRebates.get(i)));
         }
 
         return RsData.of(
