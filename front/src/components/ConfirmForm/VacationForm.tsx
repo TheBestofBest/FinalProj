@@ -104,34 +104,34 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
   const member = queryClient.getQueryData<MemberType>(["member"]);
 
   // 결재 신청 메서드 컴포넌트에서 해결
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-      try {
-        setFormData({...formData, startDate: startDate || new Date()})
-        setFormData({...formData, endDate: endDate || new Date()})
-  
-          await api.post("/confirms", {
-              subject: confirm.subject,
-              description: confirm.description ,
-              formData: formData,
-              formType: confirmFormType,
-              confirmRequestMember: member,
-              confirmMembers: : confirmMembers,
-          });
-          
-          if (image) {
-              formData.append("image", image);
-          }
-          console.log("결재 등록 성공");
+    try {
+      setFormData({ ...formData, startDate: startDate || new Date() });
+      setFormData({ ...formData, endDate: endDate || new Date() });
 
-          // modal 창 닫기
+      await api.post("/confirms", {
+        subject: confirm.subject,
+        description: confirm.description,
+        formData: formData,
+        formType: confirmFormType,
+        confirmRequestMember: member,
+        confirmMembers: confirmMembers,
+      });
 
-          // 추가적인 로직이 필요한 경우 여기에 작성
-      } catch (error) {
-          console.error("An error occurred while creating the Gongcha article:", error);
-          // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
-      }
+      console.log("결재 등록 성공");
+
+      // modal 창 닫기
+
+      // 추가적인 로직이 필요한 경우 여기에 작성
+    } catch (error) {
+      console.error(
+        "An error occurred while creating the Gongcha article:",
+        error,
+      );
+      // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
+    }
   };
 
   const handleChange = (

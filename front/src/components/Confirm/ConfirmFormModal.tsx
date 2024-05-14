@@ -32,6 +32,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
   const handleFormClick = (formType: string) => {
     setSelectedForm(formType);
     console.log(formType);
+    getConfirmFormType(formType);
   };
 
   // 현재 선택된 양식에 따라 세부사항 작성 창을 보여주는 부분
