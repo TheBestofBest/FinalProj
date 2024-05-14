@@ -1,18 +1,62 @@
 "use client";
-import { ConfirmFormType } from "@/types/Confirm/ConfirmTypes";
+import { ConfirmFormType, ConfirmType } from "@/types/Confirm/ConfirmTypes";
 import { MemberType } from "@/types/Member/MemberTypes";
 import api from "@/util/api";
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
 const VacationForm = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [confirm, setConfirm] = useState<ConfirmFormType>();
+  const [confirm, setConfirm] = useState<ConfirmType>({
+    subject: "",
+    description: "",
+    formData: "",
+    formType: {
+      formName: "",
+      formDescription: "",
+    }, // 예시로 초기 ConfirmFormType을 사용하는 것으로 가정합니다.
+    confirmStatus: {
+      statusName: "",
+      statusDescription: "",
+    }, // 예시로 초기 ConfirmStatusType을 사용하는 것으로 가정합니다.
+    confirmRequestMember: {
+      id: 0, // id
+      department: {
+        code: 0,
+        name: "",
+      }, // 부서
+      grade: {
+        code: 0,
+        name: "",
+      }, // 직급
+      username: "", // 로그인 아이디
+      password: "", // 비밀번호
+      email: "", // 이메일
+      memberNumber: 0, // 사원번호
+      name: "", // 사원명
+      assignedTask: "", // 담당 업무
+      workStatus: "", // 근무 상태 ( 온라인, 오프라인, 부재중 )
+      extensionNumber: "", // 내선 전화 번호
+      phoneNumber: "", // 개인 연락처
+      statusMessage: "",
+    }, // 예시로 초기 MemberType을 사용하는 것으로 가정합니다.
+    confirmMembers: [], // 빈 배열로 초기화
+    createDate: new Date(),
+  });
   const [members, setMembers] = useState<MemberType[]>([]);
   const [keyword, setKeyword] = useState("");
   const [confirmMembers, setConfirmMembers] = useState<MemberType[]>([]);
+  const [formData, setFormData] = useState<ConfirmFormVactionType>({
+    content: "",
+    startDate: new Date(), // 현재 날짜와 시간으로 설정
+    endDate: new Date(),
+  }); // FormData 객체 생성
+
+  // 승인자 추가 시 검색으로 돌아가게 하는 참조 변수
+  const memberTableRef = useRef<HTMLLabelElement>(null);
 
   // 오늘 날짜
   const currentDate = new Date();
@@ -30,6 +74,9 @@ const VacationForm = () => {
   };
   // 검색 누르면 해당 키워드로 검색 후 리스트 출력
   const searchMembers = async () => {
+    if (keyword === "") {
+      return;
+    }
     const response = await api.get(`api/v1/members/search?keyword=${keyword}`);
     setMembers(response.data.data.memberDTOs);
     console.log(members);
@@ -37,6 +84,10 @@ const VacationForm = () => {
 
   // 검색한 멤버 누르면 승인자 리스트에 추가
   const addConfirmMembers = (member: MemberType) => {
+    if (confirmMembers.length === 3) {
+      alert("최대 결재 승인자는 3명입니다.");
+      return;
+    }
     setConfirmMembers((prevConfirmMembers) => [...prevConfirmMembers, member]);
   };
   // 승인자 상태 확인용
@@ -52,10 +103,7 @@ const VacationForm = () => {
   //     e.preventDefault();
 
   //     try {
-  //         const formData = new FormData(); // FormData 객체 생성
-
-  //         // 폼 데이터에 필드 추가
-
+  //
   //         await api.post("/confirms", {
   //             subject: ,
   //             description: description ,
@@ -69,12 +117,9 @@ const VacationForm = () => {
   //         if (image) {
   //             formData.append("image", image);
   //         }
-  //         console.log("Gongcha Article created successfully!");
-  //         await fetch("http://localhost:8090/api/v1/image-data/articles", {
-  //             method: "POST",
-  //             body: formData,
-  //         });
-  //         router.push("/gongcha/articles");
+  //         console.log("결재 등록 성공");
+
+  //         // modal 창 닫기
 
   //         // 추가적인 로직이 필요한 경우 여기에 작성
   //     } catch (error) {
@@ -83,11 +128,21 @@ const VacationForm = () => {
   //     }
   // };
 
-  // const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-  //     const { name, value } = e.target;
-  //     setArticle({ ...article, [name]: value });
-  //     console.log({ ...article, [name]: value });
-  // };
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setConfirm({ ...confirm, [name]: value });
+    console.log({ ...confirm, [name]: value });
+  };
+
+  const handleVacationChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    console.log({ ...formData, [name]: value });
+  };
 
   return (
     // onSubmit={handleSubmit} form에 넣기
@@ -99,8 +154,10 @@ const VacationForm = () => {
         </label>
         <input
           type="text"
+          name="subject"
           className="text-gray-900 border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-s mb-2 block w-full rounded-lg border p-2 focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder={"결재 제목 입력 ex) 전율택 사원 휴가 신청"}
+          onChange={handleChange}
         />
         <label className="text-gray-900 mb-2 block text-base font-bold dark:text-white">
           결재 신청인
@@ -125,8 +182,10 @@ const VacationForm = () => {
         </label>
         <input
           type="text"
+          name="description"
           className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-s block w-full rounded-lg border p-2.5 focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder={"결재에 대한 간략한 설명을 적어주세요"}
+          onChange={handleChange}
         />
         <label className="text-gray-900 mb-2 mt-2 block text-base font-bold dark:text-white">
           휴가 날짜 선택
@@ -162,14 +221,17 @@ const VacationForm = () => {
         <textarea
           id="message"
           rows={4}
+          name="content"
           className="text-gray-900 bg-gray-50 border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder="상세 내용을 작성해주세요"
           defaultValue={""}
+          onChange={handleVacationChange}
         />
         {/* 멤버 선택 넣기 */}
         <label
           htmlFor="search"
           className="text-gray-900 mb-2 mb-2 mt-3 block text-base font-bold dark:text-white"
+          ref={memberTableRef}
         >
           승인자 검색
         </label>
@@ -231,7 +293,13 @@ const VacationForm = () => {
                 <tr
                   key={member.id}
                   className="dark:bg-gray-800 dark:border-gray-200 border-b bg-white hover:cursor-pointer hover:bg-blue-200"
-                  onClick={() => addConfirmMembers(member)}
+                  onClick={() => {
+                    addConfirmMembers(member);
+                    memberTableRef.current?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
+                  }}
                 >
                   <th
                     scope="row"

@@ -1,4 +1,5 @@
 export type MemberType = {
+  id: number; // id
   department: DepartmentType; // 부서
   grade: GradeType; // 직급
   username: String; // 로그인 아이디
