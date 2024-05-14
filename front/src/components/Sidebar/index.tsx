@@ -867,7 +867,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               </clipPath>
                             </defs>
                           </svg>
-                          관리
+                          관리자 메뉴
                           <svg
                             className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
                               open && "rotate-180"
@@ -900,27 +900,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                   pathname === "/auth/signup" && "text-white"
                                 }`}
                               >
-                                계정
+                                계정 관리
                               </Link>
                             </li>
                             <li>
                               <Link
-                                href="/admin/department"
+                                href="/admin/gradeAndDepartment"
                                 className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
                                   pathname === "/auth/signin" && "text-white"
                                 }`}
                               >
-                                부서
-                              </Link>
-                            </li>
-                            <li>
-                              <Link
-                                href="/admin/grade"
-                                className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                  pathname === "/auth/signin" && "text-white"
-                                }`}
-                              >
-                                직급
+                                부서 및 직급 관리
                               </Link>
                             </li>
                           </ul>

@@ -7,7 +7,7 @@ const AdminDepartment = () => {
   return (
     <DefaultLayout>
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"></div>
-      <div className="h-[calc(100vh-186px)] overflow-hidden sm:h-[calc(100vh-174px)]">
+      <div className="overflow-hidden">
         <ManageMentStructure />
       </div>
     </DefaultLayout>
