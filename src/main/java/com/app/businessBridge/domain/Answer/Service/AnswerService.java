@@ -29,9 +29,10 @@ public class AnswerService {
     }
 
     @Transactional
-    public RsData<Answer> create(String content) {
+    public RsData<Answer> create(String content, Article article) {
         Answer answer = Answer.builder()
                 .content(content)
+                .article(article)
                 .build();
 
         this.answerRepository.save(answer);

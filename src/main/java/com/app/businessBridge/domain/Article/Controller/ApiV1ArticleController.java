@@ -53,7 +53,6 @@ public class ApiV1ArticleController {
     @PostMapping("")
     public RsData<WriteResponse> write(@Valid @RequestBody WriteRequest writeRequest) {
 
-
         RsData<Article> writeRs = this.articleService.create(writeRequest.getSubject(), writeRequest.getContent());
 
 //        if (writeRs.isFail()) return (RsData) writeRs;

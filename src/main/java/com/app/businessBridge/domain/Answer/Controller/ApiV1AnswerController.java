@@ -11,6 +11,8 @@ import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -64,7 +66,7 @@ public class ApiV1AnswerController {
     @PostMapping("")
     public RsData<AnswerResponse> write(@Valid @RequestBody AnswerRequest answerRequest) {
 
-        RsData<Answer> writeRs = this.answerService.create(answerRequest.getContent());
+        RsData<Answer> writeRs = this.answerService.create(answerRequest.getContent(), answerRequest.getArticle());
 
 //        if (writeRs.isFail()) return (RsData) writeRs;
 
@@ -127,6 +129,10 @@ public class ApiV1AnswerController {
     public static class AnswerRequest{
         @NotBlank
         private String content;
+
+        private Article article;
+//        @NotBlank
+//        private List<Article> articleList;
     }
     @AllArgsConstructor
     @Getter
