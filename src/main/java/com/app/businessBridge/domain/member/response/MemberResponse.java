@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.member.response;
 
+import com.app.businessBridge.domain.chattingRoom.dto.ChattingRoomDto;
 import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
@@ -11,12 +12,22 @@ import java.util.List;
 @AllArgsConstructor
 public class MemberResponse {
 
+
     @Getter
     public static class GetMember {
         private MemberDTO memberDTO;
 
         public GetMember(Member member) {
             this.memberDTO = new MemberDTO(member);
+        }
+    }
+
+    @Getter
+    public static class GetMembers {
+        private List<MemberDTO> memberDTOs;
+
+        public GetMembers(List<Member> members) {
+            this.memberDTOs = (members == null) ? null : members.stream().map(MemberDTO::new).toList();
         }
     }
 
