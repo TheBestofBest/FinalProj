@@ -62,14 +62,6 @@ public class MemberResponse {
         }
     }
 
-    @Getter
-    public static class GetMembers {
-        private List<MemberDTO> memberDTOs;
-
-        public GetMembers(List<Member> memberList) {
-            this.memberDTOs = memberList.stream().map(MemberDTO::new).toList();
-        }
-    }
 
     @Getter
     public static class MemberSearchResponse{
