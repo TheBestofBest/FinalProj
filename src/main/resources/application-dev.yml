@@ -11,5 +11,6 @@ spring:
   servlet:
     multipart:
       maxFileSize: 50MB
+      maxRequestSize: 50MB
 custom:
   fileDirPath: C:\B-bridge\file_upload
