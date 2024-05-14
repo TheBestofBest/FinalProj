@@ -202,9 +202,6 @@ const Meeting = () => {
         setTimeout(() => {
             console.log(otherKeyList);
             console.log(pcListMap);
-            // if (otherKeyList.length == 0) {
-            //     otherKeyList.push(myKey);
-            // }
             otherKeyList.map((key) => {
                 if (!pcListMap.has(key)) {
                     pcListMap.set(key, createPeerConnection(key));
@@ -236,7 +233,6 @@ const Meeting = () => {
     }
 
     //캠 연결 및 내 화면 출력
-
     const startCam = async () => {
         await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
             .then(async (stream) => {
