@@ -1,8 +1,10 @@
 package com.app.businessBridge.domain.education.entity;
 
 
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.Jpa.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,10 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class Education extends BaseEntity {
 
-
-//    private Member author;
-
-    private String category;
+    @ManyToOne
+    private Member author;
 
     private String title;
 
@@ -30,6 +30,10 @@ public class Education extends BaseEntity {
     private Long hit;
 
     private String filePath;
+
+    private String thumbnailPath;
+
+    private double videoLength;
 
 //    private Long mettingRoomId;
 
