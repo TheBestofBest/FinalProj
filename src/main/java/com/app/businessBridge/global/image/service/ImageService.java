@@ -1,5 +1,6 @@
 package com.app.businessBridge.global.image.service;
 
+import com.app.businessBridge.domain.education.DurationExtractor;
 import com.app.businessBridge.domain.education.entity.Education;
 import com.app.businessBridge.global.image.entity.Image;
 import com.app.businessBridge.global.image.repository.ImageRepository;
@@ -47,4 +48,5 @@ public class ImageService {
 
         return img;
     }
+
 }
