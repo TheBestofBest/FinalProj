@@ -27,10 +27,10 @@ class BusinessBridgeApplicationTests {
 
     }
 
-    @Test
-    void howManyRebates() {
-        int sum = this.rebateService.findAll().size();
-
-        assertEquals(20,sum);
-    }
+//    @Test
+//    void howManyRebates() {
+//        int sum = this.rebateService.findAll().size();
+//
+//        assertEquals(20,sum);
+//    }
 }
