@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class AlarmWebSocketController {
-    @Autowired
+
     private final SimpMessagingTemplate messagingTemplate;
 
     //  전체 구독, 부서 구독, 개인 구독
@@ -27,20 +27,20 @@ public class AlarmWebSocketController {
         Long categoryId;
         String message;
     }
+
     @MessageMapping("/alarm")
     public void sendMessage(@Payload AlarmReq sq) {
-
-        sendMessageToTopic(sq.getCategory(),sq.getCategoryId(),sq.getMessage());
+        sendMessageToTopic(sq.getCategory(), sq.getCategoryId(), sq.getMessage());
     }
 
     @MessageMapping("/alarm/connect")
     public void connect(@Payload AlarmReq sq) {
-        sendMessageToTopic(sq.getCategory(),sq.getCategoryId(),sq.getMessage());
+        sendMessageToTopic(sq.getCategory(), sq.getCategoryId(), sq.getMessage());
     }
 
     @MessageMapping("/alarm/disconnect")
     public void disconnect(@Payload AlarmReq sq) {
-        sendMessageToTopic(sq.getCategory(),sq.getCategoryId(),sq.getMessage());
+        sendMessageToTopic(sq.getCategory(), sq.getCategoryId(), sq.getMessage());
     }
 
     public void sendMessageToTopic(String category, Long categoryId, String message) {
@@ -49,6 +49,6 @@ public class AlarmWebSocketController {
         receive.setCategoryId(categoryId);
         receive.setMessage(message);
 
-        messagingTemplate.convertAndSend("/topic/public/alarm/" + category+"/"+categoryId.toString(), receive );
+        messagingTemplate.convertAndSend("/topic/public/alarm/" + category + "/" + categoryId.toString(), receive);
     }
 }
