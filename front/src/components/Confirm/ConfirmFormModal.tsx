@@ -5,6 +5,7 @@ import { ConfirmModalBox, ConfirmModalContent } from "../Modal/ConfirmModals";
 import VacationForm from "../ConfirmForm/VacationForm";
 import SoftwarePurchaseRequestForm from "../ConfirmForm/SoftwarePurchaseRequestForm";
 import { ConfirmFormType } from "@/types/Confirm/ConfirmTypes";
+import api from "@/util/api";
 
 interface ConfirmFormModalProps {
   clickModal: () => void;
@@ -19,6 +20,13 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
     formName: "",
     formDescription: "",
   });
+
+  const getConfirmFormType = async (formType: string) => {
+    const response = await api.get(
+      `api/v1/confirm-form-types/${formType}/formName`,
+    );
+    setConfirmFormType(response.data.data.confirmFormTypeDTO);
+  };
 
   // 선택된 양식에 따라 세부사항 작성 창으로 전환하는 함수
   const handleFormClick = (formType: string) => {
@@ -124,15 +132,17 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
                 {confirmFormTypes?.map((confirmFormType) => (
                   <tr
                     className="confirmFormType dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 border-b bg-white"
-                    onClick={() => handleFormClick(``)}
+                    onClick={() => handleFormClick(confirmFormType.formName)}
                   >
                     <th
                       scope="row"
                       className="text-gray-900 whitespace-nowrap px-6 py-4 font-medium dark:text-white"
                     >
-                      {/* d여기서부터 */}
+                      {confirmFormType.formName}
                     </th>
-                    <td className="px-6 py-4">휴가 보내줘요</td>
+                    <td className="px-6 py-4">
+                      {confirmFormType.formDescription}
+                    </td>
                   </tr>
                 ))}
               </tbody>
