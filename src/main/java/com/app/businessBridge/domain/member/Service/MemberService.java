@@ -198,9 +198,41 @@ public class MemberService {
         // RefreshToken 생성
         String refreshToken = jwtProvider.genRefreshToken(member);
 
+        om.get().setRefreshToken(refreshToken);
+
         System.out.println("accessToken : " + accessToken);
 
         return RsData.of(RsCode.S_06, "로그인에 성공했습니다.", new MemberResponse.AuthAndMakeTokensResponseBody(member, accessToken, refreshToken));
+    }
+
+    // 정산, 통계 테스트용 회원 생성 로직
+    public RsData createRebateTest(Integer departmentCode, Integer gradeCode, String username,
+                         Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
+        Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
+        Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
+
+        if (findByUsername(username).getData() != null) {
+            return RsData.of(RsCode.F_06, "중복된 아이디가 존재합니다.");
+        } else if (findByMemberNumber(memberNumber).getData() != null) {
+            return RsData.of(RsCode.F_06, "중복된 사원번호가 존재합니다.");
+        }
+
+        Member member = Member.builder()
+                .department(od.get())
+                .grade(og.get())
+                .username(username)
+                .memberNumber(memberNumber)
+                .name(name)
+                .password(passwordEncoder.encode(password))
+                .email(email)
+                .salary(salary)
+                .sex(sex)
+                .age(age)
+                .build();
+
+        this.memberRepository.save(member);
+
+        return RsData.of(RsCode.S_02, "회원이 성공적으로 등록되었습니다.");
     }
 
 }
