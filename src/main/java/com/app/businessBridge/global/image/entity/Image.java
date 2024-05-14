@@ -20,6 +20,11 @@ public class Image extends BaseEntity {
     // 메일, 동아리, 쪽지 등등 타입
     private String type;
 
+    // 해당 타입의 Id ex) mailEntity.id,
+    private Long typeId;
+
     private String filePath;
+
+
 
 }
