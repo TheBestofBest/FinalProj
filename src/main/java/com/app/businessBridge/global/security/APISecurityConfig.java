@@ -29,6 +29,7 @@ public class APISecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/chats/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/meetings/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/logs/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/rebates")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/rebates/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/workingstates/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/statistics/**")).permitAll()
