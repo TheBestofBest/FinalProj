@@ -3,6 +3,7 @@ package com.app.businessBridge.domain.member.entity;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.division.entity.Division;
 import com.app.businessBridge.domain.grade.entity.Grade;
+import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
 import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.domain.workingstate.entity.WorkingState;

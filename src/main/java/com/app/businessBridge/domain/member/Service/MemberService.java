@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.member.Service;
 
+import ch.qos.logback.core.spi.ConfigurationEvent;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.division.entity.Division;
@@ -329,4 +330,13 @@ public class MemberService {
         return RsData.of(RsCode.S_07, "로그아웃되었습니다.");
     }
 
+    // name(이름)로 회원 찾기
+    public RsData<Member> findByName(String memberName) {
+        Optional<Member> om = this.memberRepository.findByName(memberName);
+
+        if (om.isEmpty()) {
+            return RsData.of(RsCode.F_04, "회원이 존재하지 않습니다.", null);
+        }
+        return RsData.of(RsCode.S_05, "회원을 찾았습니다.", om.get());
+    }
 }
