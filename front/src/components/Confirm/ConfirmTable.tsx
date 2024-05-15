@@ -2,7 +2,6 @@
 import { Package } from "@/types/package";
 import HorizontalLinearAlternativeLabelStepper from "../Stepper/Stepper";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 // 가 데이터
 const packageData: Package[] = [
@@ -35,10 +34,12 @@ const packageData: Package[] = [
 // Props로 `결재 리스트` 받기
 const ConfirmTable = () => {
   const router = useRouter();
+
   const handleRouter = () => {
     // 결재 아이디 받게 되면 바꾸기
     router.push("/confirm/1");
   };
+
   return (
     <div className="rounded-sm border border-stroke bg-white px-2 pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -50,9 +51,9 @@ const ConfirmTable = () => {
               <tr
                 key={key}
                 className="hover:cursor-pointer hover:bg-blue-200"
-                onClick={() => handleRouter}
+                onClick={() => handleRouter()}
               >
-                <td className="border-b border-[#eee] px-4 py-5 pl-9 dark:border-strokedark xl:pl-11">
+                <td className="border-b border-[#eee] px-1 py-5 pl-2 dark:border-strokedark xl:pl-2">
                   <h5 className="font-medium text-black dark:text-white">
                     {packageItem.name}
                   </h5>

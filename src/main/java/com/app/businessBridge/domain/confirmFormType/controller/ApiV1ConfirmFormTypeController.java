@@ -81,7 +81,7 @@ public class ApiV1ConfirmFormTypeController {
     }
 
     @GetMapping("/{formName}/formName")
-    public RsData<ConfirmFormTypeResponse.getByFormName> getConfirmFormTypes(@PathVariable(value = "formName") String formName){
+    public RsData<ConfirmFormTypeResponse.getByFormName> getConfirmFormTypesByFormName(@PathVariable(value = "formName") String formName){
         RsData<ConfirmFormType> rsData = this.confirmFormTypeService.getConfirmFormTypeByFormName(formName);
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new ConfirmFormTypeResponse.getByFormName(rsData.getData()));
