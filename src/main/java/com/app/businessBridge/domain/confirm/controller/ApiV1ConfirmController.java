@@ -10,6 +10,7 @@ import com.app.businessBridge.domain.confirmFormType.dto.ConfirmFormTypeDTO;
 import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmFormType.service.ConfirmFormTypeService;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
+import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.RsData.RsCode;
@@ -30,6 +31,7 @@ import java.util.Optional;
 public class ApiV1ConfirmController {
     private final ConfirmService confirmService;
     private final ConfirmFormTypeService confirmFormTypeService;
+    private final ConfirmStatusService confirmStatusService;
 
 
 
@@ -68,18 +70,22 @@ public class ApiV1ConfirmController {
     @PostMapping("")
     public RsData<ConfirmResponse.create> createConfirm(@Valid @RequestBody ConfirmRequest.create createConfirmRequest) {
         // 결재 양식 타입, 결재 처리 상태, 결재 요청자, 결재 승인자 검증
-        RsData<ConfirmResponse.create> createRsData = ConfirmValidate.validateConfirmCreate(createConfirmRequest);
-        if (!createRsData.getIsSuccess()) {
-            // 검증 실패 시 해당 검증 실패 코드, 메시지 반환
-            return RsData.of(
-                    createRsData.getRsCode(),
-                    createRsData.getMsg(),
-                    createRsData.getData()
-            );
+//        RsData<ConfirmResponse.create> createRsData = ConfirmValidate.validateConfirmCreate(createConfirmRequest);
+//        if (!createRsData.getIsSuccess()) {
+//            // 검증 실패 시 해당 검증 실패 코드, 메시지 반환
+//            return RsData.of(
+//                    createRsData.getRsCode(),
+//                    createRsData.getMsg(),
+//                    createRsData.getData()
+//            );
+//        }
+
+        Optional<ConfirmStatus>optionalConfirmStatus =  this.confirmStatusService.getConfirmStatus(1L);
+        if(optionalConfirmStatus.isEmpty()){
+            return RsData.of(RsCode.F_05, "결재 상태 불러오기 실패", null);
         }
 
-
-        RsData<Confirm> confirmRsData = this.confirmService.createConfirm(createConfirmRequest);
+        RsData<Confirm> confirmRsData = this.confirmService.createConfirm(createConfirmRequest, optionalConfirmStatus.get());
 
         return RsData.of(
                 confirmRsData.getRsCode(),

@@ -225,15 +225,6 @@ public class ConfirmValidate {
                     validateConfirm.getData()
             );
         }
-        // 처리 상태 검증
-        RsData<ConfirmResponse.create> validateStatus = ConfirmValidate.validateConfirmStatus(createConfirmRequest.getConfirmStatus());
-        if (!validateStatus.getIsSuccess()) {
-            return RsData.of(
-                    validateStatus.getRsCode(),
-                    validateStatus.getMsg(),
-                    validateStatus.getData()
-            );
-        }
         // 결재 요청자 검증
         RsData<ConfirmResponse.create> validateConfirmRequestMember = ConfirmValidate.validateConfirmRequestMember(createConfirmRequest.getConfirmRequestMember());
         if (!validateConfirmRequestMember.getIsSuccess()) {

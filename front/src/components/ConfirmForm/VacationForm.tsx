@@ -111,10 +111,11 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
       setFormData({ ...formData, startDate: startDate || new Date() });
       setFormData({ ...formData, endDate: endDate || new Date() });
 
-      await api.post("/confirms", {
+      const formDataString = JSON.stringify(formData);
+      await api.post("/api/v1/confirms", {
         subject: confirm.subject,
         description: confirm.description,
-        formData: formData,
+        formData: formDataString,
         formType: confirmFormType,
         confirmRequestMember: member,
         confirmMembers: confirmMembers,
@@ -126,10 +127,7 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
 
       // 추가적인 로직이 필요한 경우 여기에 작성
     } catch (error) {
-      console.error(
-        "An error occurred while creating the Gongcha article:",
-        error,
-      );
+      console.error("결재 등록 중 에러가 발생했습니다.:", error);
       // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
     }
   };
@@ -151,8 +149,8 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
   };
 
   return (
-    // onSubmit={handleSubmit} form에 넣기
-    <form>
+    //  form에 넣기
+    <form onSubmit={handleSubmit}>
       <br />
       <div>
         <label className="text-gray-900 mb-2 block text-base font-bold dark:text-white">
@@ -233,7 +231,6 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
           defaultValue={""}
           onChange={handleVacationChange}
         />
-        {/* 멤버 선택 넣기 */}
         <label
           htmlFor="search"
           className="text-gray-900 mb-2 mb-2 mt-3 block text-base font-bold dark:text-white"
@@ -279,6 +276,7 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
             </button>
           </div>
         </div>
+        {/* 검색한 멤버 테이블 */}
         <div className="relative mt-2 overflow-x-auto border border-slate-300">
           <table className="text-gray-500 dark:text-gray-400 w-full text-left text-sm rtl:text-right">
             <thead className="text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b border-slate-300 text-xs uppercase">
@@ -320,11 +318,51 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
             </tbody>
           </table>
         </div>
-
+        <label
+          htmlFor="search"
+          className="text-gray-900 mb-2 mb-2 mt-3 block text-base font-bold dark:text-white"
+          ref={memberTableRef}
+        >
+          결재 승인자:
+        </label>
+        {/* 선택한 멤버 */}
+        <div className="relative mt-2 overflow-x-auto border border-slate-300">
+          <table className="text-gray-500 dark:text-gray-400 w-full text-left text-sm rtl:text-right">
+            <thead className="text-gray-700 bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b border-slate-300 text-xs uppercase">
+              <tr>
+                <th scope="col" className="px-6 py-3">
+                  이름
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  직급
+                </th>
+                <th scope="col" className="px-6 py-3">
+                  부서
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {confirmMembers?.map((member) => (
+                <tr
+                  key={member.id}
+                  className="dark:bg-gray-800 dark:border-gray-200 border-b bg-white hover:cursor-pointer hover:bg-blue-200"
+                >
+                  <th
+                    scope="row"
+                    className="text-gray-900 whitespace-nowrap px-6 py-4 font-medium dark:text-white"
+                  >
+                    {member.name}
+                  </th>
+                  <td className="px-6 py-4">{member.grade.name}</td>
+                  <td className="px-6 py-4">{member.department.name}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         <div className="mt-3 flex justify-end">
           <button
-            // onClick={() => handleForm("")}
-            type="button"
+            type="submit"
             className="mb-2 me-2  rounded-lg bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-teal-300 dark:focus:ring-teal-800"
           >
             등록하기

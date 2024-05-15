@@ -25,8 +25,6 @@ public class ConfirmRequest {
 
         // 결재 양식 타입(휴가승인서, 보고서 등)
         private ConfirmFormType formType;
-        // 결재 처리 상태(진행중, 승인, 반려 등)
-        private ConfirmStatus confirmStatus;
 
         // 결재 요청자
         private Member confirmRequestMember;

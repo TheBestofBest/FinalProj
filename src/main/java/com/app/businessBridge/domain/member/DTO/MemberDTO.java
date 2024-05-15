@@ -27,7 +27,7 @@ public class MemberDTO {
         this.name = member.getName();
         this.email = member.getEmail();
         this.meetingState =
-                member.getMeetingState() == null ? "참석 중인 회의 없음" :
+                member.getMeetingState() == null ? null :
                         !member.getMeetingState() ? "%d번 회의 초대 받음".formatted(member.getMeetingRoom().getId()) :
                                 "%d번 회의 참여 중".formatted(member.getMeetingRoom().getId());
     }

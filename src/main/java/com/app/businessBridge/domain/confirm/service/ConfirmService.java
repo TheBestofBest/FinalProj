@@ -3,6 +3,7 @@ package com.app.businessBridge.domain.confirm.service;
 import com.app.businessBridge.domain.confirm.entity.Confirm;
 import com.app.businessBridge.domain.confirm.repository.ConfirmRepository;
 import com.app.businessBridge.domain.confirm.request.ConfirmRequest;
+import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +25,13 @@ public class ConfirmService {
         return this.confirmRepository.findById(confirmId);
     }
 
-    public RsData<Confirm> createConfirm(ConfirmRequest.create createConfirmRequest) {
+    public RsData<Confirm> createConfirm(ConfirmRequest.create createConfirmRequest, ConfirmStatus confirmStatus) {
         Confirm confirm = Confirm.builder()
                 .subject(createConfirmRequest.getSubject())
                 .description(createConfirmRequest.getDescription())
                 .formData(createConfirmRequest.getFormData())
                 .formType(createConfirmRequest.getFormType())
-                .confirmStatus(createConfirmRequest.getConfirmStatus())
+                .confirmStatus(confirmStatus)
                 .confirmRequestMember(createConfirmRequest.getConfirmRequestMember())
                 .confirmMembers(createConfirmRequest.getConfirmMembers())
                 .build();
