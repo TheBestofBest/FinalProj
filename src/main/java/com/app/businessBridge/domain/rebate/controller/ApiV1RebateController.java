@@ -90,7 +90,7 @@ public class ApiV1RebateController {
 
         if(searchedMember==null) {
             rebateList = this.rebateService.findByYearAndMonth(rbSearchRequest.getYear(), month);
-        } else if (rbSearchRequest.getMonth() == null) {
+        } else if (rbSearchRequest.getMonth().isEmpty()) {
             rebateList = this.rebateService.findByYearAndMember(rbSearchRequest.getYear(), searchedMember.getId());
         } else {
             rebateList = this.rebateService.findBySearch(rbSearchRequest.getYear(), month, searchedMember.getId());
