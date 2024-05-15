@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ConfirmModalBox, ConfirmModalContent } from "../Modal/ConfirmModals";
 import VacationForm from "../ConfirmForm/VacationForm";
 import SoftwarePurchaseRequestForm from "../ConfirmForm/SoftwarePurchaseRequestForm";
@@ -20,6 +20,14 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
     formName: "",
     formDescription: "",
   });
+
+  const getConfirmFormTypes = async () => {
+    const response = await api.get(`api/v1/confirm-form-types`);
+    setConfirmFormTypes(response.data.data.confirmFormTypeDTOs);
+  };
+  useEffect(() => {
+    getConfirmFormTypes();
+  }, []);
 
   const getConfirmFormType = async (formType: string) => {
     const response = await api.get(
