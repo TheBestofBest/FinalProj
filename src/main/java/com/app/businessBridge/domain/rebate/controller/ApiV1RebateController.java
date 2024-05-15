@@ -6,6 +6,7 @@ import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.rebate.dto.RebateDto;
 import com.app.businessBridge.domain.rebate.dto.RebatesDto;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
+import com.app.businessBridge.domain.rebate.request.RbSearchRequest;
 import com.app.businessBridge.domain.rebate.request.RebateRequest;
 import com.app.businessBridge.domain.rebate.response.RebateResponse;
 import com.app.businessBridge.domain.rebate.response.RebatesResponse;
@@ -67,9 +68,8 @@ public class ApiV1RebateController {
         );
     }
 
-    @GetMapping("/{year}/{month}")
-    public RsData<RebatesResponse> getRebatesByYearAndMonth(@PathVariable(value = "year") String year,
-                                         @PathVariable(value = "month") String month) {
+    @PostMapping("/search")
+    public RsData<RebatesResponse> getRebatesByYearAndMonth(@RequestBody RbSearchRequest rbSearchRequest) {
 
         Member member = rq.getMember();
 
@@ -81,11 +81,23 @@ public class ApiV1RebateController {
             );
         }
 
+        String month = rbSearchRequest.getMonth();
+        List<Rebate> rebateList = new ArrayList<>();
+
+        Member searchedMember = this.memberService.findByName(rbSearchRequest.getUserInfo()).getData();
+
         if(month.startsWith("0")) month = month.replace("0","");
 
-        List<Rebate> rebateList = this.rebateService.findByYearAndMonth(year,month);
+        if(searchedMember==null) {
+            rebateList = this.rebateService.findByYearAndMonth(rbSearchRequest.getYear(), month);
+        } else if (rbSearchRequest.getMonth() == null) {
+            rebateList = this.rebateService.findByYearAndMember(rbSearchRequest.getYear(), searchedMember.getId());
+        } else {
+            rebateList = this.rebateService.findBySearch(rbSearchRequest.getYear(), month, searchedMember.getId());
+        }
 
         List<RebatesDto> rebates = new ArrayList<>();
+
         Long totalSum = 0L;
 
         for (int i = 0; i < rebateList.size(); i++) {
@@ -95,7 +107,7 @@ public class ApiV1RebateController {
 
         return RsData.of(
                 RsCode.S_01,
-                year + "년 " + month + "월 " + "정산내역 불러오기 성공",
+                "정산내역 불러오기 성공",
                 new RebatesResponse(rebates, totalSum)
         );
     }

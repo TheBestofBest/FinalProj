@@ -58,13 +58,8 @@ export default function MeRebate() {
 
     return (
         <>
-        <DefaultLayout>
-            <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-                정산 상세보기
-            </h4>   
+        <DefaultLayout>   
             {isLoading ? <Loader/> : <RebateLists rebates = {rebates}/>}
-            
-            
         </DefaultLayout>
         </>
     )

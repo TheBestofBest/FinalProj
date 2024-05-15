@@ -65,7 +65,7 @@ export default function Rebates() {
         }
     };
 
-    const [date, setDate] = useState({ year: "", month: ""});
+    const [date, setDate] = useState({ year: "", month: "", userInfo: ""});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -76,9 +76,13 @@ export default function Rebates() {
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        const response = await fetch(`http://localhost:8090/api/v1/rebates/${date.year}/${date.month}`, {
-            method: 'GET',
+        const response = await fetch("http://localhost:8090/api/v1/rebates/search", {
+            method: 'POST',
             credentials: "include",
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(date)
         });
 
         const parsedResponse = await response.json();
@@ -125,6 +129,18 @@ export default function Rebates() {
                                 name="month"
                                 onChange={handleChange}
                                 placeholder="ex)5"
+                                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                />
+                            </div>
+                            <div>
+                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                                직원 이름 입력
+                                </label>
+                                <input
+                                type="text"
+                                name="userInfo"
+                                onChange={handleChange}
+                                placeholder="ex)홍길동"
                                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>

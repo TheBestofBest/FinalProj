@@ -80,7 +80,15 @@ public class RebateService {
         return this.rebateRepository.findMyRebates(String.valueOf(id));
     }
 
+    public List<Rebate> findBySearch(String year, String month, Long id) {
+        return this.rebateRepository.findBySearch(year, month, String.valueOf(id));
+    }
+
     public List<Rebate> findByYearAndMonth(String year, String month) {
         return this.rebateRepository.findByYearAndMonth(year, month);
+    }
+
+    public List<Rebate> findByYearAndMember(String year, Long id) {
+        return this.rebateRepository.findByYearAndMember(year, String.valueOf(id));
     }
 }
