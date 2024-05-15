@@ -94,7 +94,7 @@ public class ApiV1ConfirmController {
         List<Member> confirmMembers = new ArrayList<>();
 
         for(MemberDTO confirmMember : createConfirmRequest.getConfirmMembers()){
-            RsData<Member> confirmMemberRsData = this.memberService.findById( createConfirmRequest.getConfirmRequestMember().getId());
+            RsData<Member> confirmMemberRsData = this.memberService.findById( confirmMember.getId());
             if(confirmMemberRsData.getIsSuccess()){
                 confirmMembers.add(confirmMemberRsData.getData());
             }

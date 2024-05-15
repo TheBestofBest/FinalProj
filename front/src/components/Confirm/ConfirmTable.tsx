@@ -23,7 +23,7 @@ const ConfirmTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [confirms]);
 
   return (
     <div className="rounded-sm border border-stroke bg-white  pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -78,6 +78,7 @@ const ConfirmTable = () => {
                   <div className="flex items-center space-x-3.5">
                     <HorizontalLinearAlternativeLabelStepper
                       activeStep={confirm?.confirmStepCounter}
+                      confirmMembers={confirm?.confirmMembers}
                     />
                   </div>
                 </td>

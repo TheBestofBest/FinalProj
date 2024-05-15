@@ -1,11 +1,68 @@
 "use client";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import HorizontalLinearAlternativeLabelStepper from "@/components/Stepper/Stepper";
+import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
+import { ConfirmType } from "@/types/Confirm/ConfirmTypes";
+import api from "@/util/api";
 import Link from "next/link";
-import { useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 export default function ConfirmDetailPage() {
   // 모달 버튼 클릭 유무를 저장할 state
   const [showModal, setShowModal] = useState(false);
+  const params = useParams();
+  const [formData, setFormData] = useState({});
+  const [confirm, setConfirm] = useState<ConfirmType>({
+    id: 0,
+    subject: "",
+    description: "",
+    formData: "",
+    formType: {
+      formName: "",
+      formDescription: "",
+    },
+    confirmStatusDTO: {
+      statusName: "",
+      statusDescription: "",
+    },
+    confirmRequestMember: {
+      id: 0, // id
+      department: {
+        code: 0,
+        name: "",
+      }, // 부서
+      grade: {
+        code: 0,
+        name: "",
+      }, // 직급
+      username: "", // 로그인 아이디
+      password: "", // 비밀번호
+      email: "", // 이메일
+      memberNumber: 0, // 사원번호
+      name: "", // 사원명
+      assignedTask: "", // 담당 업무
+      workStatus: "", // 근무 상태 ( 온라인, 오프라인, 부재중 )
+      extensionNumber: "", // 내선 전화 번호
+      phoneNumber: "", // 개인 연락처
+      statusMessage: "",
+    },
+    confirmMembers: [], // 빈 배열로 초기화
+    createDate: new Date(),
+    confirmStepCounter: 0,
+  });
+
+  const getConfirm = async () => {
+    const response = await api.get(`/api/v1/confirms/${params.id}`);
+    setConfirm(response.data.data.confirmDTO);
+  };
+  useEffect(() => {
+    getConfirm();
+    console.log(confirm);
+  }, []);
+
+  // const jsonData: string = confirm.formData;
+
+  // const parsedData: ConfirmFormVactionType = JSON.parse(jsonData);
 
   // 버튼 클릭시 모달 버튼 클릭 유무를 설정하는 state 함수
   const clickModal = () => setShowModal(!showModal);
@@ -57,7 +114,10 @@ export default function ConfirmDetailPage() {
                   </tbody>
                 </table>
                 <div className="dark:text-white">
-                  <HorizontalLinearAlternativeLabelStepper activeStep={1} />
+                  <HorizontalLinearAlternativeLabelStepper
+                    activeStep={1}
+                    confirmMembers={confirm?.confirmMembers}
+                  />
                 </div>
               </div>
               {/* c table: 결재 간략설명 */}
@@ -88,7 +148,8 @@ export default function ConfirmDetailPage() {
                         scope="row"
                         className="text-gray-900 bg-gray-50 dark:bg-gray-800 whitespace-nowrap border px-6 py-4 font-medium dark:text-white"
                       >
-                        양식 별 컴포넌트!
+                        123
+                        {/* {parsedData.content} */}
                       </th>
                     </tr>
                   </tbody>
