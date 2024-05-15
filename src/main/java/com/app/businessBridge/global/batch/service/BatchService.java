@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BatchService {
+
     private final JobLauncher jobLauncher;
+
     private final Job simpleJob;
 
     public void runSimpleJob() {

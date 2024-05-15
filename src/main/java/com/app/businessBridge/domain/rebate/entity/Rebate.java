@@ -48,5 +48,7 @@ public class Rebate extends BaseEntity {
     // 세후 최종 실급여
     private Long totalSalary;
 
+    private boolean isSaved;
+
 }
 

@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.member.Service;
 
+import ch.qos.logback.core.spi.ConfigurationEvent;
 import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
@@ -313,6 +314,15 @@ public class MemberService {
                 "나가기 완료", members);
     }
 
+    // name(이름)로 회원 찾기
+    public RsData<Member> findByName(String memberName) {
+        Optional<Member> om = this.memberRepository.findByName(memberName);
+
+        if (om.isEmpty()) {
+            return RsData.of(RsCode.F_04, "회원이 존재하지 않습니다.", null);
+        }
+        return RsData.of(RsCode.S_05, "회원을 찾았습니다.", om.get());
+    }
     public List<Member> getAll(){
         return this.memberRepository.findAll();
     }

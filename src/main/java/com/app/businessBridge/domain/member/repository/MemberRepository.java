@@ -1,6 +1,5 @@
 package com.app.businessBridge.domain.member.repository;
 
-import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +20,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.meetingRoom.id = :roomId AND m.meetingState = true")
     List<Member> findByApprovedMeetingRoomId(Long roomId);
+
+    Optional<Member> findByName(String memberName);
 
     @Query(value = "SELECT * FROM member WHERE  name LIKE CONCAT('%', :keyword, '%')", nativeQuery = true)
     List<Member> findByKeyword(@Param("keyword") String keyword);
