@@ -16,25 +16,29 @@ const style = {
   p: 4,
   border: "1px solid #000",
 };
+interface AddStructureProps{
+  category:string;
+  categoryKo:string;
+}
 
-export default function AddDepartment() {
+export default function AddStructure({category, categoryKo}: AddStructureProps) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [departmentForm, setDepartmentform] = useState({
+  const [addStructureForm, setAddStructureForm] = useState({
     code: Number,
     name: String,
   });
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setDepartmentform({ ...departmentForm, [name]: value });
-    console.log({ ...departmentForm, [name]: value });
+    setAddStructureForm({ ...addStructureForm, [name]: value });
+    console.log({ ...addStructureForm, [name]: value });
   };
 
   const handleClick = () => {
-    api.post("/api/v1/departments", departmentForm).then((res) => {
+    api.post(`/api/v1/${category}s`, addStructureForm).then((res) => {
       if (res.data.isSuccess) {
         handleClose();
         alert(res.data.msg);
@@ -46,7 +50,7 @@ export default function AddDepartment() {
 
   return (
     <div>
-      <Button onClick={handleOpen}>부서 등록 +</Button>
+      <Button onClick={handleOpen}>{categoryKo} 등록 +</Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -56,28 +60,28 @@ export default function AddDepartment() {
         <Box sx={style}>
           <div className="flex justify-center text-black">
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              부서 등록
+            {categoryKo} 등록
             </Typography>
           </div>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <div className="mb-3">
-              <div className="mb-1">부서 코드</div>
+              <div className="mb-1">{categoryKo} 코드</div>
               <input
                 onChange={handleChange}
                 type="text"
                 name="code"
                 className="h-8 w-full rounded-md border px-2"
-                placeholder="부서 코드(숫자)를 입력해주세요."
+                placeholder={`${{categoryKo}} 코드(숫자)를 입력해주세요.`}
               />
             </div>
             <div className="mb-5">
-              <div className="mb-1">부서명</div>
+              <div className="mb-1">{categoryKo}명</div>
               <input
                 onChange={handleChange}
                 type="text"
                 name="name"
                 className="h-8 w-full rounded-md border px-2"
-                placeholder="부서명을 입력해주세요."
+                placeholder={`${{categoryKo}}명을 입력해주세요..`}
               />
             </div>
             <div className="mb-5 flex justify-end">

@@ -2,6 +2,8 @@ package com.app.businessBridge.domain.member.Service;
 
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
+import com.app.businessBridge.domain.division.entity.Division;
+import com.app.businessBridge.domain.division.repository.DivisionRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.grade.repository.GradeRepository;
 import com.app.businessBridge.domain.grade.service.GradeService;
@@ -32,6 +34,7 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DivisionRepository divisionRepository;
     private final DepartmentRepository departmentRepository;
     private final GradeRepository gradeRepository;
     private final JwtProvider jwtProvider;
@@ -39,8 +42,9 @@ public class MemberService {
     private final Request rq;
 
     // 회원 생성
-    public RsData create(Integer departmentCode, Integer gradeCode, String username,
+    public RsData create(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
                          Integer memberNumber, String name, String password, String email) {
+        Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
@@ -51,6 +55,7 @@ public class MemberService {
         }
 
         Member member = Member.builder()
+                .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
@@ -106,9 +111,10 @@ public class MemberService {
     }
 
     // 회원 수정
-    public RsData<Member> update(Long id, Integer departmentCode, Integer gradeCode, String username,
+    public RsData<Member> update(Long id, Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
                                  Integer memberNumber, String name, String password, String email) {
         RsData<Member> rsData = findById(id);
+        Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
@@ -126,6 +132,7 @@ public class MemberService {
         }
 
         Member member = rsData.getData().toBuilder()
+                .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
@@ -211,8 +218,9 @@ public class MemberService {
     }
 
     // 정산, 통계 테스트용 회원 생성 로직
-    public RsData createRebateTest(Integer departmentCode, Integer gradeCode, String username,
-                         Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
+    public RsData createRebateTest(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
+                                   Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
+        Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
@@ -223,6 +231,7 @@ public class MemberService {
         }
 
         Member member = Member.builder()
+                .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
@@ -315,9 +324,9 @@ public class MemberService {
     }
 
     // 로그아웃
-    public RsData logout(){
-            rq.removeCrossDomainCookie("accessToken");
-            rq.removeCrossDomainCookie("refreshToken");
+    public RsData logout() {
+        rq.removeCrossDomainCookie("accessToken");
+        rq.removeCrossDomainCookie("refreshToken");
 
         return RsData.of(RsCode.S_07, "로그아웃되었습니다.");
     }

@@ -9,8 +9,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import api from "@/util/api";
 import { useEffect, useState } from "react";
-import AddDepartment from "./AddDepartment";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import AddStructure from "./AddStructure";
 
 export default function BasicTable() {
   const queryClient = useQueryClient();
@@ -20,7 +20,7 @@ export default function BasicTable() {
     return response.data.data.departmentDTOList;
   };
 
-  const { departments } = useQuery({
+  const { departments }:any = useQuery({
     queryKey: ["departments"],
     queryFn: getDepartments,
   });
@@ -30,7 +30,7 @@ export default function BasicTable() {
     return response.data.data.gradeDTOList;
   };
 
-  const { grades } = useQuery({
+  const { grades }:any = useQuery({
     queryKey: ["grades"],
     queryFn: getGrades,
   });
@@ -51,7 +51,7 @@ export default function BasicTable() {
       <div>
         <div className="m-2 flex justify-between">
           <div className="text-2xl font-bold">소속</div>
-          <AddDepartment/>
+          <AddStructure category="division" categoryKo="소속"/>
         </div>
         <TableContainer
           component={Paper}
@@ -129,7 +129,7 @@ export default function BasicTable() {
       <div>
         <div className="m-2 flex justify-between">
           <div className="text-2xl font-bold">부서</div>
-          <AddDepartment/>
+          <AddStructure  category="department" categoryKo="부서"/>
         </div>
         <TableContainer
           component={Paper}
@@ -207,7 +207,7 @@ export default function BasicTable() {
       <div>
         <div className="m-2 flex justify-between">
           <div className="text-2xl font-bold">직급</div>
-          <AddDepartment/>
+          <AddStructure  category="grade" categoryKo="직급"/>
         </div>
         <TableContainer
           component={Paper}
