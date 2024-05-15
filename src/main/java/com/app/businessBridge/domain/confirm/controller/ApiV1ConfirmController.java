@@ -11,6 +11,7 @@ import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmFormType.service.ConfirmFormTypeService;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
+import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.RsData.RsCode;
@@ -32,6 +33,7 @@ public class ApiV1ConfirmController {
     private final ConfirmService confirmService;
     private final ConfirmFormTypeService confirmFormTypeService;
     private final ConfirmStatusService confirmStatusService;
+    private final MemberService memberService;
 
 
 
@@ -84,8 +86,22 @@ public class ApiV1ConfirmController {
         if(optionalConfirmStatus.isEmpty()){
             return RsData.of(RsCode.F_05, "결재 상태 불러오기 실패", null);
         }
+        RsData<Member> requestMemberRsData = this.memberService.findById( createConfirmRequest.getConfirmRequestMember().getId());
+        if(!requestMemberRsData.getIsSuccess()){
+            return RsData.of(requestMemberRsData.getRsCode(), requestMemberRsData.getMsg(), null);
+        }
 
-        RsData<Confirm> confirmRsData = this.confirmService.createConfirm(createConfirmRequest, optionalConfirmStatus.get());
+        List<Member> confirmMembers = new ArrayList<>();
+
+        for(MemberDTO confirmMember : createConfirmRequest.getConfirmMembers()){
+            RsData<Member> confirmMemberRsData = this.memberService.findById( createConfirmRequest.getConfirmRequestMember().getId());
+            if(confirmMemberRsData.getIsSuccess()){
+                confirmMembers.add(confirmMemberRsData.getData());
+            }
+        }
+
+
+        RsData<Confirm> confirmRsData = this.confirmService.createConfirm(createConfirmRequest, optionalConfirmStatus.get(), requestMemberRsData.getData(), confirmMembers);
 
         return RsData.of(
                 confirmRsData.getRsCode(),
@@ -94,35 +110,35 @@ public class ApiV1ConfirmController {
         );
     }
 
-    @PatchMapping("/{id}")
-    public RsData<ConfirmResponse.patch> patchConfirm(@PathVariable(value="id") Long id ,@Valid @RequestBody ConfirmRequest.patch patchConfirmRequest) {
-        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
-        if(optionalConfirm.isEmpty()){
-            return RsData.of(
-                    RsCode.F_04,
-                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
-                    null
-            );
-        }
-
-        RsData<ConfirmResponse.patch> patchRsData = ConfirmValidate.validateConfirmPatch(patchConfirmRequest);
-        if (!patchRsData.getIsSuccess()) {
-            // 검증 실패 시 해당 검증 실패 코드, 메시지 반환
-            return RsData.of(
-                    patchRsData.getRsCode(),
-                    patchRsData.getMsg(),
-                    patchRsData.getData()
-            );
-        }
-
-        RsData<Confirm> confirmRsData = this.confirmService.updateConfirm(optionalConfirm.get(), patchConfirmRequest);
-
-        return RsData.of(
-                confirmRsData.getRsCode(),
-                confirmRsData.getMsg(),
-                new ConfirmResponse.patch(confirmRsData.getData())
-        );
-    }
+//    @PatchMapping("/{id}")
+//    public RsData<ConfirmResponse.patch> patchConfirm(@PathVariable(value="id") Long id ,@Valid @RequestBody ConfirmRequest.patch patchConfirmRequest) {
+//        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
+//        if(optionalConfirm.isEmpty()){
+//            return RsData.of(
+//                    RsCode.F_04,
+//                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
+//                    null
+//            );
+//        }
+//
+//        RsData<ConfirmResponse.patch> patchRsData = ConfirmValidate.validateConfirmPatch(patchConfirmRequest);
+//        if (!patchRsData.getIsSuccess()) {
+//            // 검증 실패 시 해당 검증 실패 코드, 메시지 반환
+//            return RsData.of(
+//                    patchRsData.getRsCode(),
+//                    patchRsData.getMsg(),
+//                    patchRsData.getData()
+//            );
+//        }
+//
+//        RsData<Confirm> confirmRsData = this.confirmService.updateConfirm(optionalConfirm.get(), patchConfirmRequest);
+//
+//        return RsData.of(
+//                confirmRsData.getRsCode(),
+//                confirmRsData.getMsg(),
+//                new ConfirmResponse.patch(confirmRsData.getData())
+//        );
+//    }
 
     @PatchMapping("/{id}/change-status")
     public RsData<ConfirmResponse.changeStatus> changeStatusConfirm(@PathVariable(value = "id") Long id, @Valid @RequestBody ConfirmRequest.changeStatus changeStatusRequest){

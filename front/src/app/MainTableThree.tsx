@@ -41,7 +41,7 @@ const MainTableThree = () => {
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
           결재함
         </h4>
-        <ConfirmTable />
+        
       </div>
     </div>
   );

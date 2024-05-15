@@ -49,7 +49,7 @@ const ConfirmFormModal: React.FC<ConfirmFormModalProps> = ({ clickModal }) => {
       return (
         <div className="mx-auto flex w-full justify-items-center">
           {/* 휴가 신청 양식의 세부사항 작성 창 */}
-          <VacationForm confirmFormType={confirmFormType} />
+          <VacationForm confirmFormType={confirmFormType} clickModal={clickModal}/>
         </div>
       );
     } else if (selectedForm === "Software 구매 신청") {

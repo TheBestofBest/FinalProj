@@ -2,6 +2,7 @@ package com.app.businessBridge.domain.confirm.request;
 
 import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
+import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,9 +28,9 @@ public class ConfirmRequest {
         private ConfirmFormType formType;
 
         // 결재 요청자
-        private Member confirmRequestMember;
+        private MemberDTO confirmRequestMember;
         // 결재 승인자
-        private List<Member> confirmMembers;
+        private List<MemberDTO> confirmMembers;
     }
 
     @Getter
@@ -48,9 +49,9 @@ public class ConfirmRequest {
         private ConfirmStatus confirmStatus;
 
         // 결재 요청자
-        private Member confirmRequestMember;
+        private MemberDTO confirmRequestMember;
         // 결재 승인자
-        private List<Member> confirmMembers;
+        private List<MemberDTO> confirmMembers;
     }
 
     @Getter

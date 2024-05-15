@@ -1,14 +1,16 @@
 import { MemberType } from "../Member/MemberTypes";
 
 export type ConfirmType = {
+  id: number;
   subject: string;
   description: string;
   formData: string;
   formType: ConfirmFormType;
-  confirmStatus: ConfirmStatusType;
+  confirmStatusDTO: ConfirmStatusType;
   confirmRequestMember: MemberType;
   confirmMembers: MemberType[];
   createDate: Date;
+  confirmStepCounter: number;
 };
 
 export type ConfirmFormType = {

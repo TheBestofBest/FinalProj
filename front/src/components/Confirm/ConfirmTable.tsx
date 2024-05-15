@@ -2,37 +2,13 @@
 import { Package } from "@/types/package";
 import HorizontalLinearAlternativeLabelStepper from "../Stepper/Stepper";
 import { useRouter } from "next/navigation";
-
-// 가 데이터
-const packageData: Package[] = [
-  {
-    name: "휴가신청서",
-    price: 0.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Paid",
-  },
-  {
-    name: "Standard Package",
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Paid",
-  },
-  {
-    name: "Business Package",
-    price: 99.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Unpaid",
-  },
-  {
-    name: "Standard Package",
-    price: 59.0,
-    invoiceDate: `Jan 13,2023`,
-    status: "Pending",
-  },
-];
+import { useEffect, useState } from "react";
+import api from "@/util/api";
+import { ConfirmType } from "@/types/Confirm/ConfirmTypes";
 
 // Props로 `결재 리스트` 받기
 const ConfirmTable = () => {
+  const [confirms, setConfirms] = useState<ConfirmType[]>([]);
   const router = useRouter();
 
   const handleRouter = () => {
@@ -40,47 +16,69 @@ const ConfirmTable = () => {
     router.push("/confirm/1");
   };
 
+  useEffect(() => {
+    api
+      .get(`/api/v1/confirms`)
+      .then((response) => setConfirms(response.data.data.confirmDTOs))
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
-    <div className="rounded-sm border border-stroke bg-white px-2 pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="rounded-sm border border-stroke bg-white  pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+      <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
+        결재함
+      </h4>
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           {/* 추후 head 삭제 */}
           <tbody>
-            {packageData.map((packageItem, key) => (
+            {confirms.map((confirm) => (
               //[] onClick 으로 상세 페이지로 전송하는 이벤트 만들기
               <tr
-                key={key}
+                key={confirm.id}
                 className="hover:cursor-pointer hover:bg-blue-200"
                 onClick={() => handleRouter()}
               >
-                <td className="border-b border-[#eee] px-1 py-5 pl-2 dark:border-strokedark xl:pl-2">
+                <td className="border-b border-[#eee]  py-5 dark:border-strokedark ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {packageItem.name}
+                    {confirm.subject}
                   </h5>
-                  <p className="text-sm">{packageItem.invoiceDate}</p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    결재 요청자, 요청자 직급
+                  <p className="text-sm">
+                    {new Date(confirm.createDate).toLocaleDateString("ko-KR", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    })}
                   </p>
-                  <p className="text-sm">부서</p>
+                </td>
+                <td className="min-w-4 border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                  <p className="text-black dark:text-white">
+                    {confirm.confirmRequestMember.name}
+                  </p>
+                  <p className="text-sm">
+                    {confirm.confirmRequestMember.department.name}
+                  </p>
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <p
                     className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
-                      packageItem.status === "Paid"
+                      confirm.confirmStatusDTO?.statusName === "승인"
                         ? "bg-success text-success"
-                        : packageItem.status === "Unpaid"
+                        : confirm.confirmStatusDTO?.statusName === "결재 처리중"
                           ? "bg-danger text-danger"
                           : "bg-warning text-warning"
                     }`}
                   >
-                    {packageItem.status}
+                    {confirm.confirmStatusDTO?.statusName}
                   </p>
                 </td>
                 <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
-                    <HorizontalLinearAlternativeLabelStepper activeStep={2} />
+                    <HorizontalLinearAlternativeLabelStepper
+                      activeStep={confirm?.confirmStepCounter}
+                    />
                   </div>
                 </td>
               </tr>

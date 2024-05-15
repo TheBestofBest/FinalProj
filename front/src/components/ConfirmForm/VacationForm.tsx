@@ -10,23 +10,28 @@ import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
 
 interface VacationFormProps {
   confirmFormType: ConfirmFormType;
+  clickModal: () => void;
 }
 
-const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
+const VacationForm: React.FC<VacationFormProps> = ({
+  confirmFormType,
+  clickModal,
+}) => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [confirm, setConfirm] = useState<ConfirmType>({
+    id: 0,
     subject: "",
     description: "",
     formData: "",
     formType: {
       formName: "",
       formDescription: "",
-    }, // 예시로 초기 ConfirmFormType을 사용하는 것으로 가정합니다.
-    confirmStatus: {
+    },
+    confirmStatusDTO: {
       statusName: "",
       statusDescription: "",
-    }, // 예시로 초기 ConfirmStatusType을 사용하는 것으로 가정합니다.
+    },
     confirmRequestMember: {
       id: 0, // id
       department: {
@@ -47,9 +52,10 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
       extensionNumber: "", // 내선 전화 번호
       phoneNumber: "", // 개인 연락처
       statusMessage: "",
-    }, // 예시로 초기 MemberType을 사용하는 것으로 가정합니다.
+    },
     confirmMembers: [], // 빈 배열로 초기화
     createDate: new Date(),
+    confirmStepCounter: 0,
   });
   const [members, setMembers] = useState<MemberType[]>([]);
   const [keyword, setKeyword] = useState("");
@@ -124,7 +130,7 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
       console.log("결재 등록 성공");
 
       // modal 창 닫기
-
+      clickModal();
       // 추가적인 로직이 필요한 경우 여기에 작성
     } catch (error) {
       console.error("결재 등록 중 에러가 발생했습니다.:", error);
@@ -261,9 +267,8 @@ const VacationForm: React.FC<VacationFormProps> = (confirmFormType) => {
               type="search"
               id="default-search"
               className="text-gray-900 border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-4 ps-10 text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Search Mockups, Logos..."
+              placeholder="결재 승인자 검색"
               onChange={changeSearchWordHandler}
-              required
             />
             <button
               className="absolute bottom-2.5 end-2.5 rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
