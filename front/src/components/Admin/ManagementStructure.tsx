@@ -20,7 +20,7 @@ export default function BasicTable() {
     return response.data.data.departmentDTOList;
   };
 
-  const { departments, isLoading, isError, refetch } = useQuery({
+  const { departments } = useQuery({
     queryKey: ["departments"],
     queryFn: getDepartments,
   });
@@ -51,7 +51,7 @@ export default function BasicTable() {
       <div>
         <div className="m-2 flex justify-between">
           <div className="text-2xl font-bold">소속</div>
-          <AddDepartment refetch={refetch} />
+          <AddDepartment/>
         </div>
         <TableContainer
           component={Paper}
@@ -129,7 +129,7 @@ export default function BasicTable() {
       <div>
         <div className="m-2 flex justify-between">
           <div className="text-2xl font-bold">부서</div>
-          <AddDepartment refetch={refetch} />
+          <AddDepartment/>
         </div>
         <TableContainer
           component={Paper}
@@ -207,7 +207,7 @@ export default function BasicTable() {
       <div>
         <div className="m-2 flex justify-between">
           <div className="text-2xl font-bold">직급</div>
-          <AddDepartment refetch={refetch} />
+          <AddDepartment/>
         </div>
         <TableContainer
           component={Paper}

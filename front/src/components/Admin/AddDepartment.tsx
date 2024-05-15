@@ -17,7 +17,7 @@ const style = {
   border: "1px solid #000",
 };
 
-export default function AddDepartment({ refetch }) {
+export default function AddDepartment() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -38,7 +38,6 @@ export default function AddDepartment({ refetch }) {
       if (res.data.isSuccess) {
         handleClose();
         alert(res.data.msg);
-        refetch;
       } else {
         alert(res.data.msg);
       }
