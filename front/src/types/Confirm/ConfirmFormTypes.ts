@@ -1,5 +1,5 @@
 export type ConfirmFormVactionType = {
-  content: String;
+  content: string;
   startDate: Date;
   endDate: Date;
 };

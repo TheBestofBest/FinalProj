@@ -1,9 +1,9 @@
 import { MemberType } from "../Member/MemberTypes";
 
 export type ConfirmType = {
-  subject: String;
-  description: String;
-  formData: String;
+  subject: string;
+  description: string;
+  formData: string;
   formType: ConfirmFormType;
   confirmStatus: ConfirmStatusType;
   confirmRequestMember: MemberType;
@@ -12,11 +12,11 @@ export type ConfirmType = {
 };
 
 export type ConfirmFormType = {
-  formName: String;
-  formDescription: String;
+  formName: string;
+  formDescription: string;
 };
 
 export type ConfirmStatusType = {
-  statusName: String;
-  statusDescription: String;
+  statusName: string;
+  statusDescription: string;
 };
