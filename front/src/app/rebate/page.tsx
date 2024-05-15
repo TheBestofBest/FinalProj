@@ -106,7 +106,7 @@ export default function Rebates() {
                 <RebateLoader/>
             ) : (
                 <>
-                    <div className="flex flex-col gap-1 p-1">
+                    <div className="flex">
                         <form onSubmit={handleSubmit}>
                             <div>
                                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">
