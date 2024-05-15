@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useState } from "react";
 import api from "@/util/api";
-import { replaceEqualDeep } from "@tanstack/react-query";
+import { replaceEqualDeep, useQueryClient } from "@tanstack/react-query";
 
 const style = {
   position: "absolute" as "absolute",
@@ -16,6 +16,7 @@ const style = {
   p: 4,
   border: "1px solid #000",
 };
+
 interface AddStructureProps{
   category:string;
   categoryKo:string;
@@ -25,6 +26,7 @@ export default function AddStructure({category, categoryKo}: AddStructureProps) 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const queryClient = useQueryClient();
 
   const [addStructureForm, setAddStructureForm] = useState({
     code: Number,
@@ -37,16 +39,24 @@ export default function AddStructure({category, categoryKo}: AddStructureProps) 
     console.log({ ...addStructureForm, [name]: value });
   };
 
+  const refetching = async() => {
+    await api.get(`/api/v1/${category}`).then((res)=>{
+      queryClient.setQueryData([category],res.data.dtoList);
+    })
+  }
+
   const handleClick = () => {
-    api.post(`/api/v1/${category}s`, addStructureForm).then((res) => {
+    api.post(`/api/v1/${category}`, addStructureForm).then((res) => {
       if (res.data.isSuccess) {
         handleClose();
         alert(res.data.msg);
+        refetching();
       } else {
         alert(res.data.msg);
       }
     });
   };
+
 
   return (
     <div>

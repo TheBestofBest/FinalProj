@@ -218,9 +218,8 @@ public class MemberService {
     }
 
     // 정산, 통계 테스트용 회원 생성 로직
-    public RsData createRebateTest(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
+    public RsData createRebateTest(Integer departmentCode, Integer gradeCode, String username,
                                    Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
-        Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
@@ -231,7 +230,6 @@ public class MemberService {
         }
 
         Member member = Member.builder()
-                .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
                 .username(username)

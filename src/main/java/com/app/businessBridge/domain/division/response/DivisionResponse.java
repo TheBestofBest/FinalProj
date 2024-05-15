@@ -19,10 +19,10 @@ public class DivisionResponse {
 
     @Getter
     public static class GetDivisions{
-        private List<DivisionDTO> divisionDTOList;
+        private List<DivisionDTO> dtoList;
 
         public GetDivisions(List<Division> divisionList){
-            this.divisionDTOList = divisionList.stream().map(DivisionDTO::new).toList();
+            this.dtoList = divisionList.stream().map(DivisionDTO::new).toList();
         }
     }
 

@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 
 interface memberInfo {
   name: String;
+  division:{
+    name: String;
+  };
   department: {
     name: String;
   };
@@ -75,7 +78,7 @@ const DropdownUser = () => {
             {member?.name}
           </span>
           <span className="block text-xs">
-            {member?.department.name} 부서 / {member?.grade.name}
+            {member?.division.name} / {member?.department.name} 부서 / {member?.grade.name}
           </span>
         </span>
 

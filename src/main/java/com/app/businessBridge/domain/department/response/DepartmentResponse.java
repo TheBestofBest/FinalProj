@@ -22,10 +22,10 @@ public class DepartmentResponse {
 
     @Getter
     public static class GetDepartments {
-        private List<DepartmentDTO> departmentDTOList;
+        private List<DepartmentDTO> dtoList;
 
         public GetDepartments(List<Department> departmentList) {
-            this.departmentDTOList = departmentList.stream().map(DepartmentDTO::new).toList();
+            this.dtoList = departmentList.stream().map(DepartmentDTO::new).toList();
         }
     }
 
