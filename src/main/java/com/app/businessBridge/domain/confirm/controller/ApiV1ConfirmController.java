@@ -68,15 +68,15 @@ public class ApiV1ConfirmController {
     @PostMapping("")
     public RsData<ConfirmResponse.create> createConfirm(@Valid @RequestBody ConfirmRequest.create createConfirmRequest) {
         // 결재 양식 타입, 결재 처리 상태, 결재 요청자, 결재 승인자 검증
-        RsData<ConfirmResponse.create> createRsData = ConfirmValidate.validateConfirmCreate(createConfirmRequest);
-        if (!createRsData.getIsSuccess()) {
-            // 검증 실패 시 해당 검증 실패 코드, 메시지 반환
-            return RsData.of(
-                    createRsData.getRsCode(),
-                    createRsData.getMsg(),
-                    createRsData.getData()
-            );
-        }
+//        RsData<ConfirmResponse.create> createRsData = ConfirmValidate.validateConfirmCreate(createConfirmRequest);
+//        if (!createRsData.getIsSuccess()) {
+//            // 검증 실패 시 해당 검증 실패 코드, 메시지 반환
+//            return RsData.of(
+//                    createRsData.getRsCode(),
+//                    createRsData.getMsg(),
+//                    createRsData.getData()
+//            );
+//        }
 
 
         RsData<Confirm> confirmRsData = this.confirmService.createConfirm(createConfirmRequest);

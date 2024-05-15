@@ -121,9 +121,18 @@ export default function Alarm() {
   //회의참석
   const approveMeeting = () => {
     api.patch(`/api/v1/meetings/${roomId}/approve`)
-      .then(res => queryClient.setQueryData(["member"], res.data.data.memberDTO));
-    setOpenAlarm(false);
-    router.push(`/meeting/${roomId}`);
+      .then(res => {
+        api.get(`/api/v1/members/me`)
+          .then(res => {
+            if (!res.data.isSuccess) {
+              return alert(res.data.msg);
+            }
+            queryClient.setQueryData(["member"], res.data.data.memberDTO);
+          });
+        alert("회의에 수락하였습니다.");
+        setOpenAlarm(false);
+        router.push(`/meeting/${roomId}`);
+      })
   }
 
   const rejectMeeting = () => {

@@ -42,6 +42,13 @@ public class MeetingWebSocketController {
         return answer;
     }
 
+    @MessageMapping("/peer/disconnect/{roomId}")
+    @SendTo("/topic/peer/disconnect/{roomId}")
+    public String handleDisconnect(@Payload String message, @DestinationVariable("roomId") String roomId) {
+        // Perform any additional cleanup or notification
+        return message;
+    }
+
     //camKey 를 받기위해 신호를 보내는 webSocket
     @MessageMapping("/call/key")
     @SendTo("/topic/call/key")

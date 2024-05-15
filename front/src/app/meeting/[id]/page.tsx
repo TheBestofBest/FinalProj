@@ -28,28 +28,25 @@ const Meeting = () => {
     const queryClient = useQueryClient();
     const memberData: any = queryClient.getQueryData(["member"]);
     const [meetingRoom, setMeetingRoom] = useState<MeetingRoom>();
-    const myKey = Math.random().toString(36).substring(2, 11); //식별을 위한 key
+    const myKey = useRef(Math.random().toString(36).substring(2, 11)); // 식별을 위한 key
     const [stompClient, setStompClient] = useState<Client | null>(null);
-    const localVideoRef: any = useRef(null);
-    let localStream: any = undefined;
-    const [pcListMap, setPcListMap] = useState<Map<string, RTCPeerConnection>>(new Map());
-    const [otherKeyList, setOtherKeyList] = useState<any[]>([]);
-    const remoteStreamRef: any = useRef(null);
+    const [isConnected, setIsConnected] = useState(false); // 연결 상태 관리
+    const localVideoRef = useRef<HTMLVideoElement | null>(null);
+    const localStreamRef = useRef<MediaStream | null>(null);
+    const pcListRef = useRef<Map<string, RTCPeerConnection>>(new Map()); // useRef로 관리
+    const [pendingCandidates, setPendingCandidates] = useState<Map<string, RTCIceCandidate[]>>(new Map());
+    const [otherKeyList, setOtherKeyList] = useState<string[]>([]);
+    const remoteStreamRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-
-    }, [])
-
-    useEffect(() => {
-        if (memberData.meetingState.includes("받음")) {
+        if (memberData?.meetingState.includes("받음")) {
             alert("초대받은 회의가 있습니다.");
             router.back();
         }
         startCam();
-
         const stomp = new Client({
             brokerURL: 'ws://localhost:8090/meeting',
-            reconnectDelay: 5000,
+            reconnectDelay: 10000000,
         });
         stomp.onConnect = () => {
             // 구독 활성화
@@ -69,89 +66,148 @@ const Meeting = () => {
                 () => {
                     stomp.publish({
                         destination: `/app/send/key`,
-                        body: JSON.stringify(myKey)
+                        body: JSON.stringify(myKey.current)
                     })
                 });
             stomp.subscribe(`/topic/send/key`,
                 (msg) => {
                     console.log("key받음 : ", msg);
                     const otherKey = JSON.parse(msg.body);
-                    if (myKey !== otherKey && !otherKeyList.includes(otherKey)) {
+                    if (myKey.current !== otherKey && !otherKeyList.includes(otherKey)) {
                         setOtherKeyList((prevKeys) => [...prevKeys, otherKey]);
                     }
                 });
             // 연결된 상태에서 메시지 전송
-            if (stomp.connected) {
-                console.log("화상회의 연결됨");
-            }
+            console.log("화상회의 연결됨");
+            setIsConnected(true);
         };
         stomp.activate();
         setStompClient(stomp);
+        console.log("stompClient : ", stompClient);
         return () => {
             stomp.deactivate();
         };
-    }, []);
+    }, [memberData, params.id, router]);
 
-    //webRTC
+    useEffect(() => {
+        if (isConnected && stompClient) {
+            handleStartStream();
+        }
+    }, [isConnected, stompClient]);
+
+    useEffect(() => {
+        if (isConnected) {
+            otherKeyList.forEach((key) => {
+                if (!pcListRef.current.has(key)) {
+                    const pc = createPeerConnection(key);
+                    sendOffer(pc, key);
+                }
+            });
+        }
+    }, [otherKeyList, isConnected]);
+
+    const handleStartStream = () => {
+        if (stompClient?.connected) {
+            console.log("Sending key to start stream");
+            stompClient.publish({
+                destination: `/app/call/key`,
+                body: "key 발송",
+            });
+        } else {
+            console.error("STOMP client is not connected");
+        }
+    };
+
     const handleIceCandidate = ({ key, body: candidate }: IceCandidateMessage) => {
+        if (key === myKey.current) {
+            return;
+        }
         if (candidate) {
-            console.log("ICE Candidate received");
-            const pc = pcListMap.get(key);
+            console.log("ICE Candidate received : [pcListMap]", pcListRef.current);
+            const pc = pcListRef.current.get(key);
             if (pc) {
                 pc.addIceCandidate(new RTCIceCandidate(candidate))
                     .then(() => console.log("Added ICE Candidate"))
                     .catch((error) => console.error("Error adding ICE Candidate:", error));
+            } else {
+                console.error("PeerConnection not found for key:", key);
+                setPendingCandidates((prev) => {
+                    const candidates = prev.get(key) || [];
+                    return new Map(prev).set(key, [...candidates, candidate]);
+                });
             }
         }
     };
 
     const handleOffer = ({ key, body: offer }: OfferAnswerMessage) => {
+        if (key === myKey.current) {
+            return;
+        }
+        console.log("Offer received from key:", key);
         const pc = createPeerConnection(key);
         pc.setRemoteDescription(new RTCSessionDescription(offer))
             .then(() => {
-                console.log("Offer received, sending answer");
+                console.log("Offer set as remote description");
                 sendAnswer(pc, key);
             })
             .catch((error) => console.error("Error handling offer:", error));
     };
 
     const handleAnswer = ({ key, body: answer }: OfferAnswerMessage) => {
-        console.log(pcListMap)
-        const pc = pcListMap.get(key);
+        if (key === myKey.current) {
+            return;
+        }
+        console.log("handleAnswer [pcMap] :", pcListRef.current)
+        const pc = pcListRef.current.get(key);
         if (pc) {
             pc.setRemoteDescription(new RTCSessionDescription(answer))
-                .then(() => console.log("Answer received"))
+                .then(() => console.log("Answer received and set as remote description"))
                 .catch((error) => console.error("Error handling answer:", error));
+        } else {
+            console.error("PeerConnection not found for key:", key);
         }
     };
 
     //peer connection 생성
     const createPeerConnection = (key: string): RTCPeerConnection => {
-        console.log("create pc, [key] : ", key);
+        console.log("Creating PeerConnection for key:", key);
         const peerConnection = new RTCPeerConnection();
         peerConnection.addEventListener("icecandidate", (event) => onIceCandidate(event, key));
         peerConnection.addEventListener("track", (event) => onTrack(event, key));
-        if (localStream) {
-            localStream.getTracks().forEach((track: MediaStreamTrack) => peerConnection.addTrack(track, localStream));
+        if (localStreamRef.current) {
+            localStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => peerConnection.addTrack(track, localStreamRef.current!));
         }
-        setPcListMap((prevMap) => new Map(prevMap.set(key, peerConnection)));
+        pcListRef.current.set(key, peerConnection);
+
+        // Pending candidate 처리
+        if (pendingCandidates.has(key)) {
+            const candidates = pendingCandidates.get(key) || [];
+            candidates.forEach((candidate) => {
+                peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+                    .then(() => console.log("Added ICE Candidate from pending"))
+                    .catch((error) => console.error("Error adding pending ICE Candidate:", error));
+            });
+            pendingCandidates.delete(key);
+        }
+        console.log("pcListRef size:", pcListRef.current.size); // 디버깅 로그 추가
         return peerConnection;
     }
 
     //IceCandidate Event
     const onIceCandidate = (e: RTCPeerConnectionIceEvent, key: string) => {
         if (e.candidate) {
-            console.log("ICE Candidate event");
+            console.log("ICE Candidate event for key:", key);
             stompClient?.publish({
                 destination: `/app/peer/iceCandidate/${params.id}`,
-                body: JSON.stringify({ key: myKey, body: e.candidate })
+                body: JSON.stringify({ key: myKey.current, body: e.candidate })
             });
         }
     };
     //Track Event
     const onTrack = (e: RTCTrackEvent, key: string) => {
-        console.log("Track event");
-        const videoElement = document.getElementById(key);
+        console.log("Track event for key:", key);
+        console.log("Track event for event:", e.streams[0]);
+        let videoElement = document.getElementById(key) as HTMLVideoElement | null;
         if (!videoElement) {
             const video = document.createElement('video');
             video.autoplay = true;
@@ -159,6 +215,8 @@ const Meeting = () => {
             video.id = key;
             video.srcObject = e.streams[0];
             remoteStreamRef.current?.appendChild(video);
+        } else {
+            videoElement.srcObject = e.streams[0];
         }
     };
 
@@ -169,9 +227,9 @@ const Meeting = () => {
                     .then(() => {
                         stompClient?.publish({
                             destination: `/app/peer/offer/${params.id}`,
-                            body: JSON.stringify({ key: myKey, body: offer })
+                            body: JSON.stringify({ key: myKey.current, body: offer })
                         });
-                        console.log('Offer sent');
+                        console.log('Offer sent to key:', key);
                     });
             })
             .catch((error) => console.error('Error creating offer:', error));
@@ -184,10 +242,9 @@ const Meeting = () => {
                     .then(() => {
                         stompClient?.publish({
                             destination: `/app/peer/answer/${params.id}`,
-                            body: JSON.stringify({ key: myKey, body: answer })
+                            body: JSON.stringify({ key: myKey.current, body: answer })
                         });
-                        console.log('Answer sent');
-                        return;
+                        console.log('Answer sent to key:', key);
                     })
                     .catch((error) => console.error('Error send answer:', error));
             })
@@ -195,33 +252,18 @@ const Meeting = () => {
     };
 
 
-    const handleStartStream = () => {
-        stompClient?.publish({
-            destination: `/app/call/key`,
-            body: "key 발송",
-        });
-        setTimeout(() => {
-            otherKeyList.forEach((key) => {
-                if (!pcListMap.has(key)) {
-                    const pc = createPeerConnection(key);
-                    sendOffer(pc, key);
-                }
-            });
-        }, 1000);
-    }
-
     //캠 연결 및 내 화면 출력
     const startCam = async () => {
-        await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-            .then(async (stream) => {
-                localStream = stream;
-                stream.getAudioTracks()[0].enabled = true;
-                localVideoRef.current.srcObject = localStream;
-                console.log("캠 연결 성공 localStream:", localStream);
-                console.log(stream);
-            })
-            .catch(err =>
-                console.error("캠 연결 에러:", err));
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            localStreamRef.current = stream;
+            if (localVideoRef.current) {
+                localVideoRef.current.srcObject = stream;
+            }
+            console.log("캠 연결 성공 localStream:", stream);
+        } catch (err) {
+            console.error("캠 연결 에러:", err);
+        }
     }
     // const onMute = () => {
     //     navigator.mediaDevices.getUserMedia({ video: true, audio: false })
@@ -266,7 +308,7 @@ const Meeting = () => {
 
     return (
         <DefaultLayout>
-            {modalIsOpen ? <InviteModal closeModal={closeModal} /> : <></>}
+            {modalIsOpen ? <InviteModal closeModal={closeModal} /> : null}
             <main>
                 <div className="w-full flex justify-between m-2">
                     <div className="flex flex-col w-1/4 mr-2">
@@ -309,20 +351,17 @@ const Meeting = () => {
                         </header>
                     </div>
                 </div>
-                <span className="text-xl">내 화면</span>
-                <video id="localStream" ref={localVideoRef} autoPlay playsInline className="display: none w-1/4 border"></video>
-                <button className="border" onClick={handleStartStream}>mute</button>
                 <div className="flex justify-between">
+                    <div>
+                        <span className="text-xl">내 화면</span>
+                        <video id="localStream" ref={localVideoRef} autoPlay playsInline className="display: none w-1/4 border"></video>
+                        <button className="border" onClick={handleStartStream}>mute</button>
+                    </div>
                     {/*controls 옵션이 있으면 f-screen/pause 가능*/}
-                    <div ref={remoteStreamRef} />
+                    상대방
+                    <div ref={remoteStreamRef} className="flex justify-between" />
                 </div>
             </main>
-            <div>
-                <button className="border m-1 p-1" id="startButton">시작</button>
-                <button className="border m-1 p-1" id="callButton">전화</button>
-                <button className="border m-1 p-1" id="hangupButton">종료</button>
-            </div>
-
 
             {/*크로스 브라우징을 위한 코드*/}
             <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
