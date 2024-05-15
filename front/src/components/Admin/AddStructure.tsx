@@ -71,7 +71,7 @@ export default function AddStructure({category, categoryKo}: AddStructureProps) 
                 type="text"
                 name="code"
                 className="h-8 w-full rounded-md border px-2"
-                placeholder={`${{categoryKo}} 코드(숫자)를 입력해주세요.`}
+                placeholder={`${categoryKo} 코드(숫자)를 입력해주세요.`}
               />
             </div>
             <div className="mb-5">
@@ -81,7 +81,7 @@ export default function AddStructure({category, categoryKo}: AddStructureProps) 
                 type="text"
                 name="name"
                 className="h-8 w-full rounded-md border px-2"
-                placeholder={`${{categoryKo}}명을 입력해주세요..`}
+                placeholder={`${categoryKo}명을 입력해주세요..`}
               />
             </div>
             <div className="mb-5 flex justify-end">

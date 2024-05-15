@@ -2,6 +2,7 @@ package com.app.businessBridge.global.initData;
 
 import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
 import com.app.businessBridge.domain.department.service.DepartmentService;
+import com.app.businessBridge.domain.division.service.DivisionService;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import org.springframework.boot.CommandLineRunner;
@@ -16,9 +17,14 @@ import java.nio.file.*;
 @Profile({"dev", "test"})
 public class NotProd {
     @Bean
-    CommandLineRunner initData(DepartmentService departmentService, GradeService gradeService, MemberService memberService, ChattingRoomService chattingRoomService) {
+    CommandLineRunner initData(DivisionService divisionService, DepartmentService departmentService, GradeService gradeService, MemberService memberService, ChattingRoomService chattingRoomService) {
 
         return args -> {
+
+            // 소속 생성
+            divisionService.create(1,"대표이사");
+            divisionService.create(10,"경영지원본부");
+            divisionService.create(11,"R&D본부");
 
             // 부서 생성
             departmentService.create(1, "관리");
@@ -26,24 +32,24 @@ public class NotProd {
             departmentService.create(102, "영업");
 
             // 직급 생성
-            gradeService.create(1, "슈퍼관리자");
+            gradeService.create(1, "관리자");
             gradeService.create(1001, "부장");
             gradeService.create(1002, "대리");
 
             // 회원 생성
-            memberService.create(1,1,"admin",10001,"김관리","1234","admin@email.com");
-            memberService.create(101,1001,"user1",20001,"이마부","1234","user1@email.com");
-            memberService.create(102,1002,"user2",30001,"박영대","1234","user2@email.com");
-            memberService.create(102,1002,"user3",30002,"홍길동","1234","user3@email.com");
+            memberService.create(1,1, 1, "admin", 10001, "김관리", "1234", "admin@email.com");
+            memberService.create(10,101, 1001, "user1", 20001, "이마부", "1234", "user1@email.com");
+            memberService.create(11,102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
+            memberService.create(10,102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
 
             // 정산, 통계 테스트용 회원 생성
-            for(int i = 4; i < 104; i++) {
-                int randomNum = (int) (Math.random()*100+1);
-                int randomAge = (int) (Math.random()*100+1);
-                if(i%2==0) {
-                    memberService.createRebateTest(101,1002,"user"+i,20000+i,"직원"+i,"1234","user"+i+"@email.com",randomNum*1000000L,'남', String.valueOf(randomAge));
+            for (int i = 4; i < 104; i++) {
+                int randomNum = (int) (Math.random() * 100 + 1);
+                int randomAge = (int) (Math.random() * 100 + 1);
+                if (i % 2 == 0) {
+                    memberService.createRebateTest(10,101, 1002, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '남', String.valueOf(randomAge));
                 }
-                memberService.createRebateTest(102,1001,"user"+i,20000+i,"직원"+i,"1234","user"+i+"@email.com",randomNum*1000000L,'여', String.valueOf(randomAge));
+                memberService.createRebateTest(11,102, 1001, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '여', String.valueOf(randomAge));
             }
 
             chattingRoomService.create("채팅방1", memberService.findByUsername("admin").getData());

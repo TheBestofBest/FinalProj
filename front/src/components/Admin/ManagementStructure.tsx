@@ -8,12 +8,21 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import api from "@/util/api";
-import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import AddStructure from "./AddStructure";
 
 export default function BasicTable() {
   const queryClient = useQueryClient();
+
+  const getDivisions = async () => {
+    const response = await api.get("/api/v1/divisions");
+    return response.data.data.divisionDTOList;
+  };
+
+  const { divisions }:any = useQuery({
+    queryKey: ["divisions"],
+    queryFn: getDivisions,
+  });
 
   const getDepartments = async () => {
     const response = await api.get("/api/v1/departments");
@@ -34,17 +43,6 @@ export default function BasicTable() {
     queryKey: ["grades"],
     queryFn: getGrades,
   });
-
-  const [gradeRows, setGradeRow] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await api.get("/api/v1/grades");
-      setGradeRow(response.data.data.gradeDTOList);
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <div className="grid grid-cols-3 gap-10">
@@ -74,7 +72,7 @@ export default function BasicTable() {
             </TableHead>
             <TableBody>
               {queryClient
-                .getQueryData<any>(["departments"])
+                .getQueryData<any>(["divisions"])
                 ?.map((row: any, index: number) => (
                   <TableRow
                     key={index}
@@ -230,7 +228,7 @@ export default function BasicTable() {
             </TableHead>
             <TableBody>
               {queryClient
-                .getQueryData<any>(["departments"])
+                .getQueryData<any>(["grades"])
                 ?.map((row: any, index: number) => (
                   <TableRow
                     key={index}
