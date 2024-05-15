@@ -19,4 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT m FROM Member m WHERE m.meetingRoom.id = :roomId AND m.meetingState = true")
     List<Member> findByApprovedMeetingRoomId(@Param("roomId") Long roomId);
+
+    Optional<Member> findByName(String memberName);
 }
