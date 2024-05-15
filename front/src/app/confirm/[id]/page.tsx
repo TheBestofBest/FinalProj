@@ -51,6 +51,7 @@ export default function ConfirmDetailPage() {
     confirmStepCounter: 0,
   });
 
+  // 수정 필요
   const getConfirm = async () => {
     const response = await api.get(`/api/v1/confirms/${params.id}`);
     setConfirm(response.data.data.confirmDTO);
