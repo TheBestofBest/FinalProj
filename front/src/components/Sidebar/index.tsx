@@ -288,7 +288,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Profile --> */}
               {/* <!-- Menu Item Mail --> */}
               <SidebarLinkGroup
-                activeCondition={pathname === "/ui" || pathname.includes("ui")}
+                activeCondition={pathname === "/mail" || pathname.includes("mail")}
               >
                 {(handleClick, open) => {
                   return (

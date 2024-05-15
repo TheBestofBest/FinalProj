@@ -13,6 +13,7 @@ import { DocumentIcon,
     PaperAirplaneIcon
     
 } from '@heroicons/react/24/solid'
+import MailboxAll from "@/components/Mailbox/MailboxAll";
 
 
 const mailbox = () => {
@@ -20,15 +21,14 @@ const mailbox = () => {
     return (
         <DefaultLayout>
             <Breadcrumb pageName="MailBox" />
-            <div className="grid grid-cols-1 gap-9 sm:grid-cols-3">
+            <div className="grid grid-cols-3 gap-9 sm:grid-cols-4">
                 <div className="flex flex-col gap-9 col-span-1">
-                    {/* <!-- Menu Fields --> */}
+                    {/* <!-- Left Side Start--> */}
                     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                        <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
-                            <h3 className="font-medium text-black dark:text-white">
+                        <div className="grid grid-cols-2 border-b border-stroke px-6.5 py-4 dark:border-strokedark">     
                                 <Link
                                     href="#"
-                                    className="rounded-sm inline-flex items-center justify-center gap-2.5 bg-primary px-10 py-4 text-center font-medium text-white hover:bg-opacity-90 lg:px-0.5 xl:px-1"
+                                    className="col-span-1 rounded-sm inline-flex items-center justify-center gap-2.5 bg-primary px-10 py-4 text-center font-medium text-white hover:bg-opacity-90 lg:px-0.5 xl:px-1"
                                 >
                                     <span>
                                         <EnvelopeIcon
@@ -46,7 +46,7 @@ const mailbox = () => {
                                 </Link>
                                 <Link
                                     href="#"
-                                    className="inline-flex items-center justify-center gap-2.5 bg-primary px-10 py-4 ml-2 text-center font-medium text-white hover:bg-opacity-90 lg:px-0.5 xl:px-1"
+                                    className="col-span-1 ml-2 inline-flex items-center justify-center gap-2.5 bg-primary px-10 py-4 text-center font-medium text-white hover:bg-opacity-90 lg:px-0.5 xl:px-1"
                                 >
                                     <span>
                                         <PaperAirplaneIcon
@@ -62,7 +62,6 @@ const mailbox = () => {
                                     </span>
                                     내게 쓰기
                                 </Link>
-                            </h3>
                         </div>
                         <div className="flex flex-col gap-5.5 p-6.5">
                             {/* <!-- ===== MailboxSidebar Start ===== --> */}
@@ -70,32 +69,19 @@ const mailbox = () => {
                             {/* <!-- ===== MailboxSidebar End ===== --> */}
                         </div>
                     </div>
+                    {/* <!-- Left Side End--> */}
                 </div>
 
-                <div className="flex flex-col gap-9 col-span-3 sm:col-span-2">
-                    {/* <!-- List Fields --> */}
+                <div className="flex flex-col gap-9 col-span-3 sm:col-span-3">
+                    {/* <!-- Right Side Start--> */}
                     <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-                        <div className="border-b border-stroke px-6.5 py-4 dark:border-strokedark">
-                            <h3 className="font-medium text-black dark:text-white">
-                                전체 메일함
-                            </h3>
-                        </div>
                         <div className="flex flex-col gap-5.5 p-6.5">
                             <div>
-                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                                    리스트 예정
-                                </label>
-                                {/* 내용 */}
-                            </div>
-
-                            <div>
-                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                                    목록
-                                </label>
-                                {/* 내용 */}
+                                <MailboxAll />
                             </div>
                         </div>
                     </div>
+                    {/* <!-- Right Side End--> */}
                 </div>
             </div>
 

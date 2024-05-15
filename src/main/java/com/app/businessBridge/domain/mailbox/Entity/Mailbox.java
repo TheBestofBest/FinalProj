@@ -1,11 +1,15 @@
 package com.app.businessBridge.domain.mailbox.Entity;
 
+import com.app.businessBridge.domain.mail.Entity.Mail;
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.Jpa.BaseEntity;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -30,7 +34,11 @@ public class Mailbox extends BaseEntity {
     // 받은 날짜
     private LocalDate receiveDate;
 
-    // 멤버 : 메일box 관계 @OneToMany 필요)
-    // (부서 , 동아리 등 에 따른 전체 메일 보낼시리스트들 관계도 필요하면 넣을 예정)
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    @OneToMany(mappedBy = "mailbox")
+    private List<Mail> mails;
 
 }

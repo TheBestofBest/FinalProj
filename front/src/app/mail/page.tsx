@@ -3,8 +3,8 @@
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import React from 'react';
-import TinymceEditor from "@/components/TinymceEditor/TinymceEditor";
 import dotenv from 'dotenv'
+import TinymceRead from "@/components/TinymceEditor/TinymceRead";
 dotenv.config();
 
 const SendMail = () => {
@@ -51,9 +51,9 @@ const SendMail = () => {
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>
-                            {/* <!-- ===== Tinymce에디터 Start ===== --> */}
-                            <TinymceEditor />
-                            {/* <!-- ===== Tinymce에디터 End ===== --> */}
+                            {/* <!-- ===== Tinymce읽기전용 Start ===== --> */}
+                            <TinymceRead />
+                            {/* <!-- ===== Tinymce읽기전용 End ===== --> */}
                             <div className="flex flex-col gap-5.5 p-6.5">
                                 <div>
                                     <label className="mb-3 block text-sm font-medium text-black dark:text-white">

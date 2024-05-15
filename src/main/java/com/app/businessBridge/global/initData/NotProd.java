@@ -14,7 +14,7 @@ import java.nio.file.*;
 
 @Configuration
 @Profile({"dev", "test"})
-public class NotProd {
+public class    NotProd {
     @Bean
     CommandLineRunner initData(DepartmentService departmentService, GradeService gradeService, MemberService memberService, ChattingRoomService chattingRoomService) {
 
