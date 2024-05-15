@@ -25,12 +25,15 @@ export default function ChattingLayout({
 
     const router = useRouter();
     const params: Params = useParams();
-
+    const queryClient = useQueryClient();
+    const memberData: any = queryClient.getQueryData(["member"]);
     const [loading, setLoading] = useState<boolean>(true);
     const [chattingRooms, setChattingRooms] = useState<ChattingRoom[]>([]);
     const [isEmpty, setIsEmpty] = useState<boolean>();
 
     const [chattingRoom, setChattingRoom] = useState<ChattingRoom>();
+
+
 
     useEffect(() => {
         setTimeout(() => setLoading(false), 1000);
@@ -65,6 +68,7 @@ export default function ChattingLayout({
             fetchChattingRooms();
             setModifyName("");
             offSelected();
+            router.push(`/chatting`);
         } else {
             alert('수정에 실패했습니다.');
         }
@@ -113,24 +117,6 @@ export default function ChattingLayout({
         }
     }
 
-
-    //초대
-    const inviteChattingRoom = async (id: number) => {
-        const response = await api.patch(`/api/v1/chats/${id}/invite`);
-        if (response.status == 200) {
-            fetchChattingRoom(id);
-            if (chattingRoom?.members == null) {
-                deleteChattingRoom(id);
-            }
-            fetchChattingRooms();
-            offSelected();
-            router.push("/chatting");
-        } else {
-            alert('초대에 실패했습니다.');
-        }
-    }
-
-
     //modal
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const openModal = () => {
@@ -165,8 +151,35 @@ export default function ChattingLayout({
     const confirmMeeting = () => {
         const result= window.confirm("모임을 시작하시겠습니까?");
         if(result) {
-            router.push("/meeting");
+            if (memberData.meetingState.includes("없음")) {
+                createMeetingRoom();
+            } else if (memberData.meetingState.includes("중")) {
+                fetchMeetingRoom();
+            } else {
+                alert("초대받은 회의가 있습니다.");
+                router.back();
+            }
         }
+    }
+    const createMeetingRoom = () => {
+        api.post('/api/v1/meetings', { name: "새 회의" })
+            .then(response => {
+                router.push(`/meeting/${response.data.data.meetingRoomDto.id}`);
+                api.get(`/api/v1/members/me`)
+                    .then(res => {
+                        if (!res.data.isSuccess) {
+                            return alert(res.data.msg);
+                        }
+                        queryClient.setQueryData(["member"], res.data.data.memberDTO);
+                    })
+            });
+    }
+    const fetchMeetingRoom = () => {
+        const roomId = memberData.meetingState.split('번')[0];
+        api.get(`/api/v1/meetings/${roomId}`)
+            .then(response => {
+                router.push(`/meeting/${roomId}`);
+            })
     }
 
     return (

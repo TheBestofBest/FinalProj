@@ -18,32 +18,27 @@ public class MeetingWebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
 
     //offer 정보를 주고 받기 위한 websocket
-    //camKey : 각 요청하는 캠의 key , roomId : 룸 아이디
-    @MessageMapping("/peer/offer/{camKey}/{roomId}")
-    @SendTo("/topic/peer/offer/{camKey}/{roomId}")
-    public String PeerHandleOffer(@Payload String offer, @DestinationVariable(value = "roomId") String roomId,
-                                  @DestinationVariable(value = "camKey") String camKey) {
-        log.info("[OFFER] {} : {}", camKey, offer);
+    @MessageMapping("/peer/offer/{roomId}")
+    @SendTo("/topic/peer/offer/{roomId}")
+    public String handleOffer(@Payload String offer, @DestinationVariable("roomId") String roomId) {
+        log.info("[OFFER] Room ID: {}, Offer: {}", roomId, offer);
         return offer;
     }
 
     //iceCandidate 정보를 주고 받기 위한 webSocket
-    //camKey : 각 요청하는 캠의 key , roomId : 룸 아이디
-    @MessageMapping("/peer/iceCandidate/{camKey}/{roomId}")
-    @SendTo("/topic/peer/iceCandidate/{camKey}/{roomId}")
-    public String PeerHandleIceCandidate(@Payload String candidate, @DestinationVariable(value = "roomId") String roomId,
-                                         @DestinationVariable(value = "camKey") String camKey) {
-        log.info("[ICECANDIDATE] {} : {}", camKey, candidate);
+    @MessageMapping("/peer/iceCandidate/{roomId}")
+    @SendTo("/topic/peer/iceCandidate/{roomId}")
+    public String handleIceCandidate(@Payload String candidate, @DestinationVariable("roomId") String roomId) {
+        log.info("[ICE CANDIDATE] Room ID: {}, Candidate: {}", roomId, candidate);
         return candidate;
     }
 
     //answer 정보를 주고 받기 위한 webSocket
     //camKey : 각 요청하는 캠의 key , roomId : 룸 아이디
-    @MessageMapping("/peer/answer/{camKey}/{roomId}")
-    @SendTo("/topic/peer/answer/{camKey}/{roomId}")
-    public String PeerHandleAnswer(@Payload String answer, @DestinationVariable(value = "roomId") String roomId,
-                                   @DestinationVariable(value = "camKey") String camKey) {
-        log.info("[ANSWER] {} : {}", camKey, answer);
+    @MessageMapping("/peer/answer/{roomId}")
+    @SendTo("/topic/peer/answer/{roomId}")
+    public String handleAnswer(@Payload String answer, @DestinationVariable("roomId") String roomId) {
+        log.info("[ANSWER] Room ID: {}, Answer: {}", roomId, answer);
         return answer;
     }
 
@@ -51,7 +46,7 @@ public class MeetingWebSocketController {
     @MessageMapping("/call/key")
     @SendTo("/topic/call/key")
     public String callKey(@Payload String message) {
-        log.info("[Key] : {}", message);
+        log.info("[CALL KEY] Message: {}", message);
         return message;
     }
 
@@ -59,6 +54,7 @@ public class MeetingWebSocketController {
     @MessageMapping("/send/key")
     @SendTo("/topic/send/key")
     public String sendKey(@Payload String message) {
+        log.info("[SEND KEY] Message: {}", message);
         return message;
     }
 

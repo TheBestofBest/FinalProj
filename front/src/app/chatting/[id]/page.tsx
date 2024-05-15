@@ -37,12 +37,18 @@ const Id = () => {
             .then(response => {
                 setChattingRoom(response.data.data.chattingRoomDto);
             })
+            .catch(err => {
+                console.error("채팅방 없음");
+            })
     }
 
     const fetchChatLogs = () => {
         api.get(`/api/v1/logs/${params.id}`)
             .then(response => {
                 setChattingLogs(response.data.data.chatLogDtoList);
+            })
+            .catch(err => {
+                console.error("로그 없음");
             })
     }
 

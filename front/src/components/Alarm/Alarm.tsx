@@ -123,7 +123,7 @@ export default function Alarm() {
     api.patch(`/api/v1/meetings/${roomId}/approve`)
       .then(res => queryClient.setQueryData(["member"], res.data.data.memberDTO));
     setOpenAlarm(false);
-    router.push("/meeting");
+    router.push(`/meeting/${roomId}`);
   }
 
   const rejectMeeting = () => {
