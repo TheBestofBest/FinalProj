@@ -46,16 +46,57 @@ public class ApiV1RebateController {
             );
         }
 
-        List<RebatesDto> rebates = new ArrayList<>();
+        LocalDate currentDate = LocalDate.now();
+        String year = String.valueOf(currentDate.getYear());
+        String month = String.valueOf(currentDate.getMonthValue());
 
-        for (int i = 0; i < this.rebateService.findAll().size(); i++) {
-            rebates.add(new RebatesDto(this.rebateService.findAll().get(i)));
+        List<Rebate> rebateList = this.rebateService.findByYearAndMonth(year,month);
+
+        List<RebatesDto> rebates = new ArrayList<>();
+        Long totalSum = 0L;
+
+        for (int i = 0; i < rebateList.size(); i++) {
+            rebates.add(new RebatesDto(rebateList.get(i)));
+            totalSum += rebateList.get(i).getSalary();
         }
 
         return RsData.of(
                 RsCode.S_01,
-                "불러오기 성공",
-                new RebatesResponse(rebates)
+                year + "년 " + month + "월 " + "정산내역 불러오기 성공",
+                new RebatesResponse(rebates, totalSum)
+        );
+    }
+
+    @GetMapping("/{year}/{month}")
+    public RsData<RebatesResponse> getRebatesByYearAndMonth(@PathVariable(value = "year") String year,
+                                         @PathVariable(value = "month") String month) {
+
+        Member member = rq.getMember();
+
+        if (member.getGrade().getCode() != 1 || !member.getGrade().getName().equals("슈퍼관리자")) {
+            return RsData.of(
+                    RsCode.F_02,
+                    "접근 권한이 없습니다.",
+                    null
+            );
+        }
+
+        if(month.startsWith("0")) month = month.replace("0","");
+
+        List<Rebate> rebateList = this.rebateService.findByYearAndMonth(year,month);
+
+        List<RebatesDto> rebates = new ArrayList<>();
+        Long totalSum = 0L;
+
+        for (int i = 0; i < rebateList.size(); i++) {
+            rebates.add(new RebatesDto(rebateList.get(i)));
+            totalSum += rebateList.get(i).getSalary();
+        }
+
+        return RsData.of(
+                RsCode.S_01,
+                year + "년 " + month + "월 " + "정산내역 불러오기 성공",
+                new RebatesResponse(rebates, totalSum)
         );
     }
 
@@ -96,7 +137,7 @@ public class ApiV1RebateController {
         return RsData.of(
                 RsCode.S_01,
                 "불러오기 성공",
-                new RebatesResponse(rebates)
+                new RebatesResponse(rebates, 0L)
         );
     }
 

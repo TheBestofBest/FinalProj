@@ -5,6 +5,7 @@ import com.app.businessBridge.domain.department.service.DepartmentService;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.rebate.service.RebateService;
+import com.app.businessBridge.global.holidayapi.workingdate.service.WorkingDateService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,8 @@ public class NotProd {
                                GradeService gradeService,
                                MemberService memberService,
                                ChattingRoomService chattingRoomService,
-                               RebateService rebateService) {
+                               RebateService rebateService,
+                               WorkingDateService workingDateService) {
 
         return args -> {
 
@@ -42,6 +44,9 @@ public class NotProd {
             memberService.create(102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
             memberService.create(102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
 
+//            // 올 해 월 별 근무일 일괄 계산
+//            workingDateService.createThisYear();
+//
 //            // 정산, 통계 테스트용 회원 생성
 //            for (int i = 4; i < 104; i++) {
 //                int randomNum = (int) (Math.random() * 100 + 1);
@@ -58,6 +63,10 @@ public class NotProd {
 //
 //            for (int i = 5; i < 105; i++) {
 //                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month));
+//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-1));
+//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-2));
+//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-3));
+//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-4));
 //            }
 
             chattingRoomService.create("채팅방1", memberService.findByUsername("admin").getData());

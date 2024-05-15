@@ -2,11 +2,8 @@ package com.app.businessBridge.domain.member.entity;
 
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.grade.entity.Grade;
-<<<<<<< HEAD
 import com.app.businessBridge.domain.rebate.entity.Rebate;
-=======
 import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
->>>>>>> 785d6146563fe49b2c0f3bf5f5301301205a1846
 import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.domain.workingstate.entity.WorkingState;
 import com.app.businessBridge.global.Jpa.BaseEntity;
@@ -61,9 +58,6 @@ public class Member extends BaseEntity {
     //참여중인 채팅방
     @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<MemberChatRelation> chattingRooms;
-<<<<<<< HEAD
-}
-=======
 
     //화상회의 상태 (null[default]: 초대되지않음, false: 초대대기, true: 회의진행중)
     private Boolean meetingState;
@@ -72,4 +66,3 @@ public class Member extends BaseEntity {
     @ManyToOne
     private MeetingRoom meetingRoom;
 }
->>>>>>> 785d6146563fe49b2c0f3bf5f5301301205a1846

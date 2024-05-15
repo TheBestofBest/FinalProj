@@ -37,6 +37,7 @@
     "react-player": "^2.16.0",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
+    "sockjs-client": "^1.6.1",
     "tinymce": "^7.0.1",
     "tw-elements-react": "^1.0.0-alpha2"
   },

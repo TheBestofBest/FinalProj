@@ -13,4 +13,5 @@ public class RebatesResponse {
 
     private final List<RebatesDto> rebates;
 
+    private final Long totalSum;
 }

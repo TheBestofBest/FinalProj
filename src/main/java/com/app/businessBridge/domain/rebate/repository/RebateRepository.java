@@ -17,4 +17,13 @@ public interface RebateRepository extends JpaRepository<Rebate, Long> {
             "where r.member.id = :id " +
             " order by r.createdDate desc")
     List<Rebate> findMyRebates(@Param("id") String id);
+
+
+    @Query("select " +
+            "distinct r " +
+            "from Rebate r " +
+            "where r.year = :year " +
+            "and r.month = :month " +
+            " order by r.createdDate desc")
+    List<Rebate> findByYearAndMonth(@Param("year") String year, @Param("month") String month);
 }

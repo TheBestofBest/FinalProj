@@ -6,23 +6,37 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import RebateDropDown from "./RebateDropDown";
 
-const MemberTable = ({rebates}) => {
+interface Rebate {
+  year: string;
+  month: string;
+  memberName: string;
+  memberId: string;
+  grade: string;
+  dept: string;
+  workDate: number;
+  workedDate: number;
+  salary: number;
+  bonus: number;
+  tax: number;
+  insurance: number;
+  totalSalary: number;
+}
+
+
+interface MemberTableProps {
+  rebates: Rebate[];
+  totalSum: number;
+}
+
+const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
 
   const [currentYear, setCurrentYear] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
 
   useEffect(() => {
-    // 현재 시간을 기준으로 Date 객체 생성
-    const currentDate = new Date();
-
-    // 연도 구하기
-    const year = currentDate.getFullYear();
-    setCurrentYear(year);
-
-    // 월 구하기 (0부터 시작하므로 1을 더해줌)
-    const month = currentDate.getMonth() + 1;
-    setCurrentMonth(month);
-  }, []);
+    setCurrentYear(rebates[0].year);
+    setCurrentMonth(rebates[0].month);
+  }, [rebates]);
 
 
 
@@ -31,6 +45,7 @@ const MemberTable = ({rebates}) => {
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         {currentYear}년 {currentMonth}월 급여 정산 내역
       </h4>
+        총 정산 금액 : {totalSum.toLocaleString()}원
       <div className="flex justify-between py-4">
         <RebateDropDown/>
         <div>
