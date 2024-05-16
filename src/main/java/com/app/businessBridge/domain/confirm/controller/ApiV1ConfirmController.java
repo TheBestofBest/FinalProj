@@ -194,15 +194,6 @@ public class ApiV1ConfirmController {
     // 승인 카운터 증가 api
     @PatchMapping("/{id}/change-counter")
     public RsData<ConfirmResponse.changeStatus> changeCounterConfirm(@PathVariable(value = "id") Long id){
-        // 결재 처리상태 검증
-//        RsData<ConfirmResponse.changeStatus> patchRsData = ConfirmValidate.validateConfirmStatusChange(changeStatusRequest.getConfirmStatus());
-//        if(!patchRsData.getIsSuccess()){
-//            return RsData.of(
-//                    patchRsData.getRsCode(),
-//                    patchRsData.getMsg(),
-//                    patchRsData.getData()
-//            );
-//        }
         // {id}번 결재 존재하는지 검증
         Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
         if(optionalConfirm.isEmpty()){
@@ -217,13 +208,30 @@ public class ApiV1ConfirmController {
             ConfirmStatus confirmStatus = this.confirmStatusService.getConfirmStatusByName("승인");
             confirmRsData = this.confirmService.confirmConfirm(confirmRsData.getData(), confirmStatus);
         }
-        /// 처리 상태, 양식 별 메스드 추가 시 이곳에 작성
 
-        ///
         return RsData.of(
                 confirmRsData.getRsCode(),
                 confirmRsData.getMsg(),
                 new ConfirmResponse.changeStatus(confirmRsData.getData())
         );
     }
+    @PatchMapping("/{id}/reject")
+    public RsData<ConfirmResponse.changeStatus> rejectConfirm(@PathVariable(value = "id") Long id){
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
+        if(optionalConfirm.isEmpty()){
+            return RsData.of(
+                    RsCode.F_04,
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
+                    null
+            );
+        }
+        ConfirmStatus confirmStatus = this.confirmStatusService.getConfirmStatusByName("반려");
+        RsData<Confirm> confirmRsData = this.confirmService.rejectConfirm(optionalConfirm.get(), confirmStatus);
+        return RsData.of(
+                confirmRsData.getRsCode(),
+                confirmRsData.getMsg(),
+                new ConfirmResponse.changeStatus(confirmRsData.getData())
+        );
+    }
+
 }

@@ -95,6 +95,18 @@ export default function ConfirmDetailPage() {
     }
   };
 
+  const rejectConfirm = async () => {
+    await api.patch(`/api/v1/confirms/${params.id}/reject`);
+    router.push(`/confirm`);
+  };
+  const handleReject = () => {
+    const isConfirmed = window.confirm("반려 하시겠습니까?");
+
+    if (isConfirmed) {
+      rejectConfirm();
+    }
+  };
+
   const clickModal = () => setShowModal(!showModal);
   return (
     <DefaultLayout>
@@ -232,6 +244,7 @@ export default function ConfirmDetailPage() {
                 <button
                   type="button"
                   className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
+                  onClick={handleReject}
                 >
                   반려
                 </button>
