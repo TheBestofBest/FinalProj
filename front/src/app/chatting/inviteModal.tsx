@@ -45,7 +45,7 @@ const InviteModal = ({ closeModal }: any) => {
                 alert(`[${username}] 님을 초대하였습니다.`);
                 setUsername("");
                 closeModal();
-                router.push("/chatting");
+                router.push(`/chatting/${id}`);
             } else {
                 alert('초대에 실패했습니다.');
             }

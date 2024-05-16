@@ -317,7 +317,7 @@ public class MemberService {
                 .meetingRoom(null)
                 .build();
         memberRepository.save(exitMember);
-        List<Member> members = this.getApprovedMembersByMeetingRoom(roomId).getData();
+        List<Member> members = this.getApprovedMembersByMeetingRoom(roomId).getData() == null ? null : this.getApprovedMembersByMeetingRoom(roomId).getData();
         meetingRoomService.updateMembers(roomId, members);
         return RsData.of(RsCode.S_01,
                 "나가기 완료", members);

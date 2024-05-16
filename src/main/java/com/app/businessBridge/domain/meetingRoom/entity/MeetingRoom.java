@@ -22,7 +22,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MeetingRoom extends BaseEntity {
     private String name;
-    @OneToMany(mappedBy = "meetingRoom", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "meetingRoom")
     private List<Member> members = new ArrayList<>();
     public void addMember(Member member) {
         members.add(member);
