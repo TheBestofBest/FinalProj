@@ -67,4 +67,11 @@ public class MemberRequest {
         @NotBlank
         private String password;
     }
+
+    @Getter
+    @Setter
+    public static class SearchRequest {
+        @NotBlank
+        private String keyword;
+    }
 }
