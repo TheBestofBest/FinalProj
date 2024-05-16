@@ -5,6 +5,7 @@ import com.app.businessBridge.domain.grade.repository.GradeRepository;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,12 +48,16 @@ public class GradeService {
         if (rsData.getData() == null) {
             return rsData;
         }
-
+        Optional<Grade> og = this.gradeRepository.findByCode(code);
         // 중복 검사
-        if (this.gradeRepository.findByCode(code).isPresent()) {
-            return RsData.of(RsCode.F_06, "이미 존재하는 직급코드 입니다.");
-        } else if (this.gradeRepository.findByName(name).isPresent()) {
-            return RsData.of(RsCode.F_06, "이미 존재하는 직급명 입니다.");
+        if (og.isPresent()) {
+            if (og.get().getId() != id) {
+                return RsData.of(RsCode.F_06, "이미 존재하는 직급코드 입니다.");
+            }
+        } else if (og.isPresent()) {
+            if(og.get().getId()!=id){
+                return RsData.of(RsCode.F_06, "이미 존재하는 직급명 입니다.");
+            }
         }
 
         Grade grade = rsData.getData().toBuilder()
@@ -62,7 +67,7 @@ public class GradeService {
 
         this.gradeRepository.save(grade);
 
-        return RsData.of(RsCode.S_03, "리소스가 성공적으로 업데이트되었습니다.", grade);
+        return RsData.of(RsCode.S_03, "직급이 업데이트되었습니다.", grade);
     }
 
     // 직급 삭제
@@ -73,17 +78,20 @@ public class GradeService {
         if (rsData.getData() == null) {
             return RsData.of(rsData.getRsCode(), rsData.getMsg());
         }
-
+        try {
         this.gradeRepository.delete(rsData.getData());
-        return RsData.of(RsCode.S_04, "리소스가 성공적으로 삭제되었습니다.");
+        } catch (DataIntegrityViolationException e) {
+            return RsData.of(RsCode.F_05, "직급 내 회원이 존재하여 삭제할 수 없습니다.");
+        }
+        return RsData.of(RsCode.S_04, "직급이 삭제되었습니다.");
     }
 
     // 직급 단건 찾기 Optional
     public RsData<Grade> findById(Long id) {
         Optional<Grade> og = this.gradeRepository.findById(id);
         if (og.isEmpty()) {
-            return RsData.of(RsCode.F_04, "요청한 리소스를 찾을 수 없습니다.", null);
+            return RsData.of(RsCode.F_04, "직급을 찾을 수 없습니다.", null);
         }
-        return RsData.of(RsCode.S_05, "요청한 리소스를 찾았습니다.", og.get());
+        return RsData.of(RsCode.S_05, "직급을 찾았습니다.", og.get());
     }
 }

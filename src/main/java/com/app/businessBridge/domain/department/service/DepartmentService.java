@@ -5,6 +5,7 @@ import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,12 +49,17 @@ public class DepartmentService {
         if (rsData.getData() == null) {
             return rsData;
         }
-
         // 중복 검사
-        if (this.departmentRepository.findByCode(code).isPresent()) {
-            return RsData.of(RsCode.F_06, "이미 존재하는 부서코드 입니다.");
-        } else if (this.departmentRepository.findByName(name).isPresent()) {
-            return RsData.of(RsCode.F_06, "이미 존재하는 부서명 입니다.");
+        Optional<Department> od = this.departmentRepository.findByCode(code);
+
+        if (od.isPresent()) {
+            if (od.get().getId() != id) {
+                return RsData.of(RsCode.F_06, "이미 존재하는 부서코드 입니다.");
+            }
+        } else if (od.isPresent()) {
+            if (od.get().getId() != id) {
+                return RsData.of(RsCode.F_06, "이미 존재하는 부서명 입니다.");
+            }
         }
 
         Department department = rsData.getData().toBuilder()
@@ -74,8 +80,11 @@ public class DepartmentService {
         if (rsData.getData() == null) {
             return rsData;
         }
-
-        this.departmentRepository.delete(rsData.getData());
+        try {
+            this.departmentRepository.delete(rsData.getData());
+        } catch (DataIntegrityViolationException e) {
+            return RsData.of(RsCode.F_05, "부서 내 회원이 존재하여 삭제할 수 없습니다.");
+        }
         return RsData.of(RsCode.S_04, "부서가 삭제되었습니다.");
     }
 
