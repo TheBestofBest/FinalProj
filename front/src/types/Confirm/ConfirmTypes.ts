@@ -1,4 +1,5 @@
 import { MemberType } from "../Member/MemberTypes";
+import { ConfirmFormVactionType } from "./ConfirmFormTypes";
 
 export type ConfirmType = {
   id: number;

@@ -1,4 +1,5 @@
 "use client";
+import VacationForm from "@/components/ConfirmForm/VacationForm";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import HorizontalLinearAlternativeLabelStepper from "@/components/Stepper/Stepper";
 import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
@@ -71,15 +72,11 @@ export default function ConfirmDetailPage() {
   const getConfirm = async () => {
     const response = await api.get(`/api/v1/confirms/${params.id}`);
     setConfirm(response.data.data.confirmDTO);
+    console.log(confirm);
   };
   useEffect(() => {
     getConfirm();
-    console.log(confirm);
   }, []);
-
-  // const jsonData: string = confirm.formData;
-
-  // const parsedData: ConfirmFormVactionType = JSON.parse(jsonData);
 
   // 버튼 클릭시 모달 버튼 클릭 유무를 설정하는 state 함수
 
@@ -201,8 +198,8 @@ export default function ConfirmDetailPage() {
                         scope="row"
                         className="text-gray-900 bg-gray-50 dark:bg-gray-800 whitespace-nowrap border px-6 py-4 font-medium dark:text-white"
                       >
-                        123
-                        {/* {parsedData.content} */}
+                        parsedData:
+                        {confirm?.formData}
                       </th>
                     </tr>
                   </tbody>
