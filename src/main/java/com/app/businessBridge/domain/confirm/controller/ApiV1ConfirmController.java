@@ -195,14 +195,14 @@ public class ApiV1ConfirmController {
     @PatchMapping("/{id}/change-counter")
     public RsData<ConfirmResponse.changeStatus> changeCounterConfirm(@PathVariable(value = "id") Long id, @Valid @RequestBody ConfirmRequest.changeStatus changeStatusRequest){
         // 결재 처리상태 검증
-        RsData<ConfirmResponse.changeStatus> patchRsData = ConfirmValidate.validateConfirmStatusChange(changeStatusRequest.getConfirmStatus());
-        if(!patchRsData.getIsSuccess()){
-            return RsData.of(
-                    patchRsData.getRsCode(),
-                    patchRsData.getMsg(),
-                    patchRsData.getData()
-            );
-        }
+//        RsData<ConfirmResponse.changeStatus> patchRsData = ConfirmValidate.validateConfirmStatusChange(changeStatusRequest.getConfirmStatus());
+//        if(!patchRsData.getIsSuccess()){
+//            return RsData.of(
+//                    patchRsData.getRsCode(),
+//                    patchRsData.getMsg(),
+//                    patchRsData.getData()
+//            );
+//        }
         // {id}번 결재 존재하는지 검증
         Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
         if(optionalConfirm.isEmpty()){
@@ -211,6 +211,10 @@ public class ApiV1ConfirmController {
                     "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
                     null
             );
+        }
+        // 승인 다 됐는지 확인
+        if(optionalConfirm.get().getConfirmStepCounter() == optionalConfirm.get().getConfirmMembers().size()){
+
         }
 
         RsData<Confirm> confirmRsData = this.confirmService.changeStatusConfirm(optionalConfirm.get(), changeStatusRequest);
