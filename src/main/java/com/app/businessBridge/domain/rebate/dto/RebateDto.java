@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RebateDto {
 
+    private Long rebateId;
+
     private String year;
 
     private String month;
@@ -48,6 +50,7 @@ public class RebateDto {
     private Long totalSalary;
 
     public RebateDto(Rebate rebate) {
+        this.rebateId = rebate.getId();
         this.year = rebate.getYear();
         this.month = rebate.getMonth();
 
