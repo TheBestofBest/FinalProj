@@ -27,6 +27,13 @@ export default function Alarm() {
     categoryId: "",
     message: "",
   });
+
+  const getAlarms = async () => {
+    await api.get("/api/v1/alarms/top10").then((res) => {
+      queryClient.setQueryData(["alarms"], res.data.data);
+    });
+  };
+
   const handleMessage = (message: IMessage) => {
     const receive = JSON.parse(message.body);
     console.log(receive);
@@ -61,16 +68,20 @@ export default function Alarm() {
       setBorderColor("border-blue-400");
       setTextColor("text-blue-700");
       setcategoryToKorean("회의 초대");
-      api.get(`/api/v1/members/me`)
-        .then(res => {
-          if (!res.data.isSuccess) {
-            return alert(res.data.msg);
-          }
-          const memberData = queryClient.setQueryData(["member"], res.data.data.memberDTO);
-          setRoomId(memberData.meetingState.split('번')[0]);
-        })
+      api.get(`/api/v1/members/me`).then((res) => {
+        if (!res.data.isSuccess) {
+          return alert(res.data.msg);
+        }
+        const memberData = queryClient.setQueryData(
+          ["member"],
+          res.data.data.memberDTO,
+        );
+        setRoomId(memberData.meetingState.split("번")[0]);
+      });
     }
     setAlarms(receive);
+    getAlarms();
+
     if (receive.category !== "meeting") {
       setTimeout(() => {
         setAlarms({ category: "", categoryId: "", message: "" });
@@ -82,6 +93,10 @@ export default function Alarm() {
     queryKey: ["member"],
   });
 
+  const { data: alarmsData, isLoading: isAlarmsLoading } = useQuery({
+    queryKey: ["alarms"],
+    queryFn: getAlarms,
+  });
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -120,27 +135,27 @@ export default function Alarm() {
 
   //회의참석
   const approveMeeting = () => {
-    api.patch(`/api/v1/meetings/${roomId}/approve`)
-      .then(res => queryClient.setQueryData(["member"], res.data.data.memberDTO));
+    api
+      .patch(`/api/v1/meetings/${roomId}/approve`)
+      .then((res) =>
+        queryClient.setQueryData(["member"], res.data.data.memberDTO),
+      );
     setOpenAlarm(false);
     router.push("/meeting");
-  }
+  };
 
   const rejectMeeting = () => {
-    api.patch(`/api/v1/meetings/${roomId}/exit`)
-      .then(res => {
-        api.get(`/api/v1/members/me`)
-          .then(res => {
-            if (!res.data.isSuccess) {
-              return alert(res.data.msg);
-            }
-            queryClient.setQueryData(["member"], res.data.data.memberDTO);
-          });
-        alert("회의를 거절하였습니다.");
-        setOpenAlarm(false);
-      })
-  }
-
+    api.patch(`/api/v1/meetings/${roomId}/exit`).then((res) => {
+      api.get(`/api/v1/members/me`).then((res) => {
+        if (!res.data.isSuccess) {
+          return alert(res.data.msg);
+        }
+        queryClient.setQueryData(["member"], res.data.data.memberDTO);
+      });
+      alert("회의를 거절하였습니다.");
+      setOpenAlarm(false);
+    });
+  };
 
   if (isLoading) {
     return;
@@ -148,7 +163,7 @@ export default function Alarm() {
 
   return (
     <>
-      {openAlarm &&
+      {openAlarm && (
         <div
           role="alert"
           className={` absolute bottom-5 left-5 z-999999 w-fit ${alarms.message ? "block" : "hidden"}`}
@@ -162,19 +177,30 @@ export default function Alarm() {
             className={`${borderColor} ${bgColor} ${textColor} rounded-b border border-t-0 px-4 py-3`}
           >
             <p>{alarms.message}</p>
-            {categoryToKorean.includes("회의") ?
-              <div className="flex justify-between items-center mt-1">
+            {categoryToKorean.includes("회의") ? (
+              <div className="mt-1 flex items-center justify-between">
                 <p>수락하시겠습니까?</p>
                 <div>
-                  <button className="border rounded px-1 mx-1 hover:bg-gray"
-                    onClick={rejectMeeting}>거절</button>
-                  <button className="border rounded px-1 mx-1 bg-blue-500 hover:bg-blue-400 text-white"
-                    onClick={approveMeeting}>참여</button>
+                  <button
+                    className="mx-1 rounded border px-1 hover:bg-gray"
+                    onClick={rejectMeeting}
+                  >
+                    거절
+                  </button>
+                  <button
+                    className="mx-1 rounded border bg-blue-500 px-1 text-white hover:bg-blue-400"
+                    onClick={approveMeeting}
+                  >
+                    참여
+                  </button>
                 </div>
-              </div> : <></>}
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
-      }
+      )}
     </>
   );
 }
