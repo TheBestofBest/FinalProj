@@ -38,14 +38,27 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
   const [currentMonth, setCurrentMonth] = useState('');
   const router = useRouter();
 
+  const [rebateIds, setRebateIds] = useState([{rebateId: ''}]);
+
   const [isCheckedList, setIsCheckedList] = useState(Array(rebates.length).fill(false));
 
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
-  const handleCheckboxChange = (key) => {
+  const handleCheckboxChange = (key, rebateId) => {
     const newList = [...isCheckedList];
     newList[key] = !newList[key];
     setIsCheckedList(newList);
+    // 해당 rebateId가 이미 있는지 확인
+    const existingIndex = rebateIds.indexOf(rebateId);
+
+    if (existingIndex !== -1) {
+        // 이미 있는 경우, 해당 rebateId를 제거
+        setRebateIds(prevIds => prevIds.filter(id => id !== rebateId));
+    } else {
+        // 없는 경우, 해당 rebateId를 추가
+        setRebateIds(prevIds => [...prevIds, {rebateId}]);
+    }
+    console.log(rebateIds);
   };
 
   const handleAllCheckboxesChange = () => {
@@ -55,12 +68,55 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
     // 모든 체크박스의 상태를 전부 변경
     const newList = isCheckedList.map(() => !allChecked);
     setIsCheckedList(newList);
+    if (isChecked) {
+      setIsChecked(false);
+      setRebateIds([]);
+      console.log(rebateIds);
+  } else {
+      setIsChecked(true);
+      setRebateIds(rebates.map(rebate => ({ rebateId: rebate.rebateId })));
+      console.log(rebateIds);
+  }
   };
 
   useEffect(() => {
     setCurrentYear(rebates[0]?.year);
     setCurrentMonth(rebates[0]?.month);
   }, [rebates]);
+
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (rebateIds.length === 0) {
+      alert("저장할 정산을 선택해주세요.")
+      return;
+    }
+
+    const confirmed = window.confirm("정말로 저장하시겠습니까? 저장 후에는 변경이 불가합니다.");
+    
+    if (confirmed) {
+      const response = await fetch("http://localhost:8090/api/v1/rebates/save", {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(rebateIds)
+    });
+
+      if (response.ok) {
+        alert("정산 저장 성공.");
+      } else {
+        alert("정산 저장 실패.");
+      }
+
+    } else {
+      
+    }
+  }
+
+  
 
 
 
@@ -70,9 +126,11 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
         {currentYear}년 {rebates[0]?.memberId === rebates[1]?.memberId ? (<span>정산내역</span>) : (<span>{currentMonth}월 정산내역</span>)}
       </h4>
 
+      <form onSubmit={handleSubmit}>
       <div className="flex justify-between py-4">
         총 정산 금액 : {totalSum.toLocaleString()}원
           <button
+              type="submit"
               className="flex items-center whitespace-nowrap rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
               저장하기
           </button>
@@ -148,7 +206,7 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
           </div>
         </div>
 
-        <form>
+        
         {rebates.map((rebate, key) => (
           <div
             className={`grid grid-cols-3 sm:grid-cols-7 h-16 ${
@@ -168,9 +226,10 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
                   type="checkbox"
                   id={`${rebate.rebateId}`}
                   value={`${rebate.rebateId}`}
+                  name="rebateIds"
                   className="sr-only"
                   checked={isCheckedList[key]}
-                  onChange={() => handleCheckboxChange(key)}
+                  onChange={() => handleCheckboxChange(key, rebate.rebateId)}
                 />
                 <div
                   className={`mr-4 flex h-5 w-5 items-center justify-center rounded border ${
@@ -232,8 +291,9 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
             </div>
           </div>
         ))}
-        </form>
+        
       </div>
+      </form>
     </div>
   );
 };

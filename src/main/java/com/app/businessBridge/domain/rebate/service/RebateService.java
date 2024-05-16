@@ -5,14 +5,14 @@ import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.rebate.repository.RebateRepository;
+import com.app.businessBridge.domain.rebate.request.RebateRequest;
+import com.app.businessBridge.domain.rebate.request.SaveRequest;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.holidayapi.workingdate.service.WorkingDateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -165,5 +165,20 @@ public class RebateService {
                 .build();
 
         this.rebateRepository.save(mr);
+    }
+
+    public RsData saveRebates(List<SaveRequest> rebateIds) {
+
+        for(int i = 0 ; i < rebateIds.size(); i ++ ) {
+            Rebate rebate = this.findById(rebateIds.get(i).getRebateId()).getData();
+
+            Rebate sr = rebate.toBuilder()
+                    .isSaved(true)
+                    .build();
+
+            this.rebateRepository.save(sr);
+        }
+
+        return RsData.of(RsCode.S_03,"정산 리스트 저장 성공",null);
     }
 }

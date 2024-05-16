@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 public class RebateRequest {
 
@@ -22,5 +24,4 @@ public class RebateRequest {
         @NotBlank
         private String bonus;
     }
-
 }

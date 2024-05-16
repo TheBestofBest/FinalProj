@@ -8,6 +8,7 @@ import com.app.businessBridge.domain.rebate.dto.RebatesDto;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.rebate.request.RbSearchRequest;
 import com.app.businessBridge.domain.rebate.request.RebateRequest;
+import com.app.businessBridge.domain.rebate.request.SaveRequest;
 import com.app.businessBridge.domain.rebate.response.RebateResponse;
 import com.app.businessBridge.domain.rebate.response.RebatesResponse;
 import com.app.businessBridge.domain.rebate.service.RebateService;
@@ -185,8 +186,16 @@ public class ApiV1RebateController {
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new RebateResponse(new RebateDto(rsData.getData())));
     }
 
+    @PostMapping("/save")
+    public RsData saveRebates(@Valid @RequestBody List<SaveRequest> saveRequests) {
+
+        return this.rebateService.saveRebates(saveRequests);
+
+    }
+
     @DeleteMapping("/{id}")
     public void deleteRebate() {
+
 
     }
 
