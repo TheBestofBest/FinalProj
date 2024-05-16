@@ -31,7 +31,7 @@ export default function ArticleEdit() {
         e.preventDefault()
         try {
             await api.patch(`/api/v1/articles/${params.id}`, article)
-            router.push('/article');
+            router.push('/api/v1/article');
         } catch (error) {
             console.log(error)
         }
