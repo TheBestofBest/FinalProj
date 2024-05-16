@@ -7,7 +7,7 @@ import { MemberType } from "@/types/Member/MemberTypes";
 import api from "@/util/api";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 export default function ConfirmDetailPage() {
   // 모달 버튼 클릭 유무를 저장할 state
@@ -54,8 +54,20 @@ export default function ConfirmDetailPage() {
   });
   const queryClient = useQueryClient();
   const member = queryClient.getQueryData<MemberType>(["member"]);
+  const router = useRouter();
 
-  // 수정 필요!!
+  const deleteConfirm = async () => {
+    await api.delete(`/api/v1/confirms/${params.id}`);
+    router.push(`/confirm`);
+  };
+  const handleDelete = () => {
+    const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+
+    if (isConfirmed) {
+      deleteConfirm();
+    }
+  };
+
   const getConfirm = async () => {
     const response = await api.get(`/api/v1/confirms/${params.id}`);
     setConfirm(response.data.data.confirmDTO);
@@ -187,6 +199,7 @@ export default function ConfirmDetailPage() {
                 <button
                   type="button"
                   className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
+                  onClick={handleDelete}
                 >
                   삭제
                 </button>
