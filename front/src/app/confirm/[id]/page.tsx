@@ -213,43 +213,45 @@ export default function ConfirmDetailPage() {
 
           <div className="mb-3 mt-3 flex w-full justify-center">
             {/* 수정,삭제: 기안자에게만 보이게 하기 */}
-            {confirm?.confirmRequestMember?.name === member?.name && (
-              <div>
-                <button
-                  type="button"
-                  className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-                >
-                  수정
-                </button>
-                <button
-                  type="button"
-                  className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
-                  onClick={handleDelete}
-                >
-                  삭제
-                </button>
-              </div>
-            )}
+            {confirm?.confirmRequestMember?.name === member?.name &&
+              confirm.confirmStatusDTO?.statusName === "결재 처리중" && (
+                <div>
+                  <button
+                    type="button"
+                    className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                  >
+                    수정
+                  </button>
+                  <button
+                    type="button"
+                    className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
+                    onClick={handleDelete}
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
             {/* 승인, 반려: 결재 승인자에게만 보이게하기 */}
             {confirm?.confirmMembers[confirm?.confirmStepCounter]?.name ===
-              member?.name && (
-              <div>
-                <button
-                  type="button"
-                  className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-                  onClick={handleConfirm}
-                >
-                  승인
-                </button>
-                <button
-                  type="button"
-                  className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
-                  onClick={handleReject}
-                >
-                  반려
-                </button>
-              </div>
-            )}
+              member?.name &&
+              confirm?.confirmStatusDTO?.statusName === "결재 처리중" && (
+                <div>
+                  <button
+                    type="button"
+                    className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                    onClick={handleConfirm}
+                  >
+                    승인
+                  </button>
+                  <button
+                    type="button"
+                    className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
+                    onClick={handleReject}
+                  >
+                    반려
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </div>
