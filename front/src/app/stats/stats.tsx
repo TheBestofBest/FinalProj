@@ -9,13 +9,64 @@ import MapOne from "@/components/Maps/MapOne";
 import TableOne from "@/components/Tables/TableOne";
 import MemberChart from "./MemberChart";
 import MemberChartTwo from "./MemberChartTwo";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+interface Stats {
+  totalPeople : string;
+  numberOfMan : number;
+  numberOfWoman : number;
+  two : number;
+  three : number;
+  four : number;
+  five : number;
+  salaryOne : number;
+  salaryTwo : number;
+  salaryThree : number;
+  salaryFour : number;
+  salaryFive : number;
+  salarySix : number;
+  salarySeven : number;
+}
 
 
 const Stats: React.FC = () => {
+
+  const router = useRouter();
+  const [stats, setStats] = useState<Stats>();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    
+  try {
+      const response = await fetch('http://localhost:8090/api/v1/statistics', {
+          credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || data.rsCode.code.startsWith("F")) {
+          throw new Error(data.msg);
+      }
+      setStats(data.statsDtos);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      alert(error.message);
+      router.push("/");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="총 직원 수" total="500명" rate="전년대비 1.8%" levelUp>
+        <CardDataStats title="총 직원 수" total={stats?.totalPeople} rate="전년대비 1.8%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -57,7 +108,7 @@ const Stats: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="제품 총 생산량" total="85,547,665개" rate="전년대비 2.59%" levelUp>
+        <CardDataStats title="제품 총 생산량" total="547,665개" rate="전년대비 2.59%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -76,7 +127,7 @@ const Stats: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="퇴사율" total="18명" rate="전년대비 0.95%" levelDown>
+        <CardDataStats title="퇴사율" total="266명" rate="전년대비 0.95%" levelDown>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -106,10 +157,16 @@ const Stats: React.FC = () => {
         <br/>
         <MemberChartTwo/>
         <br/>
-        <div className="col-span-12 xl:col-span-8">
-          <TableOne />
-        </div>
-        <ChatCard />
+      </div>
+      <div className="grid grid-cols-12 gap-4 md:gap-6 2xl:gap-7.5">
+        <MemberChart/>
+        <MemberChart/>
+        <MemberChart/>
+      </div>
+      <br/>
+      <div className="grid grid-cols-10 gap-4 md:gap-6 2xl:gap-7.5">
+        <MemberChartTwo/>
+        <MemberChartTwo/>
       </div>
     </>
   );

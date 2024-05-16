@@ -30,7 +30,7 @@ const RebateNumber = ({rebate}) => {
               뒤로가기
             </button>
           </Link>
-            <RebateModify rebateId = {rebate.rebateId}/>
+          {rebate?.saved == true ? (<span></span>) : (<RebateModify rebateId = {rebate.rebateId}/>)}
           </div>) :
           (<Link
           href="/rebate/me"

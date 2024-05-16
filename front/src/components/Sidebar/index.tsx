@@ -128,6 +128,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 {(handleClick, open) => {
                   return (
                     <React.Fragment>
+                      {member?.username === "admin" && (
                       <Link
                         href="#"
                         className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
@@ -185,8 +186,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             fill=""
                           />
                         </svg>
-                      </Link>
+                      </Link>)}
                       {/* <!-- Dropdown Menu Start --> */}
+                      {member?.username === "admin" && (
                       <div
                         className={`translate transform overflow-hidden ${
                           !open && "hidden"
@@ -204,7 +206,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             </Link>
                           </li>
                         </ul>
-                      </div>
+                      </div>)}
                       {/* <!-- Dropdown Menu End --> */}
                     </React.Fragment>
                   );
