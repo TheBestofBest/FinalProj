@@ -130,7 +130,7 @@ export default function ConfirmDetailPage() {
                 </table>
                 <div className="dark:text-white">
                   <HorizontalLinearAlternativeLabelStepper
-                    activeStep={1}
+                    activeStep={confirm?.confirmStepCounter}
                     confirmMembers={confirm?.confirmMembers}
                   />
                 </div>

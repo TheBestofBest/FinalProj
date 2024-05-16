@@ -170,6 +170,7 @@ const VacationForm: React.FC<VacationFormProps> = ({
           className="text-gray-900 border-gray-300 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-s mb-2 block w-full rounded-lg border p-2 focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder={"결재 제목 입력 ex) 전율택 사원 휴가 신청"}
           onChange={handleChange}
+          required
         />
         <label className="text-gray-900 mb-2 block text-base font-bold dark:text-white">
           결재 신청인
@@ -198,6 +199,7 @@ const VacationForm: React.FC<VacationFormProps> = ({
           className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 text-s block w-full rounded-lg border p-2.5 focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder={"결재에 대한 간략한 설명을 적어주세요"}
           onChange={handleChange}
+          required
         />
         <label className="text-gray-900 mb-2 mt-2 block text-base font-bold dark:text-white">
           휴가 날짜 선택
@@ -211,6 +213,7 @@ const VacationForm: React.FC<VacationFormProps> = ({
             endDate={endDate}
             className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
             placeholderText="Select date start"
+            required
           />
           <span className="text-gray-500 mx-4">to</span>
           <DatePicker
@@ -222,6 +225,7 @@ const VacationForm: React.FC<VacationFormProps> = ({
             minDate={startDate}
             className="bg-gray-50 border-gray-300 text-gray-900 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 block w-full rounded-lg border p-2.5 text-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white dark:focus:border-blue-500 dark:focus:ring-blue-500"
             placeholderText="Select date end"
+            required
           />
         </div>
         <label
@@ -238,6 +242,7 @@ const VacationForm: React.FC<VacationFormProps> = ({
           placeholder="상세 내용을 작성해주세요"
           defaultValue={""}
           onChange={handleVacationChange}
+          required
         />
         <label
           htmlFor="search"

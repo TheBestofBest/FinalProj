@@ -5,15 +5,14 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import { MemberType } from "@/types/Member/MemberTypes";
 
-const steps = ["반복문으로", "승인자 이름/직급", "세 번째 승인자"];
-
 interface StepperProps {
   activeStep: number;
   confirmMembers: MemberType[];
 }
 
 const HorizontalLinearAlternativeLabelStepper: React.FC<StepperProps> = ({
-  activeStep, confirmMembers
+  activeStep,
+  confirmMembers,
 }) => {
   const names = confirmMembers.map((member) => member.name);
   return (
