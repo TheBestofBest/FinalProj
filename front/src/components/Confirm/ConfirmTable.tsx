@@ -46,7 +46,7 @@ const ConfirmTable: React.FC<ConfirmTableProps> = (clickModal) => {
                 //[] onClick 으로 상세 페이지로 전송하는 이벤트 만들기
                 <tr
                   key={confirm.id}
-                  className="hover:cursor-pointer hover:bg-blue-200"
+                  className="border-t border-[#eee] hover:cursor-pointer hover:bg-blue-200"
                   onClick={() => handleRouter(confirm.id)}
                 >
                   <td className="border-b border-[#eee]  py-5 dark:border-strokedark ">
