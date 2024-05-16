@@ -1,44 +1,101 @@
 package com.app.businessBridge.domain.mailbox.Controller;
 
-import com.app.businessBridge.domain.mailbox.DTO.MailboxDTO;
+import com.app.businessBridge.domain.mail.DTO.MailDTO;
 import com.app.businessBridge.domain.mailbox.Response.MailboxResponse;
-import com.app.businessBridge.domain.mailbox.Response.MailboxsResponse;
 import com.app.businessBridge.domain.mailbox.Service.MailboxService;
+import com.app.businessBridge.domain.member.entity.Member;
+import com.app.businessBridge.domain.member.repository.MemberRepository;
+import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+
 @RestController
 @RequiredArgsConstructor
-
 @RequestMapping("/api/v1/mailboxes")
 public class ApiV1MailboxController {
     private final MailboxService mailboxService;
+    private final MemberRepository memberRepository;
 
-    // 기본 코드들로 우선 미리 넣어두었습니다 다시 수정 할 예정
+    @GetMapping("/{memberId}/mails/all")
+    public RsData<MailboxResponse.AllMailsResponse> getAllMails(@PathVariable("memberId") Long memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        if (member == null) {
+            return RsData.of(RsCode.F_01, "해당 멤버를 찾을 수 없습니다.", null);
+        }
+        RsData<List<MailDTO>> mailsData = mailboxService.getAllMails(member);
+        if (mailsData.getIsSuccess()) {
+            List<MailDTO> mailDTOList = mailsData.getData();
+            MailboxResponse.AllMailsResponse response = new MailboxResponse.AllMailsResponse(mailDTOList);
+            return RsData.of(RsCode.S_01, "전체 메일 조회 성공", response);
+        } else {
+            return RsData.of(RsCode.F_01, "전체 메일 조회 실패", null);
+        }
+    }
 
-//    @GetMapping("")
-//    public RsData<MailboxsResponse> getMails() {
-//        List<MailboxDTO> mailboxDTOList = this.mailboxService
-//                .getList()
-//                .stream()
-//                .map(mailbox -> new MailboxDTO(mailbox))
-//                .toList();
-//        return RsData.of("S-01", "Success 요청 성공", new MailboxsResponse(mailboxDTOList));
+    @GetMapping("/{memberId}/mails/sent")
+    public RsData<MailboxResponse.SentMailsResponse> getSentMails(@PathVariable("memberId") Long memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        if (member == null) {
+            return RsData.of(RsCode.F_01, "해당 멤버를 찾을 수 없습니다.", null);
+        }
+        RsData<List<MailDTO>> sentMailsData = mailboxService.getSentMails(member);
+        if (sentMailsData.getIsSuccess()) {
+            List<MailDTO> sentMailDTOList = sentMailsData.getData();
+            return RsData.of(RsCode.S_01, "보낸 메일 조회 성공", new MailboxResponse.SentMailsResponse(sentMailDTOList));
+        } else {
+            return RsData.of(RsCode.F_01, "보낸 메일 조회 실패", null);
+        }
+    }
+
+    @GetMapping("/{memberId}/mails/received")
+    public RsData<MailboxResponse.ReceivedMailsResponse> getReceivedMails(@PathVariable("memberId") Long memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        if (member == null) {
+            return RsData.of(RsCode.F_01, "해당 멤버를 찾을 수 없습니다.", null);
+        }
+        RsData<List<MailDTO>> receivedMailsData = mailboxService.getReceivedMails(member);
+        if (receivedMailsData.getIsSuccess()) {
+            List<MailDTO> receivedMailDTOList = receivedMailsData.getData();
+            return RsData.of(RsCode.S_01, "받은 메일 조회 성공", new MailboxResponse.ReceivedMailsResponse(receivedMailDTOList));
+        } else {
+            return RsData.of(RsCode.F_01, "받은 메일 조회 실패", null);
+        }
+    }
+
+    @GetMapping("/{memberId}/mails/referenced")
+    public RsData<MailboxResponse.ReferencedMailsResponse> getReferencedMails(@PathVariable("memberId") Long memberId) {
+        Member member = memberRepository.findById(memberId).orElse(null);
+        if (member == null) {
+            return RsData.of(RsCode.F_01, "해당 멤버를 찾을 수 없습니다.", null);
+        }
+        RsData<List<MailDTO>> referencedMailsData = mailboxService.getReferencedMails(member);
+        if (referencedMailsData.getIsSuccess()) {
+            List<MailDTO> referencedMailDTOList = referencedMailsData.getData();
+            return RsData.of(RsCode.S_01, "참조된 메일 조회 성공", new MailboxResponse.ReferencedMailsResponse(referencedMailDTOList));
+        } else {
+            return RsData.of(RsCode.F_01, "참조된 메일 조회 실패", null);
+        }
+    }
+
+//    @GetMapping("/{memberId}/mails/self")
+//    public RsData<MailboxResponse.SelfMailsResponse> getSelfMails(@PathVariable("memberId") Long memberId) {
+//        Member member = memberRepository.findById(memberId).orElse(null);
+//        if (member == null) {
+//            return RsData.of(RsCode.F_01, "해당 멤버를 찾을 수 없습니다.", null);
+//        }
+//        RsData<List<MailDTO>> selfMailsData = mailboxService.getselfMails(member);
+//        if (selfMailsData.getIsSuccess()) {
+//            List<MailDTO> selfMailDTOList = selfMailsData.getData();
+//            return RsData.of(RsCode.S_01, "내게 쓴 메일 조회 성공", new MailboxResponse.SelfMailsResponse(selfMailDTOList));
+//        } else {
+//            return RsData.of(RsCode.F_01, "내게 쓴 메일 조회 실패", null);
+//        }
 //    }
-//
-//    @GetMapping("/{id}")
-//    public RsData<MailboxResponse> getMailbox(@PathVariable("id") Long id) {
-//        return mailboxService.getMailbox(id).map(mailbox -> RsData.of(
-//                "S-01",
-//                "Success 조회 성공",
-//                new MailboxResponse(new MailboxDTO(mailbox))
-//        )).orElseGet(() -> RsData.of(
-//                "F-01",
-//                "Bad Request %d 번 메일함은 존재하지 않습니다.".formatted(id),
-//                null
-//        ));
-//    }
+
+
 }

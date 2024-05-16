@@ -1,7 +1,6 @@
 package com.app.businessBridge.domain.mail.DTO;
 
 import com.app.businessBridge.domain.mail.Entity.Mail;
-import com.app.businessBridge.domain.mailbox.Entity.Mailbox;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,20 +12,37 @@ public class MailDTO {
     private Long id;
     private String title;
     private String content;
-    private String attachments;
-    private boolean is_Read;
+    private boolean isRead;
     private LocalDate sendDate;
     private LocalDate receiveDate;
+    // 보내는 사람
+    private String senderName;
+    private String senderEmail;
+    // 받는 사람
+    private String receiverName;
+    private String receiverEmail;
+    // 참조 (Carbon Copy)
+    private String referenceName;
+    private String referenceEmail;
 
     public MailDTO(Mail mail) {
-
         this.id = mail.getId();
         this.title = mail.getTitle();
         this.content = mail.getContent();
-        this.attachments = mail.getAttachments();
-        this.is_Read = mail.is_Read();
+        this.isRead = mail.is_Read();
         this.sendDate = mail.getSendDate();
         this.receiveDate = mail.getReceiveDate();
+        //보내는 사람
+        this.senderName = mail.getSender();
+        this.senderEmail = mail.getSender();
+        // 받는 사람
+        this.receiverName = mail.getReceiver().getName();
+        this.receiverEmail = mail.getReceiver().getEmail();
+        // 참조(CC)
+        if (mail.getReference() != null) {
+            this.referenceName = mail.getReference().getName();
+            this.referenceEmail = mail.getReference().getEmail();
+        }
     }
 
 

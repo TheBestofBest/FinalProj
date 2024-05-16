@@ -25,4 +25,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query(value = "SELECT * FROM member WHERE  name LIKE CONCAT('%', :keyword, '%')", nativeQuery = true)
     List<Member> findByKeyword(@Param("keyword") String keyword);
+
+    Optional<Member> findByEmailAndName(String email, String name);
 }
