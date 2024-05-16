@@ -1,5 +1,6 @@
 package com.app.businessBridge.global.initData;
 
+import com.app.businessBridge.domain.alarm.service.AlarmService;
 import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
 import com.app.businessBridge.domain.department.service.DepartmentService;
 import com.app.businessBridge.domain.division.service.DivisionService;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 @Configuration
 @Profile({"dev", "test"})
 public class NotProd {
+  
     @Bean
     CommandLineRunner initData(DivisionService divisionService,
                                DepartmentService departmentService,
@@ -26,8 +28,8 @@ public class NotProd {
                                MemberService memberService,
                                ChattingRoomService chattingRoomService,
                                RebateService rebateService,
-                               WorkingDateService workingDateService) {
-
+                               WorkingDateService workingDateService,
+                               AlarmService alarmService) {
         return args -> {
 
             // 소속 생성
@@ -87,6 +89,24 @@ public class NotProd {
             chattingRoomService.invite(1L, memberService.findByUsername("user1").getData());
             chattingRoomService.invite(1L, memberService.findByUsername("user2").getData());
             chattingRoomService.invite(2L, memberService.findByUsername("user1").getData());
+
+            alarmService.save("all",0L,"전체 1번 데이터");
+            alarmService.save("dept",1L,"부서 1번 데이터");
+            alarmService.save("dept",2L,"부서 2번 데이터");
+            alarmService.save("all",0L,"전체 2번 데이터");
+            alarmService.save("all",0L,"전체 3번 데이터");
+            alarmService.save("dept",3L,"부서 3번 데이터");
+            alarmService.save("dept",1L,"부서 4번 데이터");
+            alarmService.save("dept",2L,"부서 5번 데이터");
+            alarmService.save("dept",3L,"부서 6번 데이터");
+            alarmService.save("member",1L,"회원 1번 데이터");
+            alarmService.save("member",2L,"회원 2번 데이터");
+            alarmService.save("all",0L,"전체 4번 데이터");
+            alarmService.save("member",3L,"회원 3번 데이터");
+            alarmService.save("member",1L,"회원 4번 데이터");
+            alarmService.save("member",2L,"회원 5번 데이터");
+            alarmService.save("member",3L,"회원 6번 데이터");
+            alarmService.save("all",0L,"전체 5번 데이터");
 
 
             // 이미지 저장하는 외부 경로 폴더 생성 로직 필요 시 추가
