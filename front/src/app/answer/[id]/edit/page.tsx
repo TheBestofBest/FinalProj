@@ -31,7 +31,7 @@ export default function AnswerEdit() {
         e.preventDefault()
         try {
             await api.patch(`/api/v1/answers/${params.id}`, answer)
-            router.push(`/article/${params.id}`);
+            router.push(`/api/v1/article/${params.id}`);
         } catch (error) {
             console.log(error)
         }
