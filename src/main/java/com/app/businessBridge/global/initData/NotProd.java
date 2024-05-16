@@ -7,6 +7,7 @@ import com.app.businessBridge.domain.confirmFormType.service.ConfirmFormTypeServ
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
 import com.app.businessBridge.domain.department.service.DepartmentService;
+import com.app.businessBridge.domain.division.service.DivisionService;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.rebate.service.RebateService;
@@ -25,7 +26,8 @@ import java.time.LocalDate;
 public class NotProd {
 
     @Bean
-    CommandLineRunner initData(DepartmentService departmentService,
+    CommandLineRunner initData(DivisionService divisionService,
+                               DepartmentService departmentService,
                                GradeService gradeService,
                                MemberService memberService,
                                ChattingRoomService chattingRoomService,
@@ -36,21 +38,36 @@ public class NotProd {
 
         return args -> {
 
+            // 소속 생성
+            divisionService.create(0,"해당없음");
+            divisionService.create(1,"대표이사");
+            divisionService.create(10,"기술관리");
+            divisionService.create(11,"경영지원본부");
+            divisionService.create(12,"R&D본부");
+            divisionService.create(9999,"테스트 전용 소속");
+
             // 부서 생성
-            departmentService.create(1, "관리");
+            departmentService.create(0,"해당없음");
+            departmentService.create(1,"대표이사");
+            departmentService.create(100, "관리");
             departmentService.create(101, "마케팅");
             departmentService.create(102, "영업");
+            departmentService.create(9999,"테스트 전용 부서");
 
             // 직급 생성
-            gradeService.create(1, "슈퍼관리자");
+            gradeService.create(0,"해당없음");
+            gradeService.create(1,"대표이사");
+            gradeService.create(1000, "슈퍼관리자");
             gradeService.create(1001, "부장");
             gradeService.create(1002, "대리");
+            gradeService.create(9999,"테스트 전용 직급");
 
             // 회원 생성
-            memberService.create(1, 1, "admin", 10001, "김관리", "1234", "admin@email.com");
-            memberService.create(101, 1001, "user1", 20001, "이마부", "1234", "user1@email.com");
-            memberService.create(102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
-            memberService.create(102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
+            memberService.create(1,1,1,"CEO",10000,"왕대표","1234","CEO@emil.com");
+            memberService.create(10,100, 1000, "admin", 10001, "김관리", "1234", "admin@email.com");
+            memberService.create(11,101, 1001, "user1", 20001, "이마부", "1234", "user1@email.com");
+            memberService.create(11,102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
+            memberService.create(12,102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
 
             // 올 해 월 별 근무일 일괄 계산
             workingDateService.createThisYear();
@@ -69,7 +86,7 @@ public class NotProd {
             int year = currentDate.getYear();
             int month = currentDate.getMonthValue();
 
-            for (int i = 5; i < 105; i++) {
+            for (int i = 6; i < 106; i++) {
                 rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month));
                 rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-1));
                 rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-2));

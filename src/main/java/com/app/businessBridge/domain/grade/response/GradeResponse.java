@@ -22,10 +22,10 @@ public class GradeResponse {
 
     @Getter
     public static class GetGrades {
-        private List<GradeDTO> gradeDTOList;
+        private List<GradeDTO> dtoList;
 
         public GetGrades(List<Grade> gradeList) {
-            this.gradeDTOList = gradeList.stream().map(GradeDTO::new).toList();
+            this.dtoList = gradeList.stream().map(GradeDTO::new).toList();
         }
     }
 

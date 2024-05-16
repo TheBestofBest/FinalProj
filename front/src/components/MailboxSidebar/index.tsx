@@ -67,7 +67,7 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 flex h-screen w-72.5 flex-col bg-black overflow-y-hiddenduration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      className={`absolute left-0 top-0 flex h-screen w-72.5 flex-col bg-white overflow-y-hiddenduration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
     >
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear">
@@ -80,7 +80,7 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/calendar"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("calendar") &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-out hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("calendar") &&
                     "bg-graydark dark:bg-meta-4"
                     }`}
                 >
@@ -108,7 +108,7 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/calendar"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("calendar") &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-out hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("MailboxAll") &&
                     "bg-graydark dark:bg-meta-4"
                     }`}
                 >
@@ -134,7 +134,7 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/calendar"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("calendar") &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-out hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("calendar") &&
                     "bg-graydark dark:bg-meta-4"
                     }`}
                 >
@@ -162,7 +162,7 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/profile"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("profile") && "bg-graydark dark:bg-meta-4"
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-out hover:bg-primary hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("profile") && "bg-graydark dark:bg-meta-4"
                     }`}
                 >
                   <PaperAirplaneIcon
@@ -191,7 +191,7 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/tables"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("tables") && "bg-graydark dark:bg-meta-4"
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-outhover:bg-primary hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("tables") && "bg-graydark dark:bg-meta-4"
                     }`}
                 >
                   <DocumentTextIcon
@@ -229,7 +229,7 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/settings"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${pathname.includes("settings") &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-out hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("settings") &&
                     "bg-graydark dark:bg-meta-4"
                     }`}
                 >

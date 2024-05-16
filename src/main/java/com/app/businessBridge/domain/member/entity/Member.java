@@ -1,9 +1,14 @@
 package com.app.businessBridge.domain.member.entity;
 
 import com.app.businessBridge.domain.department.entity.Department;
+import com.app.businessBridge.domain.division.entity.Division;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
+import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
+
+import com.app.businessBridge.domain.mail.Entity.Mail;
+import com.app.businessBridge.domain.mailbox.Entity.Mailbox;
 import com.app.businessBridge.domain.relation.entity.MemberChatRelation;
 import com.app.businessBridge.domain.workingstate.entity.WorkingState;
 import com.app.businessBridge.global.Jpa.BaseEntity;
@@ -18,6 +23,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
+
 @Entity
 @Getter
 @Setter
@@ -25,6 +31,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Member extends BaseEntity {
+    @ManyToOne
+    private Division division; // 소속
     @ManyToOne
     private Department department; // 부서
     @ManyToOne
@@ -65,4 +73,22 @@ public class Member extends BaseEntity {
     //참여중인 화상회의 (meetingState == null ? null : meetingRoom)
     @ManyToOne
     private MeetingRoom meetingRoom;
+
+
+    // 보낸 메일
+    @OneToMany(mappedBy = "sender")
+    private List<Mail> sentMails;
+    // 받은 메일
+    @OneToMany(mappedBy = "receiver")
+    private List<Mail> receivedMails;
+    // 참조 메일
+    @OneToMany(mappedBy = "reference")
+    private List<Mail> referencedMails;
+//    // 내게 쓴 메일
+//    @OneToMany(mappedBy = "self")
+//    private List<Mail> selfMails;
+    // 메일함
+    @OneToMany(mappedBy = "member")
+    private List<Mailbox> mailboxes;
+
 }
