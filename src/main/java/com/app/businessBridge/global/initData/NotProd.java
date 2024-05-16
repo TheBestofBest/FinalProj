@@ -39,35 +39,35 @@ public class NotProd {
         return args -> {
 
             // 소속 생성
-            divisionService.create(0,"해당없음");
-            divisionService.create(1,"대표이사");
-            divisionService.create(10,"기술관리");
-            divisionService.create(11,"경영지원본부");
-            divisionService.create(12,"R&D본부");
-            divisionService.create(9999,"테스트 전용 소속");
+            divisionService.create(0, "해당없음");
+            divisionService.create(1, "대표이사");
+            divisionService.create(10, "기술관리");
+            divisionService.create(11, "경영지원본부");
+            divisionService.create(12, "R&D본부");
+            divisionService.create(9999, "테스트 전용 소속");
 
             // 부서 생성
-            departmentService.create(0,"해당없음");
-            departmentService.create(1,"대표이사");
+            departmentService.create(0, "해당없음");
+            departmentService.create(1, "대표이사");
             departmentService.create(100, "관리");
             departmentService.create(101, "마케팅");
             departmentService.create(102, "영업");
-            departmentService.create(9999,"테스트 전용 부서");
+            departmentService.create(9999, "테스트 전용 부서");
 
             // 직급 생성
-            gradeService.create(0,"해당없음");
-            gradeService.create(1,"대표이사");
+            gradeService.create(0, "해당없음");
+            gradeService.create(1, "대표이사");
             gradeService.create(1000, "슈퍼관리자");
             gradeService.create(1001, "부장");
             gradeService.create(1002, "대리");
-            gradeService.create(9999,"테스트 전용 직급");
+            gradeService.create(9999, "테스트 전용 직급");
 
             // 회원 생성
-            memberService.create(1,1,1,"CEO","1234","CEO@emil.com",10000,"왕대표");
-            memberService.create(10,100, 1000, "admin","1234", "admin@email.com", 10001, "김관리");
-            memberService.create(11,101, 1001, "user1","1234", "user1@email.com", 20001, "이마부");
-            memberService.create(11,102, 1002, "user2","1234","user2@email.com", 30001, "박영대");
-            memberService.create(12,102, 1002, "user3","1234","user3@email.com", 30002, "홍길동");
+            memberService.create(1, 1, 1, "CEO", "1234", 10000, "왕대표");
+            memberService.create(10, 100, 1000, "admin", "1234", 10001, "김관리");
+            memberService.create(11, 101, 1001, "user1", "1234", 20001, "이마부");
+            memberService.create(11, 102, 1002, "user2", "1234", 30001, "박영대");
+            memberService.create(12, 102, 1002, "user3", "1234", 30002, "홍길동");
 
             // 올 해 월 별 근무일 일괄 계산
             workingDateService.createThisYear();
@@ -77,9 +77,9 @@ public class NotProd {
                 int randomNum = (int) (Math.random() * 100 + 1);
                 int randomAge = (int) (Math.random() * 100 + 1);
                 if (i % 2 == 0) {
-                    memberService.createRebateTest(101, 1002, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '남', String.valueOf(randomAge));
+                    memberService.createRebateTest(10, 101, 1002, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '남', String.valueOf(randomAge));
                 }
-                memberService.createRebateTest(102, 1001, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '여', String.valueOf(randomAge));
+                memberService.createRebateTest(12, 102, 1001, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '여', String.valueOf(randomAge));
             }
 
             LocalDate currentDate = LocalDate.now();
@@ -88,10 +88,10 @@ public class NotProd {
 
             for (int i = 6; i < 106; i++) {
                 rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month));
-                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-1));
-                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-2));
-                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-3));
-                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-4));
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month - 1));
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month - 2));
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month - 3));
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month - 4));
             }
 
             chattingRoomService.create("채팅방1", memberService.findByUsername("admin").getData());
@@ -102,23 +102,23 @@ public class NotProd {
             chattingRoomService.invite(1L, memberService.findByUsername("user2").getData());
             chattingRoomService.invite(2L, memberService.findByUsername("user1").getData());
 
-            alarmService.save("all",0L,"전체 1번 데이터");
-            alarmService.save("dept",1L,"부서 1번 데이터");
-            alarmService.save("dept",2L,"부서 2번 데이터");
-            alarmService.save("all",0L,"전체 2번 데이터");
-            alarmService.save("all",0L,"전체 3번 데이터");
-            alarmService.save("dept",3L,"부서 3번 데이터");
-            alarmService.save("dept",1L,"부서 4번 데이터");
-            alarmService.save("dept",2L,"부서 5번 데이터");
-            alarmService.save("dept",3L,"부서 6번 데이터");
-            alarmService.save("member",1L,"회원 1번 데이터");
-            alarmService.save("member",2L,"회원 2번 데이터");
-            alarmService.save("all",0L,"전체 4번 데이터");
-            alarmService.save("member",3L,"회원 3번 데이터");
-            alarmService.save("member",1L,"회원 4번 데이터");
-            alarmService.save("member",2L,"회원 5번 데이터");
-            alarmService.save("member",3L,"회원 6번 데이터");
-            alarmService.save("all",0L,"전체 5번 데이터");
+            alarmService.save("all", 0L, "전체 1번 데이터");
+            alarmService.save("dept", 1L, "부서 1번 데이터");
+            alarmService.save("dept", 2L, "부서 2번 데이터");
+            alarmService.save("all", 0L, "전체 2번 데이터");
+            alarmService.save("all", 0L, "전체 3번 데이터");
+            alarmService.save("dept", 3L, "부서 3번 데이터");
+            alarmService.save("dept", 1L, "부서 4번 데이터");
+            alarmService.save("dept", 2L, "부서 5번 데이터");
+            alarmService.save("dept", 3L, "부서 6번 데이터");
+            alarmService.save("member", 1L, "회원 1번 데이터");
+            alarmService.save("member", 2L, "회원 2번 데이터");
+            alarmService.save("all", 0L, "전체 4번 데이터");
+            alarmService.save("member", 3L, "회원 3번 데이터");
+            alarmService.save("member", 1L, "회원 4번 데이터");
+            alarmService.save("member", 2L, "회원 5번 데이터");
+            alarmService.save("member", 3L, "회원 6번 데이터");
+            alarmService.save("all", 0L, "전체 5번 데이터");
 
 
             // 이미지 저장하는 외부 경로 폴더 생성 로직 필요 시 추가
@@ -145,7 +145,6 @@ public class NotProd {
             // 결재 타입 생성
 
             confirmFormTypeService.create("휴가 신청", "휴가를 신청합니다.");
-
 
 
             // 결재 상태 생성

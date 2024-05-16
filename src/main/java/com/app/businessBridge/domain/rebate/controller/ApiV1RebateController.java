@@ -39,7 +39,7 @@ public class ApiV1RebateController {
 
         Member member = rq.getMember();
 
-        if (member.getGrade().getCode() != 1 || !member.getGrade().getName().equals("슈퍼관리자")) {
+        if (member.getGrade().getCode() != 1000 || !member.getGrade().getName().equals("슈퍼관리자")) {
             return RsData.of(
                     RsCode.F_02,
                     "접근 권한이 없습니다.",
@@ -73,7 +73,7 @@ public class ApiV1RebateController {
 
         Member member = rq.getMember();
 
-        if (member.getGrade().getCode() != 1 || !member.getGrade().getName().equals("슈퍼관리자")) {
+        if (member.getGrade().getCode() != 1000 || !member.getGrade().getName().equals("슈퍼관리자")) {
             return RsData.of(
                     RsCode.F_02,
                     "접근 권한이 없습니다.",
@@ -127,7 +127,7 @@ public class ApiV1RebateController {
         Member member = rq.getMember();
 
         // 자신의 급여명세서 목록만 볼 수 있거나 관리자 일때만 볼 수 있도록
-        if (!member.getId().equals(this.rebateService.findById(id).getData().getMember().getId()) && (member.getGrade().getCode() != 1 || !member.getGrade().getName().equals("슈퍼관리자"))) {
+        if (!member.getId().equals(this.rebateService.findById(id).getData().getMember().getId()) && (member.getGrade().getCode() != 1000 || !member.getGrade().getName().equals("슈퍼관리자"))) {
             return RsData.of(
                     RsCode.F_02,
                     "접근 권한이 없습니다.",

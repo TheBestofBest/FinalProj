@@ -1,6 +1,5 @@
 package com.app.businessBridge.domain.member.controller;
 
-import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
@@ -11,7 +10,6 @@ import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.request.Request;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Parameter;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,8 +32,8 @@ public class ApiV1MemberController {
         }
 
         RsData rsData = this.memberService.create(createRequest.getDivisionCode(), createRequest.getDepartmentCode(), createRequest.getGradeCode(),
-                createRequest.getUsername(), createRequest.getPassword(), createRequest.getEmail(), createRequest.getMemberNumber(), createRequest.getName()
-                );
+                createRequest.getUsername(), createRequest.getPassword(), createRequest.getMemberNumber(), createRequest.getName()
+        );
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg());
     }
@@ -78,9 +76,9 @@ public class ApiV1MemberController {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
         RsData<Member> rsData = this.memberService.update(updateRequest.getId(), updateRequest.getDivisionCode(), updateRequest.getDepartmentCode(), updateRequest.getGradeCode(),
-                updateRequest.getUsername(),updateRequest.getPassword(), updateRequest.getEmail(), updateRequest.getMemberNumber(),
-                updateRequest.getName(),updateRequest.getAssignedTask(),updateRequest.getExtensionNumber(),
-                updateRequest.getPhoneNumber(),updateRequest.getStatusMessage(),updateRequest.getSex(),
+                updateRequest.getUsername(), updateRequest.getPassword(), updateRequest.getEmail(), updateRequest.getMemberNumber(),
+                updateRequest.getName(), updateRequest.getAssignedTask(), updateRequest.getExtensionNumber(),
+                updateRequest.getPhoneNumber(), updateRequest.getStatusMessage(), updateRequest.getSex(),
                 updateRequest.getAge());
 
         if (rsData.getData() == null) {

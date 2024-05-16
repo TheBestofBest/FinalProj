@@ -1,14 +1,11 @@
 package com.app.businessBridge.domain.member.Service;
 
-import ch.qos.logback.core.spi.ConfigurationEvent;
-import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.division.entity.Division;
 import com.app.businessBridge.domain.division.repository.DivisionRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.grade.repository.GradeRepository;
-import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
 import com.app.businessBridge.domain.meetingRoom.service.MeetingRoomService;
 import com.app.businessBridge.domain.member.entity.Member;
@@ -45,7 +42,7 @@ public class MemberService {
 
     // 회원 생성
     public RsData create(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
-                         String password, String email, Integer memberNumber, String name) {
+                         String password, Integer memberNumber, String name) {
         Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
@@ -64,7 +61,6 @@ public class MemberService {
                 .memberNumber(memberNumber)
                 .name(name)
                 .password(passwordEncoder.encode(password))
-                .email(email)
                 .build();
 
         this.memberRepository.save(member);
@@ -227,10 +223,11 @@ public class MemberService {
     }
 
     // 정산, 통계 테스트용 회원 생성 로직
-    public RsData createRebateTest(Integer departmentCode, Integer gradeCode, String username,
+    public RsData createRebateTest(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
                                    Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
+        Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
 
         if (findByUsername(username).getData() != null) {
             return RsData.of(RsCode.F_06, "중복된 아이디가 존재합니다.");
@@ -239,6 +236,7 @@ public class MemberService {
         }
 
         Member member = Member.builder()
+                .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
