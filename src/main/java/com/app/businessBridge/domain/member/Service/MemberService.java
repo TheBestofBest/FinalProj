@@ -212,7 +212,7 @@ public class MemberService {
 
     // 정산, 통계 테스트용 회원 생성 로직
     public RsData createRebateTest(Integer departmentCode, Integer gradeCode, String username,
-                         Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
+                                   Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
@@ -308,7 +308,7 @@ public class MemberService {
                 .meetingRoom(null)
                 .build();
         memberRepository.save(exitMember);
-        List<Member> members = this.getApprovedMembersByMeetingRoom(roomId).getData();
+        List<Member> members = this.getApprovedMembersByMeetingRoom(roomId).getData() == null ? null : this.getApprovedMembersByMeetingRoom(roomId).getData();
         meetingRoomService.updateMembers(roomId, members);
         return RsData.of(RsCode.S_01,
                 "나가기 완료", members);

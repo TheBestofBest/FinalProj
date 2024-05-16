@@ -18,34 +18,36 @@ public class MeetingWebSocketController {
     private final SimpMessagingTemplate messagingTemplate;
 
     //offer 정보를 주고 받기 위한 websocket
-    @MessageMapping("/peer/offer/{roomId}")
-    @SendTo("/topic/peer/offer/{roomId}")
-    public String handleOffer(@Payload String offer, @DestinationVariable("roomId") String roomId) {
-        log.info("[OFFER] Room ID: {}, Offer: {}", roomId, offer);
+    @MessageMapping("/peer/offer/{key}/{roomId}")
+    @SendTo("/topic/peer/offer/{key}/{roomId}")
+    public String handleOffer(@Payload String offer, @DestinationVariable(value = "roomId") String roomId,
+                              @DestinationVariable(value = "key") String key) {
+        log.info("[OFFER] Room ID: {}, key:{}, Offer: {}", roomId, key, offer);
         return offer;
     }
 
     //iceCandidate 정보를 주고 받기 위한 webSocket
-    @MessageMapping("/peer/iceCandidate/{roomId}")
-    @SendTo("/topic/peer/iceCandidate/{roomId}")
-    public String handleIceCandidate(@Payload String candidate, @DestinationVariable("roomId") String roomId) {
-        log.info("[ICE CANDIDATE] Room ID: {}, Candidate: {}", roomId, candidate);
+    @MessageMapping("/peer/iceCandidate/{key}/{roomId}")
+    @SendTo("/topic/peer/iceCandidate/{key}/{roomId}")
+    public String handleIceCandidate(@Payload String candidate, @DestinationVariable(value = "roomId") String roomId,
+                                     @DestinationVariable(value = "key") String key) {
+        log.info("[ICE CANDIDATE] Room ID: {}, key:{}, Candidate: {}", roomId, key, candidate);
         return candidate;
     }
 
     //answer 정보를 주고 받기 위한 webSocket
-    //camKey : 각 요청하는 캠의 key , roomId : 룸 아이디
-    @MessageMapping("/peer/answer/{roomId}")
-    @SendTo("/topic/peer/answer/{roomId}")
-    public String handleAnswer(@Payload String answer, @DestinationVariable("roomId") String roomId) {
-        log.info("[ANSWER] Room ID: {}, Answer: {}", roomId, answer);
+    //key : 각 요청하는 캠의 key , roomId : 룸 아이디
+    @MessageMapping("/peer/answer/{key}/{roomId}")
+    @SendTo("/topic/peer/answer/{key}/{roomId}")
+    public String handleAnswer(@Payload String answer, @DestinationVariable(value = "roomId") String roomId,
+                               @DestinationVariable(value = "key") String key) {
+        log.info("[ANSWER] Room ID: {}, key:{}, Answer: {}", roomId, key, answer);
         return answer;
     }
 
     @MessageMapping("/peer/disconnect/{roomId}")
     @SendTo("/topic/peer/disconnect/{roomId}")
-    public String handleDisconnect(@Payload String message, @DestinationVariable("roomId") String roomId) {
-        // Perform any additional cleanup or notification
+    public String handleDisconnect(@Payload String message, @DestinationVariable(value = "roomId") String roomId) {
         return message;
     }
 

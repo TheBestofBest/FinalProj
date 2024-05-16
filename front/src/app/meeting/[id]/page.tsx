@@ -34,9 +34,11 @@ const Meeting = () => {
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
     const pcListRef = useRef<Map<string, RTCPeerConnection>>(new Map()); // useRef로 관리
-    const [pendingCandidates, setPendingCandidates] = useState<Map<string, RTCIceCandidate[]>>(new Map());
+    // const pendingCandidates = useRef<Map<string, RTCIceCandidate[]>>(new Map());
+    const otherKeyListRef = useRef<string[]>([]);
     const [otherKeyList, setOtherKeyList] = useState<string[]>([]);
     const remoteStreamRef = useRef<HTMLDivElement>(null);
+    const isOfferer = useRef(false); // 역할 결정
 
     useEffect(() => {
         if (memberData?.meetingState.includes("받음")) {
@@ -49,17 +51,20 @@ const Meeting = () => {
             reconnectDelay: 10000000,
         });
         stomp.onConnect = () => {
+            console.log("myKey:", myKey)
             // 구독 활성화
             stomp.subscribe(
-                `/topic/peer/iceCandidate/${params.id}`,
+                `/topic/peer/iceCandidate/${myKey.current}/${params.id}`,
                 (iceCandidate) => handleIceCandidate(JSON.parse(iceCandidate.body))
             );
             stomp.subscribe(
-                `/topic/peer/offer/${params.id}`,
-                (offer) => handleOffer(JSON.parse(offer.body))
+                `/topic/peer/offer/${myKey.current}/${params.id}`,
+                (offer) => {
+                    console.log("offer를 받아줘...", offer.body)
+                    handleOffer(JSON.parse(offer.body))}
             );
             stomp.subscribe(
-                `/topic/peer/answer/${params.id}`,
+                `/topic/peer/answer/${myKey.current}/${params.id}`,
                 (answer) => handleAnswer(JSON.parse(answer.body))
             );
             stomp.subscribe(`/topic/call/key`,
@@ -71,10 +76,12 @@ const Meeting = () => {
                 });
             stomp.subscribe(`/topic/send/key`,
                 (msg) => {
-                    console.log("key받음 : ", msg);
+                    console.log("otherKey받음 : ", msg.body);
                     const otherKey = JSON.parse(msg.body);
-                    if (myKey.current !== otherKey && !otherKeyList.includes(otherKey)) {
-                        setOtherKeyList((prevKeys) => [...prevKeys, otherKey]);
+                    if (myKey.current !== otherKey && !otherKeyListRef.current.includes(otherKey)) {
+                        otherKeyListRef.current = [...otherKeyListRef.current, otherKey];
+                        setOtherKeyList([...otherKeyListRef.current]); // 상태 동기화
+                        console.log("keyList : ", otherKeyListRef.current);
                     }
                 });
             // 연결된 상태에서 메시지 전송
@@ -97,14 +104,20 @@ const Meeting = () => {
 
     useEffect(() => {
         if (isConnected) {
-            otherKeyList.forEach((key) => {
-                if (!pcListRef.current.has(key)) {
-                    const pc = createPeerConnection(key);
-                    sendOffer(pc, key);
-                }
-            });
+            if (isOfferer.current) {
+                otherKeyListRef.current.forEach((key) => {
+                    if (!pcListRef.current.has(key)) {
+                        const pc = createPeerConnection(key);
+                        sendOffer(pc, key);
+                    }
+                });
+            }
         }
     }, [otherKeyList, isConnected]);
+
+    useEffect(() => {
+        setOtherKeyList(otherKeyListRef.current);
+    }, [otherKeyListRef.current]);
 
     const handleStartStream = () => {
         if (stompClient?.connected) {
@@ -113,55 +126,55 @@ const Meeting = () => {
                 destination: `/app/call/key`,
                 body: "key 발송",
             });
+            if (isOfferer.current) {
+                otherKeyList.forEach((key) => {
+                    if (!pcListRef.current.has(key)) {
+                        console.log("offerer 첫 수행")
+                        const pc = createPeerConnection(key);
+                        sendOffer(pc, key);
+                    }
+                });
+            }
         } else {
             console.error("STOMP client is not connected");
         }
     };
 
-    const handleIceCandidate = ({ key, body: candidate }: IceCandidateMessage) => {
-        if (key === myKey.current) {
-            return;
-        }
-        if (candidate) {
+    const handleIceCandidate = ({ key, body }: IceCandidateMessage) => {
+        if (body) {
             console.log("ICE Candidate received : [pcListMap]", pcListRef.current);
             const pc = pcListRef.current.get(key);
             if (pc) {
-                pc.addIceCandidate(new RTCIceCandidate(candidate))
+                pc.addIceCandidate(new RTCIceCandidate({ candidate: body.candidate, sdpMLineIndex: body.sdpMLineIndex, sdpMid: body.sdpMid }))
                     .then(() => console.log("Added ICE Candidate"))
                     .catch((error) => console.error("Error adding ICE Candidate:", error));
             } else {
                 console.error("PeerConnection not found for key:", key);
-                setPendingCandidates((prev) => {
-                    const candidates = prev.get(key) || [];
-                    return new Map(prev).set(key, [...candidates, candidate]);
-                });
+                // pendingCandidates.current.set(key, [
+                //     ...(pendingCandidates.current.get(key) || []),
+                //     body
+                // ]);
             }
         }
     };
 
-    const handleOffer = ({ key, body: offer }: OfferAnswerMessage) => {
-        if (key === myKey.current) {
-            return;
-        }
+    const handleOffer = ({ key, body }: OfferAnswerMessage) => {
         console.log("Offer received from key:", key);
         const pc = createPeerConnection(key);
-        pc.setRemoteDescription(new RTCSessionDescription(offer))
+        pc.setRemoteDescription(new RTCSessionDescription({ type: body.type, sdp: body.sdp }))
             .then(() => {
-                console.log("Offer set as remote description");
+                console.log("Offer set as remote description", body.sdp);
                 sendAnswer(pc, key);
             })
             .catch((error) => console.error("Error handling offer:", error));
     };
 
-    const handleAnswer = ({ key, body: answer }: OfferAnswerMessage) => {
-        if (key === myKey.current) {
-            return;
-        }
+    const handleAnswer = ({ key, body }: OfferAnswerMessage) => {
         console.log("handleAnswer [pcMap] :", pcListRef.current)
         const pc = pcListRef.current.get(key);
         if (pc) {
-            pc.setRemoteDescription(new RTCSessionDescription(answer))
-                .then(() => console.log("Answer received and set as remote description"))
+            pc.setRemoteDescription(new RTCSessionDescription(body))
+                .then(() => console.log("Answer received and set as remote description", body.sdp))
                 .catch((error) => console.error("Error handling answer:", error));
         } else {
             console.error("PeerConnection not found for key:", key);
@@ -171,34 +184,60 @@ const Meeting = () => {
     //peer connection 생성
     const createPeerConnection = (key: string): RTCPeerConnection => {
         console.log("Creating PeerConnection for key:", key);
+        // STUN 서버
+        // const configuration = {
+        //     iceServers: [
+        //         { urls: 'stun:stun.l.google.com:19302' },
+        //         // 필요한 경우 TURN 서버 추가
+        //     ]
+        // };
         const peerConnection = new RTCPeerConnection();
+        console.log("PeerConnection created:", peerConnection);
+    
         peerConnection.addEventListener("icecandidate", (event) => onIceCandidate(event, key));
+        console.log("Added ICE candidate event listener");
+    
         peerConnection.addEventListener("track", (event) => onTrack(event, key));
+        console.log("Added track event listener");
+    
+        peerConnection.addEventListener("iceconnectionstatechange", () => {
+            console.log(`ICE connection state for ${key}:`, peerConnection.iceConnectionState);
+        });
+        console.log("Added ICE connection state change event listener");
+    
         if (localStreamRef.current) {
-            localStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => peerConnection.addTrack(track, localStreamRef.current!));
-        }
-        pcListRef.current.set(key, peerConnection);
-
-        // Pending candidate 처리
-        if (pendingCandidates.has(key)) {
-            const candidates = pendingCandidates.get(key) || [];
-            candidates.forEach((candidate) => {
-                peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
-                    .then(() => console.log("Added ICE Candidate from pending"))
-                    .catch((error) => console.error("Error adding pending ICE Candidate:", error));
+            localStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => {
+                console.log(`Adding track: ${track.kind}`);
+                peerConnection.addTrack(track, localStreamRef.current!);
             });
-            pendingCandidates.delete(key);
         }
+        console.log("Added local tracks to PeerConnection");
+    
+        pcListRef.current.set(key, peerConnection);
+        console.log("Added PeerConnection to pcListRef");
+    
+        // // Pending candidate 처리
+        // if (pendingCandidates.current.has(key)) {
+        //     const candidates = pendingCandidates.current.get(key) || [];
+        //     candidates.forEach((candidate) => {
+        //         peerConnection.addIceCandidate(new RTCIceCandidate(candidate))
+        //             .then(() => console.log("Added ICE Candidate from pending"))
+        //             .catch((error) => console.error("Error adding pending ICE Candidate:", error));
+        //     });
+        //     pendingCandidates.current.delete(key);
+        // }
+        // console.log("Processed pending ICE candidates");
+    
         console.log("pcListRef size:", pcListRef.current.size); // 디버깅 로그 추가
         return peerConnection;
-    }
+    };
 
     //IceCandidate Event
-    const onIceCandidate = (e: RTCPeerConnectionIceEvent, key: string) => {
+    const onIceCandidate = (e: RTCPeerConnectionIceEvent, otherKey: string) => {
         if (e.candidate) {
-            console.log("ICE Candidate event for key:", key);
+            console.log("ICE Candidate event for key:", otherKey);
             stompClient?.publish({
-                destination: `/app/peer/iceCandidate/${params.id}`,
+                destination: `/app/peer/iceCandidate/${otherKey}/${params.id}`,
                 body: JSON.stringify({ key: myKey.current, body: e.candidate })
             });
         }
@@ -220,31 +259,32 @@ const Meeting = () => {
         }
     };
 
-    const sendOffer = (peerConnection: RTCPeerConnection, key: string) => {
+    const sendOffer = (peerConnection: RTCPeerConnection, otherKey: string) => {
         peerConnection.createOffer()
             .then((offer) => {
                 return peerConnection.setLocalDescription(offer)
                     .then(() => {
+                        console.log('Sending offer to key:', otherKey, 'with offer:', offer);
                         stompClient?.publish({
-                            destination: `/app/peer/offer/${params.id}`,
+                            destination: `/app/peer/offer/${otherKey}/${params.id}`,
                             body: JSON.stringify({ key: myKey.current, body: offer })
                         });
-                        console.log('Offer sent to key:', key);
+                        console.log('Offer sent to key:', otherKey);
                     });
             })
             .catch((error) => console.error('Error creating offer:', error));
     };
 
-    const sendAnswer = (peerConnection: RTCPeerConnection, key: string) => {
+    const sendAnswer = (peerConnection: RTCPeerConnection, otherKey: string) => {
         peerConnection.createAnswer()
             .then((answer) => {
                 return peerConnection.setLocalDescription(answer)
                     .then(() => {
                         stompClient?.publish({
-                            destination: `/app/peer/answer/${params.id}`,
+                            destination: `/app/peer/answer/${otherKey}/${params.id}`,
                             body: JSON.stringify({ key: myKey.current, body: answer })
                         });
-                        console.log('Answer sent to key:', key);
+                        console.log('Answer sent to key:', otherKey);
                     })
                     .catch((error) => console.error('Error send answer:', error));
             })
@@ -261,6 +301,16 @@ const Meeting = () => {
                 localVideoRef.current.srcObject = stream;
             }
             console.log("캠 연결 성공 localStream:", stream);
+            // 역할 결정 로직
+            if (otherKeyListRef.current.length === 0) {
+                // 첫 번째 피어는 offer를 보냅니다.
+                isOfferer.current = true;
+                console.log("This peer will send the offer.");
+            } else {
+                // 나머지 피어는 answer를 기다립니다.
+                isOfferer.current = false;
+                console.log("This peer will wait for the offer.");
+            }
         } catch (err) {
             console.error("캠 연결 에러:", err);
         }
@@ -293,6 +343,10 @@ const Meeting = () => {
         if (result) {
             api.patch(`/api/v1/meetings/${params.id}/exit`)
                 .then(res => {
+                    fetchMeetingRoom();
+                    if (meetingRoom?.members == null) {
+                        deleteMeetingRoom();
+                    }
                     api.get(`/api/v1/members/me`)
                         .then(res => {
                             if (!res.data.isSuccess) {
@@ -302,7 +356,24 @@ const Meeting = () => {
                         });
                     alert("회의에서 퇴장하였습니다.");
                     router.push("/chatting");
+                }).catch(err => {
+                    console.error("퇴장 error:", err)
                 })
+        }
+    }
+
+    const fetchMeetingRoom = () => {
+        api.get(`/api/v1/meetings/${params.id}`)
+            .then(response => {
+                setMeetingRoom(response.data.data.meetingRoomDto);
+            })
+    }
+
+    const deleteMeetingRoom = async () => {
+        const response = await api.delete(`/api/v1/meetings/${params.id}`);
+        if (response.status == 200) {
+        } else {
+            alert('나가기에 실패했습니다.');
         }
     }
 
