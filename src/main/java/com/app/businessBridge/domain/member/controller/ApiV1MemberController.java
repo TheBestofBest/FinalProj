@@ -33,7 +33,7 @@ public class ApiV1MemberController {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
 
-        RsData<Member> rsData = this.memberService.create(createRequest.getDepartmentCode(), createRequest.getGradeCode(),
+        RsData<Member> rsData = this.memberService.create(createRequest.getDivisionCode(),createRequest.getDepartmentCode(), createRequest.getGradeCode(),
                 createRequest.getUsername(), createRequest.getMemberNumber(), createRequest.getName(),
                 createRequest.getPassword(), createRequest.getEmail());
 
@@ -58,16 +58,8 @@ public class ApiV1MemberController {
     }
 
     @PostMapping("/logout")
-    public RsData logout() {
-        try{
-            rq.removeCrossDomainCookie("accessToken");
-            rq.removeCrossDomainCookie("refreshToken");
-        }catch (Exception e){
-            return RsData.of(RsCode.F_07,"로그아웃에 실패했습니다.");
-        }
-
-
-        return RsData.of(RsCode.S_07, "로그아웃되었습니다.");
+    public RsData<Void> logout() {
+        return this.memberService.logout();
     }
 
     // 멤버 단건 조회
@@ -85,7 +77,7 @@ public class ApiV1MemberController {
         if (bindingResult.hasErrors()) {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
-        RsData<Member> rsData = this.memberService.update(updateRequest.getId(), updateRequest.getDepartmentCode(), updateRequest.getGradeCode(),
+        RsData<Member> rsData = this.memberService.update(updateRequest.getId(),updateRequest.getDivisionCode(), updateRequest.getDepartmentCode(), updateRequest.getGradeCode(),
                 updateRequest.getUsername(), updateRequest.getMemberNumber(), updateRequest.getName(),
                 updateRequest.getPassword(), updateRequest.getEmail());
 
