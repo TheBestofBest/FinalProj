@@ -69,7 +69,7 @@ public class ApiV1RebateController {
     }
 
     @PostMapping("/search")
-    public RsData<RebatesResponse> getRebatesByYearAndMonth(@RequestBody RbSearchRequest rbSearchRequest) {
+    public RsData<RebatesResponse> getRebatesBySearch(@RequestBody RbSearchRequest rbSearchRequest) {
 
         Member member = rq.getMember();
 
@@ -88,10 +88,19 @@ public class ApiV1RebateController {
 
         if(month.startsWith("0")) month = month.replace("0","");
 
-        if(searchedMember==null) {
+        if(searchedMember==null
+                && rbSearchRequest.getDept().isEmpty()
+                && !rbSearchRequest.getYear().isEmpty()
+                && !rbSearchRequest.getMonth().isEmpty()) {
             rebateList = this.rebateService.findByYearAndMonth(rbSearchRequest.getYear(), month);
-        } else if (rbSearchRequest.getMonth().isEmpty()) {
+        } else if (rbSearchRequest.getMonth().isEmpty()
+                && rbSearchRequest.getDept().isEmpty()
+                && !rbSearchRequest.getYear().isEmpty()
+                && searchedMember!=null) {
             rebateList = this.rebateService.findByYearAndMember(rbSearchRequest.getYear(), searchedMember.getId());
+        } else if (!rbSearchRequest.getDept().isEmpty()
+                && !rbSearchRequest.getMonth().isEmpty()) {
+            rebateList = this.rebateService.findByDeptAndMonth(rbSearchRequest.getDept(), rbSearchRequest.getMonth());
         } else {
             rebateList = this.rebateService.findBySearch(rbSearchRequest.getYear(), month, searchedMember.getId());
         }

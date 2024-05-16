@@ -7,4 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StatisticsDto {
 
+    private Long totalPeople;
+
+    private Long money;
+
 }
