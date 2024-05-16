@@ -19,7 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
 
     @Query("SELECT m FROM Member m WHERE m.meetingRoom.id = :roomId AND m.meetingState = true")
-    List<Member> findByApprovedMeetingRoomId(Long roomId);
+    List<Member> findByApprovedMeetingRoomId(@Param("roomId") Long roomId);
 
     Optional<Member> findByName(String memberName);
 

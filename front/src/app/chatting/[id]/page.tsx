@@ -37,12 +37,18 @@ const Id = () => {
             .then(response => {
                 setChattingRoom(response.data.data.chattingRoomDto);
             })
+            .catch(err => {
+                console.error("채팅방 없음");
+            })
     }
 
     const fetchChatLogs = () => {
         api.get(`/api/v1/logs/${params.id}`)
             .then(response => {
                 setChattingLogs(response.data.data.chatLogDtoList);
+            })
+            .catch(err => {
+                console.error("로그 없음");
             })
     }
 
@@ -90,7 +96,7 @@ const Id = () => {
         });
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setMessage({ ...message, [name]: value });
         console.log({ ...message, [name]: value });
@@ -105,9 +111,34 @@ const Id = () => {
     //enter입력
     const handleEnterPress = (e: any) => {
         if (e.keyCode == 13) {
-            sendMessage();
+            if (e.ctrlKey) {
+                insertNewLine(e.currentTarget);
+            } else {
+                sendMessage();
+            }
         }
     }
+    const insertNewLine = (inputElement: HTMLTextAreaElement) => {
+        const start = inputElement.selectionStart;
+        const end = inputElement.selectionEnd;
+
+        if (start !== null && end !== null) {
+            const value = message.content ;
+            const newValue = value.substring(0, start) + '\n' + value.substring(end);
+            setMessage({
+                roomId: parseInt(params.id),
+                content: newValue,
+                username: memberData?.username,
+                name: memberData?.name,
+                isCheck: message.isCheck ? -1 : undefined
+            });
+
+            // Move the cursor to the position after the newline
+            setTimeout(() => {
+                inputElement.selectionStart = inputElement.selectionEnd = start + 1;
+            }, 0);
+        }
+    };
 
     return (
         <>
@@ -149,9 +180,9 @@ const Id = () => {
             </main>
             <footer className="bg-gray-300 py-4 px-6 ">
                 <div className="flex">
-                    <input type="text" placeholder="Type your message..." className="flex-1 rounded-l-lg p-2 focus:outline-none"
+                    <textarea  placeholder="Type your message..." className="flex-1 h-10 rounded-l-lg p-2 resize-none focus:outline-none"
                         name="content" value={message.content} onChange={handleChange} onKeyDown={handleEnterPress} />
-                    <button className="bg-blue-700 text-white px-4 rounded-r-lg" type="button" onClick={sendMessage}>Send</button>
+                    <button className="bg-blue-700 text-white px-4 rounded-r-lg " type="button" onClick={sendMessage}>Send</button>
                 </div>
             </footer>
         </>
