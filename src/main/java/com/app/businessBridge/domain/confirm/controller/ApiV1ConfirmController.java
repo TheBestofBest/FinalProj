@@ -190,4 +190,6 @@ public class ApiV1ConfirmController {
                 new ConfirmResponse.delete(id)
         );
     }
+
+    // 승인 카운터 증가 api
 }
