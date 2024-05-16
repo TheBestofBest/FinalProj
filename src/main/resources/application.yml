@@ -21,3 +21,5 @@ logging:
     com.example.sksb: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
     org.hibernate.orm.jdbc.extract: TRACE
+
+

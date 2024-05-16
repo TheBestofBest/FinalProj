@@ -24,6 +24,7 @@
     "@tinymce/tinymce-react": "^5.0.1",
     "apexcharts": "^3.45.2",
     "axios": "^1.6.8",
+    "dotenv": "^16.4.5",
     "flatpickr": "^4.6.13",
     "fullcalendar": "^6.1.11",
     "jsvectormap": "^1.5.3",
