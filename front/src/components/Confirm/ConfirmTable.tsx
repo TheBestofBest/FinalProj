@@ -27,7 +27,7 @@ const ConfirmTable: React.FC<ConfirmTableProps> = (clickModal) => {
   }, [clickModal]);
 
   return (
-    <div className="rounded-sm border border-stroke bg-white  pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="min-h-[590px] rounded-sm border border-stroke  bg-white pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         결재함
       </h4>
@@ -46,7 +46,7 @@ const ConfirmTable: React.FC<ConfirmTableProps> = (clickModal) => {
                 //[] onClick 으로 상세 페이지로 전송하는 이벤트 만들기
                 <tr
                   key={confirm.id}
-                  className="hover:cursor-pointer hover:bg-blue-200"
+                  className="border-t border-[#eee] hover:cursor-pointer hover:bg-blue-200"
                   onClick={() => handleRouter(confirm.id)}
                 >
                   <td className="border-b border-[#eee]  py-5 dark:border-strokedark ">
