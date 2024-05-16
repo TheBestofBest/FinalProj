@@ -126,9 +126,9 @@ public class NotProd {
             }
 
             // 결재 타입 생성
-            if(confirmFormTypeService.getConfirmFormType(1L).isEmpty()){
-                confirmFormTypeService.create("휴가 신청", "휴가를 신청합니다.");
-            }
+
+            confirmFormTypeService.create("휴가 신청", "휴가를 신청합니다.");
+
 
 
             // 결재 상태 생성
