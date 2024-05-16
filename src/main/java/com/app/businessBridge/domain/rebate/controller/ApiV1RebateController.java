@@ -162,6 +162,11 @@ public class ApiV1RebateController {
         );
     }
 
+    @PatchMapping("/{id}")
+    public void modifyRebate() {
+
+    }
+
     @PostMapping("")
     public RsData<RebateResponse> createRebate(@Valid @RequestBody RebateRequest rebateRequest) throws IOException {
         Member member = rq.getMember();
