@@ -2,12 +2,50 @@
 
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-import React from 'react';
+import React, { useState } from 'react';
 import dotenv from 'dotenv'
 import TinymceRead from "@/components/TinymceEditor/TinymceRead";
+import { useRouter } from "next/router";
+import { useQueryClient } from "@tanstack/react-query";
 dotenv.config();
 
 const SendMail = () => {
+    const router = useRouter();
+    const queryClient = useQueryClient();
+    const Memberdata: any = queryClient.getQueryData(["member"]);
+    const [sendMail, setSendMail] = useState({
+        senderEmail: "",
+        receiverEmail: "",
+        referenceEmail: "",
+        title: "",
+        content: "",
+        sendDate: "",
+        receiveDate: ""
+    });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const response = await fetch("http://localhost:8090/api/v1/mails", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(sendMail)
+        })
+
+        if (response.ok) {
+            alert("메일 발송 완료")
+            router.push("/project")
+
+        } else {
+            alert("메일 발송 실패")
+        }
+    }
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSendMail({ ...sendMail, [name]: value })
+    }
     return (
         <DefaultLayout>
             <Breadcrumb pageName="SendMail" />
@@ -26,7 +64,9 @@ const SendMail = () => {
                                     받는 사람 <span className="text-meta-1">*</span>
                                 </label>
                                 <input
+                                    onChange={handleChange}
                                     type="email"
+                                    name="receiverEmail"
                                     placeholder="Enter your email address"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -36,7 +76,9 @@ const SendMail = () => {
                                     참조
                                 </label>
                                 <input
+                                    onChange={handleChange}
                                     type="text"
+                                    name="referenceEmail"
                                     placeholder="Carbon Copy"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -46,7 +88,10 @@ const SendMail = () => {
                                     제목
                                 </label>
                                 <input
+                                    onChange={handleChange}
                                     type="text"
+                                    name="title"
+                                    id="title"
                                     placeholder="Select subject"
                                     className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
@@ -67,7 +112,7 @@ const SendMail = () => {
                             </div>
 
                             <button className="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                                Send Message
+                                메일 보내기
                             </button>
                         </div>
 

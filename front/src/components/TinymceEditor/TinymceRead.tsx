@@ -9,9 +9,10 @@ function TinymceRead() {
     <>
       <Editor
         initialValue="<p>메일 내용.</p>"
-        apiKey='q03zh6g2avu55q4mioaksymo3tfr10issxzvkcu4rz6szqrx'
+        apiKey={API_KEY}
         init={{
-            readonly: true
+            readonly: true,
+            disable: true
         }}
       />
     </>

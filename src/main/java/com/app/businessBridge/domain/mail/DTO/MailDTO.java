@@ -33,8 +33,8 @@ public class MailDTO {
         this.sendDate = mail.getSendDate();
         this.receiveDate = mail.getReceiveDate();
         //보내는 사람
-        this.senderName = mail.getSender().getName();
-        this.senderEmail = mail.getSender().getEmail();
+        this.senderName = mail.getSender();
+        this.senderEmail = mail.getSender();
         // 받는 사람
         this.receiverName = mail.getReceiver().getName();
         this.receiverEmail = mail.getReceiver().getEmail();

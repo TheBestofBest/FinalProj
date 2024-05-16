@@ -7,6 +7,7 @@ import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.member.repository.MemberRepository;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
+import com.app.businessBridge.global.request.Request;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ import java.util.Optional;
 public class MailService {
     private final MailRepository mailRepository;
     private final MemberRepository memberRepository;
+    private final Request request;
+
 
     public List<Mail> getList() {
         return this.mailRepository.findAll();
@@ -60,15 +63,14 @@ public class MailService {
 
     @Transactional
     public RsData create(MailRequest.CreateRequest createRequest) {
-        Optional<Member> senderOptional = this.memberRepository.findByEmailAndName(createRequest.getSenderEmail(), createRequest.getSenderName());
+//        Optional<Member> senderOptional = this.memberRepository.findByEmailAndName(createRequest.getSenderEmail(), createRequest.getSenderName());
         Optional<Member> receiverOptional = this.memberRepository.findByEmailAndName(createRequest.getReceiverEmail(), createRequest.getReceiverName());
         Optional<Member> referenceOptional = this.memberRepository.findByEmailAndName(createRequest.getReferenceEmail(), createRequest.getReferenceName());
+        Member loginedMember = request.getMember();
 
-        // 발신자와 수신자가 존재하는지 확인
-        if (senderOptional.isPresent() && receiverOptional.isPresent()) {
-            // 발신자와 수신자를 가져와서 메일 엔티티 생성
+        if (receiverOptional.isPresent()) {
             Mail.MailBuilder mailBuilder = Mail.builder()
-                    .sender(senderOptional.get())
+                    .sender(loginedMember.getEmail())
                     .receiver(receiverOptional.get())
                     .title(createRequest.getTitle())
                     .content(createRequest.getContent())
@@ -85,7 +87,7 @@ public class MailService {
             Mail savedMail = mailRepository.save(mail);
 
             // 발신자와 수신자에 대한 추가 작업 수행
-            savedMail.getSender().getSentMails().add(savedMail);
+//            savedMail.getSender().getSentMails().add(savedMail);
             savedMail.getReceiver().getReceivedMails().add(savedMail);
 
             // 참조자가 존재하는 경우에만 추가 작업 수행

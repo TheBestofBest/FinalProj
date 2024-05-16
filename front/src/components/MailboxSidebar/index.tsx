@@ -108,7 +108,7 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <Link
                   href="/calendar"
-                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-out hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("calendar") &&
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-out hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("MailboxAll") &&
                     "bg-graydark dark:bg-meta-4"
                     }`}
                 >

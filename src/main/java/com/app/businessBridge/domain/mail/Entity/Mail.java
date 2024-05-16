@@ -22,9 +22,7 @@
     public class Mail extends BaseEntity {
 
         // 보낸 사람
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "sender_id")
-        private Member sender;
+        private String sender;
         // 받은 사람
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "receiver_id")

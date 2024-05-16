@@ -15,12 +15,12 @@ function TinymceEditor() {
     <>
       <Editor
         onInit={(_evt, editor) => editorRef.current = editor}
-        initialValue="<p>메일 내용을 입력하세요.</p>"
-        apiKey='q03zh6g2avu55q4mioaksymo3tfr10issxzvkcu4rz6szqrx'
+        placeholder="<p>메일 내용을 입력하세요.</p>"
+        apiKey={API_KEY}
         init={{
           selector: 'textarea',
           language: 'ko_KR',
-          height: 500,
+          height: 1000,
           image_caption: true,
           menu: {
             file: { title: 'File', items: 'preview | importword exportpdf exportword | print | deleteallconversations' },
