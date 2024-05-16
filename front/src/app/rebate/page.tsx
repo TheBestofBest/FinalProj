@@ -65,7 +65,7 @@ export default function Rebates() {
         }
     };
 
-    const [date, setDate] = useState({ year: "", month: "", userInfo: ""});
+    const [date, setDate] = useState({ year: "", month: "", dept:"", userInfo: ""});
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -106,8 +106,8 @@ export default function Rebates() {
                 <RebateLoader/>
             ) : (
                 <>
-                    <div className="flex">
-                        <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
+                    <div className="flex justify-between py-4">
                             <div>
                                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                                 연도 입력
@@ -134,6 +134,18 @@ export default function Rebates() {
                             </div>
                             <div>
                                 <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                                부서명 입력
+                                </label>
+                                <input
+                                type="text"
+                                name="dept"
+                                onChange={handleChange}
+                                placeholder="ex)영업"
+                                className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                />
+                            </div>
+                            <div>
+                                <label className="mb-3 block text-sm font-medium text-black dark:text-white">
                                 직원 이름 입력
                                 </label>
                                 <input
@@ -144,15 +156,17 @@ export default function Rebates() {
                                 className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                 />
                             </div>
-                            <button
-                            type="submit"
-                            className="flex items-center whitespace-nowrap rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                            >검색</button>
-                        </form>
+                            <div>
+                                <button
+                                type="submit"
+                                className="whitespace-nowrap rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                                >검색</button>
+                            </div>    
                     </div>
+                    </form>
                     <MemberTable rebates={rebates} totalSum={totalSum}/>
-                </>
-            )}
+                    </>
+                )}
         </DefaultLayout>
     );
 }

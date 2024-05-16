@@ -69,7 +69,7 @@ public class ApiV1RebateController {
     }
 
     @PostMapping("/search")
-    public RsData<RebatesResponse> getRebatesByYearAndMonth(@RequestBody RbSearchRequest rbSearchRequest) {
+    public RsData<RebatesResponse> getRebatesBySearch(@RequestBody RbSearchRequest rbSearchRequest) {
 
         Member member = rq.getMember();
 
