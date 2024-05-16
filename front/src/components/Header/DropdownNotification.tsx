@@ -1,12 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import api from "@/util/api";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [notifying, setNotifying] = useState(true);
+  const [notifying, setNotifying] = useState(false);
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
+
+  const getAlarms = async () => {
+    const data = await api.get("/api/v1/alarms/top10").then((res) => {
+      return res.data.data;
+    });
+    return data;
+  };
 
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
@@ -32,6 +41,15 @@ const DropdownNotification = () => {
     document.addEventListener("keydown", keyHandler);
     return () => document.removeEventListener("keydown", keyHandler);
   });
+
+  const { data: alarmsData, isLoading: isAlarmsLoading } = useQuery({
+    queryKey: ["alarms"],
+    queryFn: getAlarms,
+  });
+
+  if (isAlarmsLoading) {
+    return "";
+  }
 
   return (
     <li className="relative">
@@ -81,67 +99,30 @@ const DropdownNotification = () => {
 
         <ul className="flex h-auto flex-col overflow-y-auto">
           <li>
-            <Link
-              className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-              href="#"
-            >
-              <p className="text-sm">
-                <span className="text-black dark:text-white">
-                  Edit your information in a swipe
-                </span>{" "}
-                Sint occaecat cupidatat non proident, sunt in culpa qui officia
-                deserunt mollit anim.
-              </p>
+            {alarmsData &&
+              alarmsData.alarms.map((alarm) => {
+                var category = "";
+                if (alarm.relationName === "all") {
+                  category = "전체";
+                }
+                if (alarm.relationName === "dept") {
+                  category = "부서";
+                }
+                if (alarm.relationName === "member") {
+                  category = "개인";
+                }
 
-              <p className="text-xs">12 May, 2025</p>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-              href="#"
-            >
-              <p className="text-sm">
-                <span className="text-black dark:text-white">
-                  It is a long established fact
-                </span>{" "}
-                that a reader will be distracted by the readable.
-              </p>
+                return (
+                  <div className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4">
+                    <p className="truncate">{category}</p>
+                    <p className="truncate text-sm">{alarm.content}</p>
 
-              <p className="text-xs">24 Feb, 2025</p>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-              href="#"
-            >
-              <p className="text-sm">
-                <span className="text-black dark:text-white">
-                  There are many variations
-                </span>{" "}
-                of passages of Lorem Ipsum available, but the majority have
-                suffered
-              </p>
-
-              <p className="text-xs">04 Jan, 2025</p>
-            </Link>
-          </li>
-          <li>
-            <Link
-              className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-              href="#"
-            >
-              <p className="text-sm">
-                <span className="text-black dark:text-white">
-                  There are many variations
-                </span>{" "}
-                of passages of Lorem Ipsum available, but the majority have
-                suffered
-              </p>
-
-              <p className="text-xs">01 Dec, 2024</p>
-            </Link>
+                    <p className="truncate text-xs">
+                      {alarm.createDate.split("T")[0]}
+                    </p>
+                  </div>
+                );
+              })}
           </li>
         </ul>
       </div>

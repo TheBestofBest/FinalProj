@@ -1,6 +1,7 @@
 package com.app.businessBridge.domain.schedule.controller;
 
 import com.app.businessBridge.domain.Article.Entity.Article;
+import com.app.businessBridge.domain.alarm.service.AlarmService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AlarmWebSocketController {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final AlarmService alarmService;
+
 
     //  전체 구독, 부서 구독, 개인 구독
     @Getter
@@ -48,6 +51,8 @@ public class AlarmWebSocketController {
         receive.setCategory(category);
         receive.setCategoryId(categoryId);
         receive.setMessage(message);
+
+        alarmService.save(category,categoryId,message);
 
         messagingTemplate.convertAndSend("/topic/public/alarm/" + category + "/" + categoryId.toString(), receive);
     }
