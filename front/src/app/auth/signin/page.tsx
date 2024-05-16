@@ -57,10 +57,10 @@ const SignIn: React.FC = () => {
       <div className="h-screen overflow-hidden">
         {/* <Breadcrumb pageName="Sign In" /> */}
 
-        <div className="mx-48 mb-5 mt-44 flex justify-end">
+        <div className="mx-96 mb-5 mt-36 flex justify-end">
           <DarkModeSwitcher />
         </div>
-        <div className="mx-48 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="mx-96 rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="flex flex-wrap items-center">
             <div className="hidden w-full xl:block xl:w-1/2">
               <div className="px-26 py-17.5 text-center">
