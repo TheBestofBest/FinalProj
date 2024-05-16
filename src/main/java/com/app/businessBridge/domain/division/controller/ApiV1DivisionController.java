@@ -46,7 +46,7 @@ public class ApiV1DivisionController {
     @PatchMapping("")
     public RsData<DivisionResponse.PatchedDivision> patch(@Valid @RequestBody DivisionRequest.UpdateRequest updateRequest,
                                                           BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
+            if (bindingResult.hasErrors()) {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
 

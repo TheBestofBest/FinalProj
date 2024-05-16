@@ -5,8 +5,10 @@ import com.app.businessBridge.domain.division.repository.DivisionRepository;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,10 +52,16 @@ public class DivisionService {
         }
 
         // 중복 검사
-        if (this.divisionRepository.findByCode(code).isPresent()) {
-            return RsData.of(RsCode.F_06, "이미 존재하는 소속코드 입니다.");
-        } else if (this.divisionRepository.findByName(name).isPresent()) {
-            return RsData.of(RsCode.F_06, "이미 존재하는 소속명 입니다.");
+        Optional<Division> odv = this.divisionRepository.findByCode(code);
+
+        if (odv.isPresent()) {
+            if (odv.get().getId() != id) {
+                return RsData.of(RsCode.F_06, "이미 존재하는 소속코드 입니다.");
+            }
+        } else if (odv.isPresent()) {
+            if (odv.get().getId() != id) {
+                return RsData.of(RsCode.F_06, "이미 존재하는 소속명 입니다.");
+            }
         }
 
         Division division = rsData.getData().toBuilder()
@@ -74,8 +82,11 @@ public class DivisionService {
         if (rsData.getData() == null) {
             return rsData;
         }
-
-        this.divisionRepository.delete(rsData.getData());
+        try {
+            this.divisionRepository.delete(rsData.getData());
+        } catch (DataIntegrityViolationException e) {
+            return RsData.of(RsCode.F_05, "소속 내 회원이 존재하여 삭제할 수 없습니다.");
+        }
         return RsData.of(RsCode.S_04, "소속이 삭제되었습니다.");
     }
 
