@@ -66,4 +66,8 @@ public class AnswerService {
     public List<Answer> findAllByArticleId(Long articleId) {
         return this.answerRepository.findAllByArticleId(articleId);
     }
+
 }
+
+
+

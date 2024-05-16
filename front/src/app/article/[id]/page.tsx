@@ -40,4 +40,6 @@ export default function ArticleDetail() {
             </DefaultLayout>
         );
     }
+
 }
+

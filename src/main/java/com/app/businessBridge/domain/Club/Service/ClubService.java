@@ -24,9 +24,9 @@ public class ClubService {
         return this.clubRepository.findById(id);
     }
     @Transactional
-    public RsData<Club> create(String name) {
+    public RsData<Club> create(String clubName) {
         Club club = Club.builder()
-                .name(name)
+                .clubName(clubName)
                 .build();
 
         this.clubRepository.save(club);
@@ -39,11 +39,9 @@ public class ClubService {
     public Optional<Club> getclub(Long id) {
         return this.clubRepository.findById(id);
     }
-    public RsData<Club> modify(Club club, String name) {
-        Club club1 = Club.builder()
-                        .name(name)
-                                .build();
-        clubRepository.save(club1);
+    public RsData<Club> modify(Club club, String clubName) {
+        club.setClubName(clubName);
+        clubRepository.save(club);
 
         return RsData.of(RsCode.S_03,
                 "%d번 동아리가 수정 되었습니다.".formatted(club.getId()),

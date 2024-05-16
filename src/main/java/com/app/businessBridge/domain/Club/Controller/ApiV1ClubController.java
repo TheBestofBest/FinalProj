@@ -50,7 +50,7 @@ public class ApiV1ClubController {
     @PostMapping("")
     public RsData<WriteResponse> write(@Valid @RequestBody WriteRequest writeRequest) {
 
-        RsData<Club> writeRs = this.clubService.create(writeRequest.getName());
+        RsData<Club> writeRs = this.clubService.create(writeRequest.getClubName());
 
 //        if (writeRs.isFail()) return (RsData) writeRs;
 
@@ -69,7 +69,7 @@ public class ApiV1ClubController {
                 null
         );
 
-        RsData<Club> modifyRs = this.clubService.modify(optionalClub.get(),modifyRequest.getName());
+        RsData<Club> modifyRs = this.clubService.modify(optionalClub.get(),modifyRequest.getClubName());
 
         return RsData.of(
                 modifyRs.getRsCode(),
@@ -110,7 +110,7 @@ public class ApiV1ClubController {
     @Data
     public static class WriteRequest {
         @NotBlank
-        private String name;
+        private String clubName;
     }
 
     @AllArgsConstructor
@@ -121,7 +121,7 @@ public class ApiV1ClubController {
     @Data
     public static class ModifyRequest {
         @NotBlank
-        private String name;
+        private String clubName;
     }
 
     @AllArgsConstructor

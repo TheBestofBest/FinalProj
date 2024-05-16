@@ -66,6 +66,8 @@ public class ApiV1AnswerController {
     public RsData<AnswerResponse> write(@Valid @RequestBody AnswerRequest answerRequest) {
 
 
+
+
         RsData<Answer> writeRs = this.answerService.create(answerRequest.getContent(), answerRequest.getArticle());
 
 //        if (writeRs.isFail()) return (RsData) writeRs;
