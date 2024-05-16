@@ -32,7 +32,6 @@ public class NotProd {
                                RebateService rebateService,
                                WorkingDateService workingDateService,
                                AlarmService alarmService,
-                               WorkingDateService workingDateService,
                                ConfirmFormTypeService confirmFormTypeService, ConfirmStatusService confirmStatusService) {
 
         return args -> {
@@ -127,7 +126,10 @@ public class NotProd {
             }
 
             // 결재 타입 생성
-            confirmFormTypeService.create("휴가 신청", "휴가를 신청합니다.");
+            if(confirmFormTypeService.getConfirmFormType(1L).isEmpty()){
+                confirmFormTypeService.create("휴가 신청", "휴가를 신청합니다.");
+            }
+
 
             // 결재 상태 생성
             confirmStatusService.create("결재 처리중", "결재를 처리가 필요합니다.");

@@ -7,6 +7,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
+import { useRouter } from "next/navigation";
 
 interface VacationFormProps {
   confirmFormType: ConfirmFormType;
@@ -24,7 +25,7 @@ const VacationForm: React.FC<VacationFormProps> = ({
     subject: "",
     description: "",
     formData: "",
-    formType: {
+    formTypeDTO: {
       formName: "",
       formDescription: "",
     },
@@ -65,6 +66,7 @@ const VacationForm: React.FC<VacationFormProps> = ({
     startDate: new Date(), // 현재 날짜와 시간으로 설정
     endDate: new Date(),
   }); // FormData 객체 생성
+  const router = useRouter();
 
   // 승인자 추가 시 검색으로 돌아가게 하는 참조 변수
   const memberTableRef = useRef<HTMLLabelElement>(null);
@@ -131,7 +133,6 @@ const VacationForm: React.FC<VacationFormProps> = ({
 
       // modal 창 닫기
       clickModal();
-      // 추가적인 로직이 필요한 경우 여기에 작성
     } catch (error) {
       console.error("결재 등록 중 에러가 발생했습니다.:", error);
       // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.

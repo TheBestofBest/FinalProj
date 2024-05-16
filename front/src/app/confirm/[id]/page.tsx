@@ -17,7 +17,7 @@ export default function ConfirmDetailPage() {
     subject: "",
     description: "",
     formData: "",
-    formType: {
+    formTypeDTO: {
       formName: "",
       formDescription: "",
     },
@@ -82,12 +82,14 @@ export default function ConfirmDetailPage() {
                 뒤로가기
               </Link>
             </div>
-            <div className="mb-3 max-w-3xl">
+            <div className="mb-3 min-w-125 max-w-3xl">
               {/* a Subject */}
               <div className="w-full items-center">
-                <div className="items-center text-3xl font-bold">결재 제목</div>
+                <div className="items-center text-3xl font-bold">
+                  {confirm?.subject}
+                </div>
                 <div className="text-lg font-bold text-slate-400">
-                  결재 양식
+                  양식: {confirm?.formTypeDTO?.formName}
                 </div>
               </div>
               {/* b table: 결재 신청자, 기안일, 부서, 직급 ,, 우측에는 승인 진행도  */}
@@ -101,7 +103,9 @@ export default function ConfirmDetailPage() {
                       >
                         결재 기안자
                       </th>
-                      <td className="px-6 py-4">김갑환</td>
+                      <td className="px-6 py-4">
+                        {confirm?.confirmRequestMember.name}
+                      </td>
                     </tr>
                     <tr className="border-gray-200 dark:border-gray-700 border-b">
                       <th
@@ -110,7 +114,17 @@ export default function ConfirmDetailPage() {
                       >
                         기안일
                       </th>
-                      <td className="px-6 py-4">2024-05-09</td>
+                      <td className="px-6 py-4">
+                        {" "}
+                        {new Date(confirm.createDate).toLocaleDateString(
+                          "ko-KR",
+                          {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                          },
+                        )}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -130,10 +144,7 @@ export default function ConfirmDetailPage() {
                         scope="row"
                         className="text-gray-900 bg-gray-50 dark:bg-gray-800 overflow-wrap break-word   border px-6 py-4 font-medium dark:text-white"
                       >
-                        결재 내용 결재 결재 내용 결재결재 내용 결재결재 내용
-                        결재결재 내용 결재결재 내용 결재결재 내용 결재결재 내용
-                        결재결재 내용 결재결재 내용 결재결재 내용 결재결재 내용
-                        결재결재 내용 결재결재 내용 결재결재 내용 결재
+                        {confirm?.description}
                       </th>
                     </tr>
                   </tbody>

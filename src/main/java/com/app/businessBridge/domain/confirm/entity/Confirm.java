@@ -32,7 +32,7 @@ public class Confirm extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String review;
     // 결재 양식 타입(휴가승인서, 보고서 등)
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST )
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE )
     private ConfirmFormType formType;
     // 결재 처리 상태(진행중, 승인, 반려 등)
     @ManyToOne

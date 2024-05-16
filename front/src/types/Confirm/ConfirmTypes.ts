@@ -5,7 +5,7 @@ export type ConfirmType = {
   subject: string;
   description: string;
   formData: string;
-  formType: ConfirmFormType;
+  formTypeDTO: ConfirmFormType;
   confirmStatusDTO: ConfirmStatusType;
   confirmRequestMember: MemberType;
   confirmMembers: MemberType[];
