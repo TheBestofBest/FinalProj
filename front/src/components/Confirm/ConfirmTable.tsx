@@ -1,5 +1,4 @@
 "use client";
-import { Package } from "@/types/package";
 import HorizontalLinearAlternativeLabelStepper from "../Stepper/Stepper";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,7 +14,6 @@ const ConfirmTable = () => {
     // 결재 아이디 받게 되면 바꾸기
     router.push(`/confirm/${id}`);
   };
-
   useEffect(() => {
     api
       .get(`/api/v1/confirms`)

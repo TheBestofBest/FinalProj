@@ -133,6 +133,7 @@ const VacationForm: React.FC<VacationFormProps> = ({
 
       // modal 창 닫기
       clickModal();
+      router.push(`/confirm`);
     } catch (error) {
       console.error("결재 등록 중 에러가 발생했습니다.:", error);
       // 에러 처리 로직을 추가할 수 있습니다. 예를 들어, 사용자에게 오류 메시지를 표시하거나 다시 시도할 수 있도록 유도할 수 있습니다.
