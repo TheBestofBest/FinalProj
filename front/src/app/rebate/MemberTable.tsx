@@ -41,7 +41,7 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
   }, [rebates]);
 
   return (
-    <div className="h-40 px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark overflow-scroll">
+    <div className="h-40r px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark overflow-scroll">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         {currentYear}년 {rebates[0].memberId === rebates[1].memberId ? (<span>정산내역</span>) : (<span>{currentMonth}월 정산내역</span>)}
       </h4>
