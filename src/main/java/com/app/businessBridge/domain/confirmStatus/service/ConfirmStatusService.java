@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.confirmStatus.service;
 
+import com.app.businessBridge.domain.confirm.entity.Confirm;
 import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
 import com.app.businessBridge.domain.confirmStatus.repository.ConfirmStatusRepository;
 import com.app.businessBridge.global.RsData.RsCode;
@@ -54,5 +55,13 @@ public class ConfirmStatusService {
 
     public void deleteConfirmStatus(ConfirmStatus confirmStatus) {
         this.confirmStatusRepository.delete(confirmStatus);
+    }
+
+    public ConfirmStatus getConfirmStatusByName(String statusName) {
+        Optional<ConfirmStatus> optionalConfirmStatus =  this.confirmStatusRepository.findByStatusName(statusName);
+        if(optionalConfirmStatus.isEmpty()){
+            return null;
+        }
+        return optionalConfirmStatus.get();
     }
 }

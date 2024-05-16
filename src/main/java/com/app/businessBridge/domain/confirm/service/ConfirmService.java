@@ -82,4 +82,21 @@ public class ConfirmService {
     public void deleteConfirm(Confirm confirm) {
         this.confirmRepository.delete(confirm);
     }
+
+    public RsData<Confirm> changeCounter(Confirm confirm) {
+        Confirm confirm1 = confirm.toBuilder()
+                .confirmStepCounter(confirm.getConfirmStepCounter()+1)
+                .build();
+        this.confirmRepository.save(confirm1);
+        return RsData.of(RsCode.S_03,"승인 확인.", confirm1 );
+    }
+
+    public RsData<Confirm> confirmConfirm(Confirm data, ConfirmStatus confirmStatus) {
+        Confirm confirm = data.toBuilder()
+                .confirmStatus(confirmStatus)
+                .build();
+        this.confirmRepository.save(confirm);
+
+        return RsData.of(RsCode.S_03, "승인 처리됨", confirm);
+    }
 }

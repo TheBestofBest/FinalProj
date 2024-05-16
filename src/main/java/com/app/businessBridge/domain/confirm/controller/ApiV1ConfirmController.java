@@ -193,7 +193,7 @@ public class ApiV1ConfirmController {
 
     // 승인 카운터 증가 api
     @PatchMapping("/{id}/change-counter")
-    public RsData<ConfirmResponse.changeStatus> changeCounterConfirm(@PathVariable(value = "id") Long id, @Valid @RequestBody ConfirmRequest.changeStatus changeStatusRequest){
+    public RsData<ConfirmResponse.changeStatus> changeCounterConfirm(@PathVariable(value = "id") Long id){
         // 결재 처리상태 검증
 //        RsData<ConfirmResponse.changeStatus> patchRsData = ConfirmValidate.validateConfirmStatusChange(changeStatusRequest.getConfirmStatus());
 //        if(!patchRsData.getIsSuccess()){
@@ -212,12 +212,11 @@ public class ApiV1ConfirmController {
                     null
             );
         }
-        // 승인 다 됐는지 확인
-        if(optionalConfirm.get().getConfirmStepCounter() == optionalConfirm.get().getConfirmMembers().size()){
-
+        RsData<Confirm> confirmRsData = this.confirmService.changeCounter(optionalConfirm.get());
+        if(confirmRsData.getData().getConfirmStepCounter() == confirmRsData.getData().getConfirmMembers().size()){
+            ConfirmStatus confirmStatus = this.confirmStatusService.getConfirmStatusByName("승인");
+            confirmRsData = this.confirmService.confirmConfirm(confirmRsData.getData(), confirmStatus);
         }
-
-        RsData<Confirm> confirmRsData = this.confirmService.changeStatusConfirm(optionalConfirm.get(), changeStatusRequest);
         /// 처리 상태, 양식 별 메스드 추가 시 이곳에 작성
 
         ///

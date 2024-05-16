@@ -82,6 +82,19 @@ export default function ConfirmDetailPage() {
   // const parsedData: ConfirmFormVactionType = JSON.parse(jsonData);
 
   // 버튼 클릭시 모달 버튼 클릭 유무를 설정하는 state 함수
+
+  const confirmConfirm = async () => {
+    await api.patch(`/api/v1/confirms/${params.id}/change-counter`);
+    router.push(`/confirm`);
+  };
+  const handleConfirm = () => {
+    const isConfirmed = window.confirm("승인 하시겠습니까?");
+
+    if (isConfirmed) {
+      confirmConfirm();
+    }
+  };
+
   const clickModal = () => setShowModal(!showModal);
   return (
     <DefaultLayout>
@@ -212,6 +225,7 @@ export default function ConfirmDetailPage() {
                 <button
                   type="button"
                   className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                  onClick={handleConfirm}
                 >
                   승인
                 </button>
