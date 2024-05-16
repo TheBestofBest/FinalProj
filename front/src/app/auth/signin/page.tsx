@@ -82,7 +82,7 @@ const SignIn: React.FC = () => {
                 </Link>
 
                 <p className="2xl:px-20">
-                  기업 그룹웨어 어플리케이션 Business-Bridge
+                  그룹웨어 어플리케이션 Business-Bridge
                 </p>
               </div>
             </div>

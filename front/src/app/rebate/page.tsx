@@ -15,6 +15,7 @@ interface memberInfo {
 
 
 interface Rebate {
+    rebateId : number;
     year: string;
     month: string;
     memberName: string;

@@ -99,9 +99,12 @@ public class ApiV1RebateController {
                 && searchedMember!=null) {
             rebateList = this.rebateService.findByYearAndMember(rbSearchRequest.getYear(), searchedMember.getId());
         } else if (!rbSearchRequest.getDept().isEmpty()
-                && !rbSearchRequest.getMonth().isEmpty()) {
+                && !rbSearchRequest.getMonth().isEmpty()
+                && searchedMember == null) {
             rebateList = this.rebateService.findByDeptAndMonth(rbSearchRequest.getDept(), rbSearchRequest.getMonth());
-        } else {
+        } else if(searchedMember!=null
+                && !rbSearchRequest.getYear().isEmpty()
+                && !rbSearchRequest.getMonth().isEmpty()) {
             rebateList = this.rebateService.findBySearch(rbSearchRequest.getYear(), month, searchedMember.getId());
         }
 
@@ -163,7 +166,13 @@ public class ApiV1RebateController {
     }
 
     @PatchMapping("/{id}")
-    public void modifyRebate() {
+    public void modifyRebate(@Valid @RequestBody RebateRequest.PatchRequest patchRequest) {
+
+        String bonus = patchRequest.getBonus().replace(",","");
+
+        Rebate modifyRebate = this.rebateService.findById(Long.valueOf(patchRequest.getRebateId())).getData();
+
+        this.rebateService.modifyBonus(modifyRebate, bonus);
 
     }
 

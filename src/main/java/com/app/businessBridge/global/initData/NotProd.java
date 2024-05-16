@@ -80,6 +80,9 @@
 //                    memberService.createRebateTest(10,101, 1002, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '남', String.valueOf(randomAge));
 //                }
 //                memberService.createRebateTest(12,102, 1001, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '여', String.valueOf(randomAge));
+//                    memberService.createRebateTest(101, 1002, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '남', String.valueOf(randomAge));
+//                }
+//                memberService.createRebateTest(102, 1001, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '여', String.valueOf(randomAge));
 //            }
 //
 //            LocalDate currentDate = LocalDate.now();

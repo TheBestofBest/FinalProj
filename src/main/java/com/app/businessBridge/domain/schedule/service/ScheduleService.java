@@ -117,7 +117,7 @@ public class ScheduleService {
     private boolean authorized(Member loginedMember, String relationName, Long relationId) {
 
         // 관리직
-        if(relationName.equals("all") && (loginedMember.getDepartment().getId() == 1L)){
+        if(relationName.equals("all") && (loginedMember.getDepartment().getCode() == 100L)){
             return true;
         }
 

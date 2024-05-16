@@ -350,4 +350,7 @@ public class MemberService {
         return this.memberRepository.findByKeyword(keyword);
     }
 
+    public List<Member> findAll() {
+        return this.memberRepository.findAll();
+    }
 }
