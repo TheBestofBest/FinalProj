@@ -11,9 +11,9 @@ const ConfirmTable = () => {
   const [confirms, setConfirms] = useState<ConfirmType[]>([]);
   const router = useRouter();
 
-  const handleRouter = () => {
+  const handleRouter = (id: number) => {
     // 결재 아이디 받게 되면 바꾸기
-    router.push("/confirm/1");
+    router.push(`/confirm/${id}`);
   };
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const ConfirmTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [confirms]);
+  }, []);
 
   return (
     <div className="rounded-sm border border-stroke bg-white  pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -33,58 +33,70 @@ const ConfirmTable = () => {
       <div className="max-w-full overflow-x-auto">
         <table className="w-full table-auto">
           {/* 추후 head 삭제 */}
-          <tbody>
-            {confirms.map((confirm) => (
-              //[] onClick 으로 상세 페이지로 전송하는 이벤트 만들기
-              <tr
-                key={confirm.id}
-                className="hover:cursor-pointer hover:bg-blue-200"
-                onClick={() => handleRouter()}
-              >
-                <td className="border-b border-[#eee]  py-5 dark:border-strokedark ">
-                  <h5 className="font-medium text-black dark:text-white">
-                    {confirm.subject}
-                  </h5>
-                  <p className="text-sm">
-                    {new Date(confirm.createDate).toLocaleDateString("ko-KR", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                    })}
-                  </p>
-                </td>
-                <td className="min-w-4 border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {confirm.confirmRequestMember.name}
-                  </p>
-                  <p className="text-sm">
-                    {confirm.confirmRequestMember.department.name}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <p
-                    className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
-                      confirm.confirmStatusDTO?.statusName === "승인"
-                        ? "bg-success text-success"
-                        : confirm.confirmStatusDTO?.statusName === "결재 처리중"
-                          ? "bg-danger text-danger"
-                          : "bg-warning text-warning"
-                    }`}
-                  >
-                    {confirm.confirmStatusDTO?.statusName}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
-                  <div className="flex items-center space-x-3.5">
-                    <HorizontalLinearAlternativeLabelStepper
-                      activeStep={confirm?.confirmStepCounter}
-                      confirmMembers={confirm?.confirmMembers}
-                    />
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          {!confirms || confirms.length === 0 ? (
+            <tr>
+              <td colSpan={4} className="py-5 text-center dark:text-white">
+                결재가 없습니다.
+              </td>
+            </tr>
+          ) : (
+            <tbody>
+              {confirms.map((confirm) => (
+                //[] onClick 으로 상세 페이지로 전송하는 이벤트 만들기
+                <tr
+                  key={confirm.id}
+                  className="hover:cursor-pointer hover:bg-blue-200"
+                  onClick={() => handleRouter(confirm.id)}
+                >
+                  <td className="border-b border-[#eee]  py-5 dark:border-strokedark ">
+                    <h5 className="font-medium text-black dark:text-white">
+                      {confirm.subject}
+                    </h5>
+                    <p className="text-sm">
+                      {new Date(confirm.createDate).toLocaleDateString(
+                        "ko-KR",
+                        {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        },
+                      )}
+                    </p>
+                  </td>
+                  <td className="min-w-4 border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <p className="text-black dark:text-white">
+                      {confirm.confirmRequestMember.name}
+                    </p>
+                    <p className="text-sm">
+                      {confirm.confirmRequestMember.department.name}
+                    </p>
+                  </td>
+                  <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <p
+                      className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
+                        confirm.confirmStatusDTO?.statusName === "승인"
+                          ? "bg-success text-success"
+                          : confirm.confirmStatusDTO?.statusName ===
+                              "결재 처리중"
+                            ? "bg-danger text-danger"
+                            : "bg-warning text-warning"
+                      }`}
+                    >
+                      {confirm.confirmStatusDTO?.statusName}
+                    </p>
+                  </td>
+                  <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
+                    <div className="flex items-center space-x-3.5">
+                      <HorizontalLinearAlternativeLabelStepper
+                        activeStep={confirm?.confirmStepCounter}
+                        confirmMembers={confirm?.confirmMembers}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
       </div>
     </div>
