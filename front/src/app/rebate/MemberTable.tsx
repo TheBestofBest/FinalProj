@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import RebateDropDown from "./RebateDropDown";
+import { useRouter } from "next/navigation";
 
 interface Rebate {
   year: string;
@@ -32,35 +33,30 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
 
   const [currentYear, setCurrentYear] = useState('');
   const [currentMonth, setCurrentMonth] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     setCurrentYear(rebates[0].year);
     setCurrentMonth(rebates[0].month);
   }, [rebates]);
 
-
-
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+    <div className="h-40r px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark overflow-scroll">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        {currentYear}년 {currentMonth}월 급여 정산 내역
+        {currentYear}년 {rebates[0].memberId === rebates[1].memberId ? (<span>정산내역</span>) : (<span>{currentMonth}월 정산내역</span>)}
       </h4>
-        총 정산 금액 : {totalSum.toLocaleString()}원
+        
       <div className="flex justify-between py-4">
-        <RebateDropDown/>
-        <div>
+        총 정산 금액 : {totalSum.toLocaleString()}원
           <Link
               href="#"
               className="flex items-center whitespace-nowrap rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
               저장하기
           </Link>
-
-        </div>
-
       </div>
 
       <div className="flex flex-col">
-        <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-6">
+        <div className="h-14 grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-6">
           <div className="p-2.5 xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base">
               임직원
@@ -90,7 +86,7 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
 
         {rebates.map((rebate, key) => (
           <div
-            className={`grid grid-cols-3 sm:grid-cols-6 ${
+            className={`grid grid-cols-3 sm:grid-cols-6 h-16 ${
               key === rebates.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
