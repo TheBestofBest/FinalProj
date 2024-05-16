@@ -8,47 +8,52 @@ import {
   TrashIcon,
   PaperAirplaneIcon
 } from '@heroicons/react/24/solid'
-import api from "@/util/api";
+import Link from "next/link";
 import { useQueryClient } from "@tanstack/react-query";
+import api from "@/util/api";
 
-const MainTableOne = () => {
+const MailboxReceive: React.FC = () => {
   const queryClient = useQueryClient();
   const memberData: any = queryClient.getQueryData(["member"]);
 
   const [isChecked, setIsChecked] = useState<boolean>(false);
-  const [allMails, setAllMails] = useState({});
+  const [receiveMails, setReceiveMails] = useState({});
 
-  const fetchAllMails = async () => {
+  useEffect(() => {
+    fetchReceiveMails();
+  }, []);
+
+  const fetchReceiveMails = async () => {
     try {
       const memberId = memberData.memberId;
-      const response = await api.get(`/api/v1/mailboxes/${memberId}/mails/all`);
+      const response = await api.get(`/api/v1/mailboxes/${memberId}/mails/received`);
       console.log(response);
 
       if (response.data.isSuccess) {
-        const allMails = response.data.data;
-        if (allMails) {
+        const receiveMails = response.data.data;
+        if (receiveMails) {
           console.log("============================================================");
-          console.log(allMails); // 전체 메일 목록 확인
-          console.log("전체 메일 목록(allMails 상태):", allMails); // 상태 값 확인
-          setAllMails(allMails);
+          console.log(receiveMails); // 전체 메일 목록 확인
+          console.log("받은 메일 목록(receiveMails 상태):", receiveMails); // 상태 값 확인
+          setReceiveMails(receiveMails);
         }
       } else {
-        console.error("전체 메일 불러오기 실패:", response.data.message);
+        console.error("받은 메일 불러오기 실패:", response.data.message);
       }
     } catch (error) {
-      console.error("전체 메일 불러오기 에러:", error);
+      console.error("받은 메일 불러오기 에러:", error);
     }
   };
 
-  useEffect(() => {
-    fetchAllMails();
-  }, []);
   return (
-    <div className="min-h-[590px] rounded-sm border border-stroke  bg-white pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <div className="px-4 py-6 md:px-6 xl:px-7.5">
-        <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          전체 메일
-        </h4>
+    <div className="h-screen bg-white">
+      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="px-4 py-6 md:px-6 xl:px-7.5">
+          <h4 className="text-xl font-semibold text-black dark:text-white">
+            받은 메일함
+          </h4>
+        </div>
+
         <div className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5">
           <div className="col-span-2 flex items-center">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -91,7 +96,7 @@ const MainTableOne = () => {
               </p>
             </div>
           </div>
-          <div className="ml-4 col-span-4 hidden items-center sm:flex">
+          <div className="col-span-4 hidden items-center sm:flex">
             <p className="text-sm font-semibold text-black dark:text-white">제목</p>
           </div>
           <div className="col-span-1 flex items-center">
@@ -101,8 +106,8 @@ const MainTableOne = () => {
             <p className="text-sm font-semibold text-black dark:text-white">삭제</p>
           </div>
         </div>
-        {allMails.length > 0 ? (
-          allMails.map(mail => (
+        {receiveMails.length > 0 ? (
+          receiveMails.map(mail => (
             <div
               className="grid h-screen grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5 duration-300 ease-in-out hover:bg-meta-2 dark:hover:bg-meta-4"
               key={mail.id}
@@ -175,7 +180,7 @@ const MainTableOne = () => {
             </div>
           ))
         ) : (
-          <div className="min-h-[390px] border-t border-stroke px-4 py-4.5 dark:border-strokedark md:px-6 2xl:px-7.5 duration-300 ease-in-out bg-meta-2 dark:bg-meta-4 flex justify-center items-center">
+          <div className="h-screen border-t border-stroke px-4 py-4.5 dark:border-strokedark md:px-6 2xl:px-7.5 duration-300 ease-in-out bg-meta-2 dark:bg-meta-4 flex justify-center items-center">
             <div className="flex items-center">
               <div className="flex sm:flex-row sm:items-center">
                 <div className="h-7 w-15 rounded-md">
@@ -195,7 +200,7 @@ const MainTableOne = () => {
                   </EnvelopeIcon>
                 </div>
                 <p className="text-xl font-semibold text-black dark:text-white">
-                  메일 함이 비었습니다
+                  받은 메일이 없습니다.
                 </p>
               </div>
             </div>
@@ -205,5 +210,4 @@ const MainTableOne = () => {
     </div>
   );
 };
-
-export default MainTableOne;
+export default MailboxReceive;

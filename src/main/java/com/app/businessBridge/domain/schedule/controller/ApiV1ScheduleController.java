@@ -22,7 +22,7 @@ public class ApiV1ScheduleController {
 
     // 생성
     @PostMapping("")
-    public RsData create(@Valid @RequestBody ScheduleRequest.CreateReq req, BindingResult br){
+    public RsData create(@Valid @RequestBody  ScheduleRequest.CreateReq req, BindingResult br){
 
         if(br.hasErrors()){
             return RsData.of(RsCode.F_06,"유효하지 않은 요청입니다.");

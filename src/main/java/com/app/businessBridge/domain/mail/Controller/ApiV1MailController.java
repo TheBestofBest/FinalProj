@@ -1,45 +1,49 @@
 package com.app.businessBridge.domain.mail.Controller;
 
-import com.app.businessBridge.domain.mail.DTO.MailDTO;
-import com.app.businessBridge.domain.mail.Response.MailResponse;
-import com.app.businessBridge.domain.mail.Response.MailsResponse;
-import com.app.businessBridge.domain.mail.Service.MailService;
-import com.app.businessBridge.global.RsData.RsData;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.app.businessBridge.domain.mail.Entity.Mail;
+import com.app.businessBridge.domain.mail.Request.MailRequest;
+import com.app.businessBridge.domain.mail.Response.MailResponse;
+import com.app.businessBridge.domain.mail.Service.MailService;
+import com.app.businessBridge.global.RsData.RsCode;
+import com.app.businessBridge.global.RsData.RsData;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-
 @RequestMapping("/api/v1/mails")
 public class ApiV1MailController {
+
     private final MailService mailService;
 
-    // 기본 코드들로 우선 미리 넣어두었습니다 다시 수정 할 예정
+    @PostMapping("")
+    public RsData sendMail(@Valid @RequestBody MailRequest.CreateRequest createRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return RsData.of(RsCode.F_06, "올바른 요청이 아닙니다.");
+        }
+        RsData result = mailService.create(createRequest);
+        if (result.getIsSuccess()) {
+            return RsData.of(RsCode.S_01, "메일이 성공적으로 전송되었습니다.");
+        } else {
+            return RsData.of(RsCode.F_01, "메일 전송에 실패했습니다.", null);
+        }
+    }
 
-//    @GetMapping("")
-//    public RsData<MailsResponse> getMails() {
-//        List<MailDTO> mailsDTOList = this.mailService
-//                .getList()
-//                .stream()
-//                .map(mails -> new MailDTO(mails))
-//                .toList();
-//        return RsData.of("S-01", "Success 요청 성공", new MailsResponse(mailsDTOList));
-//    }
-//
-//    @GetMapping("/{id}")
-//    public RsData<MailResponse> getMail(@PathVariable("id") Long id) {
-//        return mailService.getMail(id).map(mail -> RsData.of(
-//                "S-01",
-//                "Success 조회 성공",
-//                new MailResponse(new MailDTO(mail))
-//        )).orElseGet(() -> RsData.of(
-//                "F-01",
-//                "Bad Request %d 번 메일은 존재하지 않습니다.".formatted(id),
-//                null
-//        ));
-//    }
+    @DeleteMapping("/{id}")
+    public RsData deleteById(@PathVariable(name = "id") Long id){
+
+        return mailService.deleteById(id);
+    }
+
+    @GetMapping("/{id}")
+    public RsData<MailResponse.sendMail> getSendMailById(@PathVariable(name = "id") Long id){
+        RsData<Mail> result = mailService.findById(id);
+
+        return RsData.of(result.getRsCode(), result.getMsg(), new MailResponse.sendMail(result.getData()));
+
+    }
 
 }
