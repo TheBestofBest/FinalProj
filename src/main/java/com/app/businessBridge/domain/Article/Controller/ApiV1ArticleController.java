@@ -1,5 +1,8 @@
 package com.app.businessBridge.domain.Article.Controller;
 
+import com.app.businessBridge.domain.Answer.DTO.AnswerDto;
+import com.app.businessBridge.domain.Answer.Entity.Answer;
+import com.app.businessBridge.domain.Answer.Service.AnswerService;
 import com.app.businessBridge.domain.Article.DTO.ArticleDto;
 import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.Article.Service.ArticleService;
@@ -11,8 +14,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +27,7 @@ import java.util.Optional;
 public class ApiV1ArticleController {
 
     private final ArticleService articleService;
+    private final AnswerService answerService;
 
     @GetMapping("")
     public RsData<ArticlesResponse> getArticles() {
@@ -44,9 +50,9 @@ public class ApiV1ArticleController {
                 null
         ));
     }
+
     @PostMapping("")
     public RsData<WriteResponse> write(@Valid @RequestBody WriteRequest writeRequest) {
-
 
         RsData<Article> writeRs = this.articleService.create(writeRequest.getSubject(), writeRequest.getContent());
 
@@ -58,6 +64,7 @@ public class ApiV1ArticleController {
                 new WriteResponse(new ArticleDto(writeRs.getData()))
         );
     }
+
     @PatchMapping("/{id}")
     public RsData<ModifyResponse> modify(@Valid @RequestBody ModifyRequest modifyRequest, @PathVariable("id") Long id) {
         Optional<Article> optionalArticle = this.articleService.findById(id);

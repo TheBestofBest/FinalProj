@@ -1,8 +1,9 @@
 package com.app.businessBridge.domain.Article.DTO;
 
-
+import com.app.businessBridge.domain.Answer.DTO.AnswerDto;
 import com.app.businessBridge.domain.Article.Entity.Article;
 import lombok.Getter;
+import java.util.List;
 
 @Getter
 public class ArticleDto {
@@ -16,3 +17,5 @@ public class ArticleDto {
         this.content = article.getContent();
     }
 }
+
+

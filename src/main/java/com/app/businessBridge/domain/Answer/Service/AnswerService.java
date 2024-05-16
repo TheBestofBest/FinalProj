@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,14 +20,19 @@ public class AnswerService {
     private final ArticleRepository articleRepository;
     private final AnswerRepository answerRepository;
 
+    public List<Answer> getList() {
+        return this.answerRepository.findAll();
+    }
+
     public Optional<Answer> getAnswer(Long id){
         return this.answerRepository.findById(id);
     }
 
     @Transactional
-    public RsData<Answer> create(String content) {
+    public RsData<Answer> create(String content, Article article) {
         Answer answer = Answer.builder()
                 .content(content)
+                .article(article)
                 .build();
 
         this.answerRepository.save(answer);
@@ -40,10 +46,8 @@ public class AnswerService {
         return answerRepository.findById(id);
     }
     public RsData<Answer> modify(Answer answer,String content) {
-        Answer answer1= Answer.builder()
-                        .content(content)
-                                .build();
-        answerRepository.save(answer1);
+        answer.setContent(content);
+        answerRepository.save(answer);
 
         return RsData.of(RsCode.S_03,
                 "%d번 게시물이 수정 되었습니다.".formatted(answer.getId()),
@@ -59,4 +63,11 @@ public class AnswerService {
                 null
         );
     }
+    public List<Answer> findAllByArticleId(Long articleId) {
+        return this.answerRepository.findAllByArticleId(articleId);
+    }
+
 }
+
+
+
