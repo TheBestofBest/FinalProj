@@ -12,6 +12,8 @@ public class MemberRequest {
     @Setter
     public static class CreateRequest {
         @NotNull
+        private Integer divisionCode;
+        @NotNull
         private Integer departmentCode;
         @NotNull
         private Integer gradeCode;
@@ -32,6 +34,8 @@ public class MemberRequest {
     public static class UpdateRequest {
         @NotNull
         private Long id;
+        @NotNull
+        private Integer divisionCode;
         @NotNull
         private Integer departmentCode;
         @NotNull
