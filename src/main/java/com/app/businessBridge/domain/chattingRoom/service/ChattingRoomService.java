@@ -22,7 +22,6 @@ public class ChattingRoomService {
     private final MemberChatService memberChatService;
 
 
-    //임시 : 해당 유저에 대한 리스트 가져오기 필요
     @Transactional
     public RsData<List<ChattingRoom>> getListByMemberId(Long memberId) {
         List<MemberChatRelation> chatRooms = memberChatService.getListByMemberId(memberId);

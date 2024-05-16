@@ -36,7 +36,6 @@ public class AlarmService {
         alarmRepository.save(alarm);
     }
 
-
     public RsData<List<Alarm>> getTop10() {
         Member member = rq.getMember();
         List<Alarm> top10 = alarmRepository.findTop10(member.getId(),member.getDepartment().getId());
@@ -61,5 +60,10 @@ public class AlarmService {
         );
 
         return RsData.of(RsCode.S_05,"조회 성공",alarms);
+    }
+
+    public void delete(Long id) {
+        Alarm alarm = alarmRepository.findById(id).get();
+        alarmRepository.delete(alarm);
     }
 }
