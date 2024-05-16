@@ -3,7 +3,9 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import HorizontalLinearAlternativeLabelStepper from "@/components/Stepper/Stepper";
 import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
 import { ConfirmType } from "@/types/Confirm/ConfirmTypes";
+import { MemberType } from "@/types/Member/MemberTypes";
 import api from "@/util/api";
+import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -50,6 +52,8 @@ export default function ConfirmDetailPage() {
     createDate: new Date(),
     confirmStepCounter: 0,
   });
+  const queryClient = useQueryClient();
+  const member = queryClient.getQueryData<MemberType>(["member"]);
 
   // 수정 필요!!
   const getConfirm = async () => {
@@ -172,31 +176,40 @@ export default function ConfirmDetailPage() {
 
           <div className="mb-3 mt-3 flex w-full justify-center">
             {/* 수정,삭제: 기안자에게만 보이게 하기 */}
-            <button
-              type="button"
-              className="mb-2 me-2 rounded-lg bg-gradient-to-r from-green-400 via-green-500 to-green-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800"
-            >
-              수정
-            </button>
-            <button
-              type="button"
-              className="mb-2 me-2 rounded-lg bg-gradient-to-r from-rose-400 via-rose-500 to-rose-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-rose-300 dark:focus:ring-rose-800"
-            >
-              삭제
-            </button>
+            {confirm?.confirmRequestMember?.name === member?.name && (
+              <div>
+                <button
+                  type="button"
+                  className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                >
+                  수정
+                </button>
+                <button
+                  type="button"
+                  className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
+                >
+                  삭제
+                </button>
+              </div>
+            )}
             {/* 승인, 반려: 결재 승인자에게만 보이게하기 */}
-            <button
-              type="button"
-              className="text-gray-900 mb-2 me-2 rounded-lg bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 px-5 py-2.5 text-lg  font-bold text-black hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-lime-300 dark:focus:ring-lime-800"
-            >
-              승인
-            </button>
-            <button
-              type="button"
-              className="mb-2 me-2 rounded-lg bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-orange-300 dark:focus:ring-orange-800"
-            >
-              반려
-            </button>
+            {confirm?.confirmMembers[confirm?.confirmStepCounter]?.name ===
+              member?.name && (
+              <div>
+                <button
+                  type="button"
+                  className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                >
+                  승인
+                </button>
+                <button
+                  type="button"
+                  className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
+                >
+                  반려
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
