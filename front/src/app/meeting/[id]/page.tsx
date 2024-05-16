@@ -29,7 +29,7 @@ const Meeting = () => {
     const memberData: any = queryClient.getQueryData(["member"]);
     const [meetingRoom, setMeetingRoom] = useState<MeetingRoom>();
     const myKey = useRef(Math.random().toString(36).substring(2, 11)); // 식별을 위한 key
-    const [stompClient, setStompClient] = useState<Client | null>(null);
+    const stompClientRef = useRef<Client | null>(null);
     const [isConnected, setIsConnected] = useState(false); // 연결 상태 관리
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
@@ -61,7 +61,8 @@ const Meeting = () => {
                 `/topic/peer/offer/${myKey.current}/${params.id}`,
                 (offer) => {
                     console.log("offer를 받아줘...", offer.body)
-                    handleOffer(JSON.parse(offer.body))}
+                    handleOffer(JSON.parse(offer.body))
+                }
             );
             stomp.subscribe(
                 `/topic/peer/answer/${myKey.current}/${params.id}`,
@@ -89,18 +90,18 @@ const Meeting = () => {
             setIsConnected(true);
         };
         stomp.activate();
-        setStompClient(stomp);
-        console.log("stompClient : ", stompClient);
+        stompClientRef.current = stomp;
+        console.log("stompClient : ",  stompClientRef.current);
         return () => {
             stomp.deactivate();
         };
     }, [memberData, params.id, router]);
 
     useEffect(() => {
-        if (isConnected && stompClient) {
+        if (isConnected &&  stompClientRef.current) {
             handleStartStream();
         }
-    }, [isConnected, stompClient]);
+    }, [isConnected]);
 
     useEffect(() => {
         if (isConnected) {
@@ -120,9 +121,9 @@ const Meeting = () => {
     }, [otherKeyListRef.current]);
 
     const handleStartStream = () => {
-        if (stompClient?.connected) {
+        if ( stompClientRef.current?.connected) {
             console.log("Sending key to start stream");
-            stompClient.publish({
+            stompClientRef.current.publish({
                 destination: `/app/call/key`,
                 body: "key 발송",
             });
@@ -193,18 +194,18 @@ const Meeting = () => {
         // };
         const peerConnection = new RTCPeerConnection();
         console.log("PeerConnection created:", peerConnection);
-    
+
         peerConnection.addEventListener("icecandidate", (event) => onIceCandidate(event, key));
         console.log("Added ICE candidate event listener");
-    
+
         peerConnection.addEventListener("track", (event) => onTrack(event, key));
         console.log("Added track event listener");
-    
+
         peerConnection.addEventListener("iceconnectionstatechange", () => {
             console.log(`ICE connection state for ${key}:`, peerConnection.iceConnectionState);
         });
         console.log("Added ICE connection state change event listener");
-    
+
         if (localStreamRef.current) {
             localStreamRef.current.getTracks().forEach((track: MediaStreamTrack) => {
                 console.log(`Adding track: ${track.kind}`);
@@ -212,10 +213,10 @@ const Meeting = () => {
             });
         }
         console.log("Added local tracks to PeerConnection");
-    
+
         pcListRef.current.set(key, peerConnection);
         console.log("Added PeerConnection to pcListRef");
-    
+
         // // Pending candidate 처리
         // if (pendingCandidates.current.has(key)) {
         //     const candidates = pendingCandidates.current.get(key) || [];
@@ -227,7 +228,7 @@ const Meeting = () => {
         //     pendingCandidates.current.delete(key);
         // }
         // console.log("Processed pending ICE candidates");
-    
+
         console.log("pcListRef size:", pcListRef.current.size); // 디버깅 로그 추가
         return peerConnection;
     };
@@ -236,7 +237,7 @@ const Meeting = () => {
     const onIceCandidate = (e: RTCPeerConnectionIceEvent, otherKey: string) => {
         if (e.candidate) {
             console.log("ICE Candidate event for key:", otherKey);
-            stompClient?.publish({
+            stompClientRef.current?.publish({
                 destination: `/app/peer/iceCandidate/${otherKey}/${params.id}`,
                 body: JSON.stringify({ key: myKey.current, body: e.candidate })
             });
@@ -265,10 +266,11 @@ const Meeting = () => {
                 return peerConnection.setLocalDescription(offer)
                     .then(() => {
                         console.log('Sending offer to key:', otherKey, 'with offer:', offer);
-                        stompClient?.publish({
+                        stompClientRef.current?.publish({
                             destination: `/app/peer/offer/${otherKey}/${params.id}`,
                             body: JSON.stringify({ key: myKey.current, body: offer })
                         });
+                        console.log(`/topic/peer/answer/${myKey.current}/${params.id}`);
                         console.log('Offer sent to key:', otherKey);
                     });
             })
@@ -280,10 +282,11 @@ const Meeting = () => {
             .then((answer) => {
                 return peerConnection.setLocalDescription(answer)
                     .then(() => {
-                        stompClient?.publish({
+                        stompClientRef.current?.publish({
                             destination: `/app/peer/answer/${otherKey}/${params.id}`,
                             body: JSON.stringify({ key: myKey.current, body: answer })
                         });
+                        console.log(`/app/peer/answer/${otherKey}/${params.id}`);
                         console.log('Answer sent to key:', otherKey);
                     })
                     .catch((error) => console.error('Error send answer:', error));
