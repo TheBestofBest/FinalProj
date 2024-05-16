@@ -45,7 +45,7 @@ public class MemberService {
 
     // 회원 생성
     public RsData create(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
-                         Integer memberNumber, String name, String password, String email) {
+                         String password, String email, Integer memberNumber, String name) {
         Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);

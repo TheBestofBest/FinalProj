@@ -63,11 +63,11 @@ public class NotProd {
             gradeService.create(9999,"테스트 전용 직급");
 
             // 회원 생성
-            memberService.create(1,1,1,"CEO",10000,"왕대표","1234","CEO@emil.com");
-            memberService.create(10,100, 1000, "admin", 10001, "김관리", "1234", "admin@email.com");
-            memberService.create(11,101, 1001, "user1", 20001, "이마부", "1234", "user1@email.com");
-            memberService.create(11,102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
-            memberService.create(12,102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
+            memberService.create(1,1,1,"CEO","1234","CEO@emil.com",10000,"왕대표");
+            memberService.create(10,100, 1000, "admin","1234", "admin@email.com", 10001, "김관리");
+            memberService.create(11,101, 1001, "user1","1234", "user1@email.com", 20001, "이마부");
+            memberService.create(11,102, 1002, "user2","1234","user2@email.com", 30001, "박영대");
+            memberService.create(12,102, 1002, "user3","1234","user3@email.com", 30002, "홍길동");
 
             // 올 해 월 별 근무일 일괄 계산
             workingDateService.createThisYear();

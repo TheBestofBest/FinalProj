@@ -42,14 +42,14 @@ public class MemberRequest {
         private Integer gradeCode;
         @NotBlank
         private String username;
+        @NotBlank
+        private String email;
+        @NotBlank
+        private String password;
         @NotNull
         private Integer memberNumber;
         @NotBlank
         private String name;
-        @NotBlank
-        private String password;
-        @NotBlank
-        private String email;
     }
 
     @Getter
