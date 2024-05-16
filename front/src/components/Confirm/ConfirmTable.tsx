@@ -5,13 +5,16 @@ import { useEffect, useState } from "react";
 import api from "@/util/api";
 import { ConfirmType } from "@/types/Confirm/ConfirmTypes";
 
+interface ConfirmTableProps {
+  clickModal: boolean;
+}
+
 // Props로 `결재 리스트` 받기
-const ConfirmTable = () => {
+const ConfirmTable: React.FC<ConfirmTableProps> = (clickModal) => {
   const [confirms, setConfirms] = useState<ConfirmType[]>([]);
   const router = useRouter();
 
   const handleRouter = (id: number) => {
-    // 결재 아이디 받게 되면 바꾸기
     router.push(`/confirm/${id}`);
   };
   useEffect(() => {
@@ -21,7 +24,7 @@ const ConfirmTable = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [clickModal]);
 
   return (
     <div className="rounded-sm border border-stroke bg-white  pb-2.5 pt-4.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
