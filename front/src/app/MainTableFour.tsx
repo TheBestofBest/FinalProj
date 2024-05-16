@@ -1,120 +1,121 @@
-import DropdownDefault from "@/components/Dropdowns/DropdownDefault";
-import { BRAND } from "@/types/brand";
-import Image from "next/image";
+"use client";
 
-const brandData: BRAND[] = [
-  {
-    logo: "/images/brand/brand-01.svg",
-    name: "Google",
-    visitors: 3.5,
-    revenues: "5,768",
-    sales: 590,
-    conversion: 4.8,
-  },
-  {
-    logo: "/images/brand/brand-02.svg",
-    name: "Twitter",
-    visitors: 2.2,
-    revenues: "4,635",
-    sales: 467,
-    conversion: 4.3,
-  },
-  {
-    logo: "/images/brand/brand-06.svg",
-    name: "Youtube",
-    visitors: 2.1,
-    revenues: "4,290",
-    sales: 420,
-    conversion: 3.7,
-  },
-  {
-    logo: "/images/brand/brand-04.svg",
-    name: "Vimeo",
-    visitors: 1.5,
-    revenues: "3,580",
-    sales: 389,
-    conversion: 2.5,
-  },
-  {
-    logo: "/images/brand/brand-05.svg",
-    name: "Facebook",
-    visitors: 3.5,
-    revenues: "6,768",
-    sales: 390,
-    conversion: 4.2,
-  },
-];
+import api from "@/util/api";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 const MainTableFour: React.FC = () => {
+  const addOneDayToEnd = (endDateString) => {
+    const endDate = new Date(endDateString); // 종료일을 생성합니다.
+    endDate.setDate(endDate.getDate() + 1); // 종료일에 하루를 더합니다.
+    return endDate.toISOString().split("T")[0]; // ISO 8601 형식으로 변환하여 반환합니다.
+  };
+  var today = new Date(
+    new Date().getFullYear() +
+      "-" +
+      (new Date().getMonth() + 1) +
+      "-" +
+      new Date().getDate() +
+      "-" +
+      "09:00:00",
+  );
+
+  const queryClient = useQueryClient();
+  const [schedules, setSchedules] = useState<any[]>([]);
+  const [todaySchedules, setTodaySchedules] = useState<any[]>([]);
+  const data: any = queryClient.getQueryData(["member"]);
+
+  const getSchedules = async (relationName: string, relationId: number) => {
+    await api
+      .get(`/api/v1/schedules/getSchedules/${relationName}/${relationId}`)
+      .then((res) => {
+        const scheduleData = res.data.data.scheduleDTOs.map((schedule) => ({
+          originalId: schedule.id,
+          title: schedule.name,
+          start: schedule.startDate,
+          end:
+            schedule.endDate === schedule.startDate
+              ? schedule.endDate
+              : addOneDayToEnd(schedule.endDate),
+          inclusive: true,
+          category: schedule.relationName,
+          categoryId: schedule.relationId,
+          originalEnd: schedule.endDate,
+          originalStart: schedule.startDate,
+        }));
+        setSchedules((schedules) => [...schedules, ...scheduleData]);
+      });
+  };
+
+  useEffect(() => {
+    const todayData = schedules.filter((schedule) => {
+      var start = new Date(schedule.originalStart);
+      var end = new Date(schedule.originalEnd);
+
+      if (start <= today && end >= today) {
+        return schedule;
+      }
+    });
+    setTodaySchedules(todayData);
+  }, [schedules]);
+  useEffect(() => {
+    // 회사 일정
+    getSchedules("all", 0);
+    // 부서
+    getSchedules("dept", data && data?.department.id);
+    // 개인
+    getSchedules("member", data && data?.id);
+  }, []);
+
+  function renderTodayContent(today) {
+    let color;
+    switch (today.category) {
+      case "all":
+        color = "bg-red";
+        break;
+      case "dept":
+        color = "bg-green-700";
+        break;
+      case "member":
+        color = "bg-blue-700";
+        break;
+      default:
+        color = "bg-gray-700";
+        break;
+    }
+    return (
+      <a className="flex w-full bg-blue-50 hover:bg-slate-400" href="/schedule">
+        <div className={`${color} me-1 h-auto w-1`}></div>
+        <div>
+          <div className="fc-event-title truncate ">{today.title}</div>
+          <div className="mt-1 truncate">
+            {today.originalStart} ~ {today.originalEnd}
+          </div>
+        </div>
+      </a>
+    );
+  }
+
   return (
     <div className="col-span-12 xl:col-span-7">
       <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        <div className="mb-6 flex justify-between">
+        <div className="mb-6">
           <div>
             <h4 className="text-title-sm2 font-bold text-black dark:text-white">
-              스케줄
+              오늘 스케줄
             </h4>
-          </div>
-          <DropdownDefault />
-        </div>
-
-        <div className="flex flex-col">
-          <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-4">
-            <div className="p-2.5 xl:p-4">
-              <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Source
-              </h5>
-            </div>
-            <div className="p-2.5 text-center xl:p-4">
-              <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Visitors
-              </h5>
-            </div>
-            <div className="p-2.5 text-center xl:p-4">
-              <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Revenues
-              </h5>
-            </div>
-            <div className="hidden p-2.5 text-center sm:block xl:p-4">
-              <h5 className="text-sm font-medium uppercase xsm:text-base">
-                Conversion
-              </h5>
+            <div className="todayArea mt-7">
+              <div className="mt-3 h-125 flex-col space-y-4 overflow-auto">
+                {todaySchedules.length > 0 ? (
+                  todaySchedules.map((today) => renderTodayContent(today))
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <div className="font-bold">오늘 일정이 없습니다</div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-
-          {brandData.map((brand, key) => (
-            <div
-              className={`grid grid-cols-3 sm:grid-cols-4 ${
-                key === brandData.length - 1
-                  ? ""
-                  : "border-b border-stroke dark:border-strokedark"
-              }`}
-              key={key}
-            >
-              <div className="flex items-center gap-3 p-2.5 xl:p-5">
-                <div className="h-9 w-full max-w-9 flex-shrink-0">
-                  <Image src={brand.logo} width={60} height={50} alt="Brand" />
-                </div>
-                <p className="hidden font-medium text-black dark:text-white sm:block">
-                  {brand.name}
-                </p>
-              </div>
-
-              <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p className="font-medium text-black dark:text-white">
-                  {brand.visitors}K
-                </p>
-              </div>
-
-              <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p className="font-medium text-meta-3">${brand.revenues}</p>
-              </div>
-
-              <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                <p className="font-medium text-meta-5">{brand.conversion}%</p>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>
