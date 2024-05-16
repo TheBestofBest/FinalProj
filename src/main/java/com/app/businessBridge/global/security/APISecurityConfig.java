@@ -43,10 +43,12 @@ public class APISecurityConfig {
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/members")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/members/login")).permitAll() // 로그인
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/members/logout")).permitAll() // 로그아웃
-                                .requestMatchers(new AntPathRequestMatcher("/api/*/grades")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/*/grades/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/divisions")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/divisions/**")).permitAll() //소속
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/departments")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/*/departments/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/departments/**")).permitAll() // 부서
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/grades")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/*/grades/**")).permitAll() // 직급
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/mailboxes")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/mailboxes/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/*/mails")).permitAll()

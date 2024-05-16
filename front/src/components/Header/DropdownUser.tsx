@@ -7,10 +7,16 @@ import { useRouter } from "next/navigation";
 
 interface memberInfo {
   name: String;
+  division: {
+    code: number;
+    name: String;
+  };
   department: {
+    code: number;
     name: String;
   };
   grade: {
+    code: number;
     name: String;
   };
 }
@@ -62,8 +68,6 @@ const DropdownUser = () => {
     router.replace("/auth/signin");
   };
 
-  console.log(member);
-
   return (
     <div className="relative">
       <Link
@@ -77,7 +81,17 @@ const DropdownUser = () => {
             {member?.name}
           </span>
           <span className="block text-xs">
-            {member?.department.name} 부서 / {member?.grade.name}
+            {member?.division.code === 0 ? null : `${member?.division.name}`}
+            {member?.department.code === 0
+              ? null
+              : member?.division.code !== 0
+                ? ` / ${member?.department.name}`
+                : `${member?.department.name}`}
+            {member?.grade.code === 0
+              ? null
+              : member?.division.code !== 0 || member?.department.code !== 0
+                ? ` / ${member?.grade.name}`
+                : `${member?.grade.name}`}
           </span>
         </span>
 
