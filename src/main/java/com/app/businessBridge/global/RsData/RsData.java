@@ -1,6 +1,5 @@
 package com.app.businessBridge.global.RsData;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
