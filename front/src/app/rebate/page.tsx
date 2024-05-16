@@ -29,6 +29,7 @@ interface Rebate {
     tax: number;
     insurance: number;
     totalSalary: number;
+    isSaved: boolean;
 }
 
 export default function Rebates() {

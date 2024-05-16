@@ -24,6 +24,11 @@ interface Rebate {
   tax: number;
   insurance: number;
   totalSalary: number;
+  saved:boolean;
+}
+
+interface RebateIds {
+  rebateId : number;
 }
 
 
@@ -38,7 +43,7 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
   const [currentMonth, setCurrentMonth] = useState('');
   const router = useRouter();
 
-  const [rebateIds, setRebateIds] = useState([{rebateId: ''}]);
+  const [rebateIds, setRebateIds] = useState<RebateIds[]>([]);
 
   const [isCheckedList, setIsCheckedList] = useState(Array(rebates.length).fill(false));
 
@@ -48,18 +53,19 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
     const newList = [...isCheckedList];
     newList[key] = !newList[key];
     setIsCheckedList(newList);
+    
     // 해당 rebateId가 이미 있는지 확인
-    const existingIndex = rebateIds.indexOf(rebateId);
+    const existingIndex = rebateIds.findIndex(item => item.rebateId === rebateId);
 
     if (existingIndex !== -1) {
         // 이미 있는 경우, 해당 rebateId를 제거
-        setRebateIds(prevIds => prevIds.filter(id => id !== rebateId));
+        setRebateIds(prevIds => prevIds.filter(item => item.rebateId !== rebateId));
     } else {
         // 없는 경우, 해당 rebateId를 추가
-        setRebateIds(prevIds => [...prevIds, {rebateId}]);
+        setRebateIds(prevIds => [...prevIds, { rebateId }]);
     }
     console.log(rebateIds);
-  };
+};
 
   const handleAllCheckboxesChange = () => {
     // 모든 체크박스가 선택되어 있는지 여부 확인
@@ -107,6 +113,7 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
 
       if (response.ok) {
         alert("정산 저장 성공.");
+        window.location.replace(`/rebate`);
       } else {
         alert("정산 저장 실패.");
       }
@@ -216,7 +223,7 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
             }`}
             key={key}
           >
-          <div className="flex items-center gap-3 p-2.5 xl:p-5">
+            {rebate.saved===false ? ( <div className="flex items-center gap-3 p-2.5 xl:p-5">
             <label
               htmlFor={`${rebate.rebateId}`}
               className="cursor-pointer select-none items-center"
@@ -255,7 +262,8 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
                 </div>
               </div>
             </label>
-          </div>
+          </div>) : (<div className="flex items-center gap-3 p-2.5 xl:p-5">저장됨</div>)}
+         
 
 
             <div className="flex items-center gap-3 p-2.5 xl:p-5">

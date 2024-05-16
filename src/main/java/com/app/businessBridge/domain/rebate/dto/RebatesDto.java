@@ -32,6 +32,8 @@ public class RebatesDto {
     // 실급여
     private Long totalSalary;
 
+    private boolean isSaved;
+
     public RebatesDto(Rebate rebate) {
         this.rebateId = rebate.getId();
         this.year = rebate.getYear();
@@ -44,6 +46,7 @@ public class RebatesDto {
         this.dept = rebate.getMember().getDepartment().getName();
 
         this.totalSalary = rebate.getTotalSalary();
+        this.isSaved = rebate.isSaved();
     }
 
 
