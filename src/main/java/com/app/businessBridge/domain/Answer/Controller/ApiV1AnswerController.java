@@ -52,7 +52,6 @@ public class ApiV1AnswerController {
         ));
     }
 
-
     @PostMapping("")
     public RsData<AnswerResponse> write(@Valid @RequestBody AnswerRequest answerRequest) {
 
