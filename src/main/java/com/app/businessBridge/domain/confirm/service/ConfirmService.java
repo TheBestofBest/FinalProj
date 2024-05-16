@@ -3,6 +3,8 @@ package com.app.businessBridge.domain.confirm.service;
 import com.app.businessBridge.domain.confirm.entity.Confirm;
 import com.app.businessBridge.domain.confirm.repository.ConfirmRepository;
 import com.app.businessBridge.domain.confirm.request.ConfirmRequest;
+import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
+import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +21,20 @@ public class ConfirmService {
     public List<Confirm> getAll() {
         return this.confirmRepository.findAll();
     }
-    public Optional<Confirm> findById(Long confirmId){
+
+    public Optional<Confirm> findById(Long confirmId) {
         return this.confirmRepository.findById(confirmId);
     }
 
-    public RsData<Confirm> createConfirm(ConfirmRequest.create createConfirmRequest) {
+    public RsData<Confirm> createConfirm(ConfirmRequest.create createConfirmRequest, ConfirmStatus confirmStatus, Member confirmRequestMember, List<Member> confirmMembers) {
         Confirm confirm = Confirm.builder()
                 .subject(createConfirmRequest.getSubject())
                 .description(createConfirmRequest.getDescription())
-                .content(createConfirmRequest.getContent())
+                .formData(createConfirmRequest.getFormData())
                 .formType(createConfirmRequest.getFormType())
-                .confirmStatus(createConfirmRequest.getConfirmStatus())
-                .confirmRequestMember(createConfirmRequest.getConfirmRequestMember())
-                .confirmMembers(createConfirmRequest.getConfirmMembers())
+                .confirmStatus(confirmStatus)
+                .confirmRequestMember(confirmRequestMember)
+                .confirmMembers(confirmMembers)
                 .build();
         this.confirmRepository.save(confirm);
 
@@ -42,24 +45,24 @@ public class ConfirmService {
         );
     }
 
-    public RsData<Confirm> updateConfirm(Confirm confirm,  ConfirmRequest.patch patchConfirmRequest) {
-        Confirm patchedConfirm = confirm.toBuilder()
-                .subject(patchConfirmRequest.getSubject())
-                .description(patchConfirmRequest.getDescription())
-                .content(patchConfirmRequest.getContent())
-                .formType(patchConfirmRequest.getFormType())
-                .confirmStatus(patchConfirmRequest.getConfirmStatus())
-                .confirmRequestMember(patchConfirmRequest.getConfirmRequestMember())
-                .confirmMembers(patchConfirmRequest.getConfirmMembers())
-                .build();
-        this.confirmRepository.save(patchedConfirm);
-
-        return RsData.of(
-                RsCode.S_03,
-                "%d번 결재 수정이 완료되었습니다.",
-                patchedConfirm
-        );
-    }
+//    public RsData<Confirm> updateConfirm(Confirm confirm, ConfirmRequest.patch patchConfirmRequest) {
+//        Confirm patchedConfirm = confirm.toBuilder()
+//                .subject(patchConfirmRequest.getSubject())
+//                .description(patchConfirmRequest.getDescription())
+//                .formData(patchConfirmRequest.getFormData())
+//                .formType(patchConfirmRequest.getFormType())
+//                .confirmStatus(patchConfirmRequest.getConfirmStatus())
+//                .confirmRequestMember(patchConfirmRequest.getConfirmRequestMember())
+//                .confirmMembers(patchConfirmRequest.getConfirmMembers())
+//                .build();
+//        this.confirmRepository.save(patchedConfirm);
+//
+//        return RsData.of(
+//                RsCode.S_03,
+//                "%d번 결재 수정이 완료되었습니다.",
+//                patchedConfirm
+//        );
+//    }
 
     public RsData<Confirm> changeStatusConfirm(Confirm confirm, ConfirmRequest.changeStatus changeStatusRequest) {
         Confirm statusChangedConfirm = confirm.toBuilder()

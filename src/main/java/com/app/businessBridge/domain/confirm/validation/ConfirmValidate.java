@@ -225,33 +225,24 @@ public class ConfirmValidate {
                     validateConfirm.getData()
             );
         }
-        // 처리 상태 검증
-        RsData<ConfirmResponse.create> validateStatus = ConfirmValidate.validateConfirmStatus(createConfirmRequest.getConfirmStatus());
-        if (!validateStatus.getIsSuccess()) {
-            return RsData.of(
-                    validateStatus.getRsCode(),
-                    validateStatus.getMsg(),
-                    validateStatus.getData()
-            );
-        }
         // 결재 요청자 검증
-        RsData<ConfirmResponse.create> validateConfirmRequestMember = ConfirmValidate.validateConfirmRequestMember(createConfirmRequest.getConfirmRequestMember());
-        if (!validateConfirmRequestMember.getIsSuccess()) {
-            return RsData.of(
-                    validateConfirmRequestMember.getRsCode(),
-                    validateConfirmRequestMember.getMsg(),
-                    validateConfirmRequestMember.getData()
-            );
-        }
+//        RsData<ConfirmResponse.create> validateConfirmRequestMember = ConfirmValidate.validateConfirmRequestMember(createConfirmRequest.getConfirmRequestMember());
+//        if (!validateConfirmRequestMember.getIsSuccess()) {
+//            return RsData.of(
+//                    validateConfirmRequestMember.getRsCode(),
+//                    validateConfirmRequestMember.getMsg(),
+//                    validateConfirmRequestMember.getData()
+//            );
+//        }
         // 결재 승인자 검증
-        RsData<ConfirmResponse.create> validateConfirmMembers = ConfirmValidate.validateConfirmMembers(createConfirmRequest.getConfirmMembers());
-        if (!validateConfirmMembers.getIsSuccess()) {
-            return RsData.of(
-                    validateConfirmMembers.getRsCode(),
-                    validateConfirmMembers.getMsg(),
-                    validateConfirmMembers.getData()
-            );
-        }
+//        RsData<ConfirmResponse.create> validateConfirmMembers = ConfirmValidate.validateConfirmMembers(createConfirmRequest.getConfirmMembers());
+//        if (!validateConfirmMembers.getIsSuccess()) {
+//            return RsData.of(
+//                    validateConfirmMembers.getRsCode(),
+//                    validateConfirmMembers.getMsg(),
+//                    validateConfirmMembers.getData()
+//            );
+//        }
         return RsData.of(
                 RsCode.S_08,
                 "결재 양식, 처리상태, 요청자, 승인자 검증됨",
@@ -280,23 +271,23 @@ public class ConfirmValidate {
             );
         }
         // 결재 요청자 검증
-        RsData<ConfirmResponse.patch> validateConfirmRequestMember = ConfirmValidate.validateConfirmRequestMemberPatch(patchConfirmRequest.getConfirmRequestMember());
-        if (!validateConfirmRequestMember.getIsSuccess()) {
-            return RsData.of(
-                    validateConfirmRequestMember.getRsCode(),
-                    validateConfirmRequestMember.getMsg(),
-                    validateConfirmRequestMember.getData()
-            );
-        }
+//        RsData<ConfirmResponse.patch> validateConfirmRequestMember = ConfirmValidate.validateConfirmRequestMemberPatch(patchConfirmRequest.getConfirmRequestMember());
+//        if (!validateConfirmRequestMember.getIsSuccess()) {
+//            return RsData.of(
+//                    validateConfirmRequestMember.getRsCode(),
+//                    validateConfirmRequestMember.getMsg(),
+//                    validateConfirmRequestMember.getData()
+//            );
+//        }
         // 결재 승인자 검증
-        RsData<ConfirmResponse.patch> validateConfirmMembers = ConfirmValidate.validateConfirmMembersPatch(patchConfirmRequest.getConfirmMembers());
-        if (!validateConfirmMembers.getIsSuccess()) {
-            return RsData.of(
-                    validateConfirmMembers.getRsCode(),
-                    validateConfirmMembers.getMsg(),
-                    validateConfirmMembers.getData()
-            );
-        }
+//        RsData<ConfirmResponse.patch> validateConfirmMembers = ConfirmValidate.validateConfirmMembersPatch(patchConfirmRequest.getConfirmMembers());
+//        if (!validateConfirmMembers.getIsSuccess()) {
+//            return RsData.of(
+//                    validateConfirmMembers.getRsCode(),
+//                    validateConfirmMembers.getMsg(),
+//                    validateConfirmMembers.getData()
+//            );
+//        }
         return RsData.of(
                 RsCode.S_08,
                 "결재 양식, 처리상태, 요청자, 승인자 검증됨",

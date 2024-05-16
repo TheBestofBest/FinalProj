@@ -55,4 +55,12 @@ public class ConfirmFormTypeService {
     public void deleteConfirmFormType(ConfirmFormType confirmFormType) {
         this.confirmFormTypeRepository.delete(confirmFormType);
     }
+
+    public RsData<ConfirmFormType> getConfirmFormTypeByFormName(String formName) {
+        Optional<ConfirmFormType> optionalConfirmFormType = this.confirmFormTypeRepository.findByFormName(formName);
+        if(optionalConfirmFormType.isEmpty()){
+            return RsData.of(RsCode.F_04,"해당 이름의 결재 양식은 존재하지 않습니다.", null);
+        }
+        return RsData.of(RsCode.S_05, "%s 결재양식을 찾았습니다.".formatted(formName), optionalConfirmFormType.get());
+    }
 }
