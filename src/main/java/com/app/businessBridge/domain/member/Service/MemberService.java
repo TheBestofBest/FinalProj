@@ -4,6 +4,8 @@ import ch.qos.logback.core.spi.ConfigurationEvent;
 import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
+import com.app.businessBridge.domain.division.entity.Division;
+import com.app.businessBridge.domain.division.repository.DivisionRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.grade.repository.GradeRepository;
 import com.app.businessBridge.domain.grade.service.GradeService;
@@ -15,6 +17,7 @@ import com.app.businessBridge.domain.member.response.MemberResponse;
 import com.app.businessBridge.global.RsData.RsCode;
 import com.app.businessBridge.global.RsData.RsData;
 import com.app.businessBridge.global.jwt.JwtProvider;
+import com.app.businessBridge.global.request.Request;
 import com.app.businessBridge.global.security.SecurityUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,14 +36,17 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DivisionRepository divisionRepository;
     private final DepartmentRepository departmentRepository;
     private final GradeRepository gradeRepository;
     private final JwtProvider jwtProvider;
     private final MeetingRoomService meetingRoomService;
+    private final Request rq;
 
     // 회원 생성
-    public RsData create(Integer departmentCode, Integer gradeCode, String username,
+    public RsData create(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
                          Integer memberNumber, String name, String password, String email) {
+        Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
@@ -51,6 +57,7 @@ public class MemberService {
         }
 
         Member member = Member.builder()
+                .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
@@ -106,9 +113,10 @@ public class MemberService {
     }
 
     // 회원 수정
-    public RsData<Member> update(Long id, Integer departmentCode, Integer gradeCode, String username,
+    public RsData<Member> update(Long id, Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
                                  Integer memberNumber, String name, String password, String email) {
         RsData<Member> rsData = findById(id);
+        Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
@@ -126,6 +134,7 @@ public class MemberService {
         }
 
         Member member = rsData.getData().toBuilder()
+                .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
@@ -212,7 +221,7 @@ public class MemberService {
 
     // 정산, 통계 테스트용 회원 생성 로직
     public RsData createRebateTest(Integer departmentCode, Integer gradeCode, String username,
-                         Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
+                                   Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
 
@@ -308,10 +317,18 @@ public class MemberService {
                 .meetingRoom(null)
                 .build();
         memberRepository.save(exitMember);
-        List<Member> members = this.getApprovedMembersByMeetingRoom(roomId).getData();
+        List<Member> members = this.getApprovedMembersByMeetingRoom(roomId).getData() == null ? null : this.getApprovedMembersByMeetingRoom(roomId).getData();
         meetingRoomService.updateMembers(roomId, members);
         return RsData.of(RsCode.S_01,
                 "나가기 완료", members);
+    }
+
+    // 로그아웃
+    public RsData logout() {
+        rq.removeCrossDomainCookie("accessToken");
+        rq.removeCrossDomainCookie("refreshToken");
+
+        return RsData.of(RsCode.S_07, "로그아웃되었습니다.");
     }
 
     // name(이름)로 회원 찾기

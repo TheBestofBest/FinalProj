@@ -43,7 +43,7 @@ public class ApiV1GradeController {
     }
 
     // 직급 수정
-    @PatchMapping("/{id}")
+    @PatchMapping("")
     public RsData<GradeResponse.PatchedGrade> patch(@Valid @RequestBody GradeRequest.UpdateRequest updateRequest,
                                                     BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -57,7 +57,7 @@ public class ApiV1GradeController {
     }
 
     // 직급 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("")
     public RsData delete(@Valid @RequestBody GradeRequest.DeleteRequest deleteRequest,
                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

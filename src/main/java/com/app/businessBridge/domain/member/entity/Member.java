@@ -1,6 +1,7 @@
 package com.app.businessBridge.domain.member.entity;
 
 import com.app.businessBridge.domain.department.entity.Department;
+import com.app.businessBridge.domain.division.entity.Division;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
@@ -30,6 +31,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Member extends BaseEntity {
+    @ManyToOne
+    private Division division; // 소속
     @ManyToOne
     private Department department; // 부서
     @ManyToOne
