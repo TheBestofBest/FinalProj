@@ -9,6 +9,7 @@ import DefaultLayout from "@/components/Layouts/DefaultLayout";
 export default function Answer() {
 
     const getAnswers = async () => {
+        return await api.get('/answers')
         return await api.get('/api/v1/answers')
             .then((response) => response.data.data.answers)
     }
@@ -20,6 +21,7 @@ export default function Answer() {
 
 
     const deleteAnswer = async (id) => {
+        await api.delete(`/answers/${id}`)
         await api.delete(`/api/v1/answers/${id}`)
     }
 
@@ -39,15 +41,17 @@ export default function Answer() {
 
     if (data) {
         return (
+            <>
             <DefaultLayout>
-              
+
                 <ul>
                     
                     {data.map((row) => (
                         <li key={row.id}>
                             {row.id} /{' '}
                             <Link href={`/answer/${row.id}`}>{row.content}</Link> /{' '}
-                           
+                            {row.author} / {row.createdDate}
+
                             <button onClick={() => mutation.mutate(row.id)}>
                                 삭제
                             </button>
@@ -57,6 +61,7 @@ export default function Answer() {
                 <Link href="/answerCreate">
                 Answer Create 페이지로 이동
                 </Link>
+            </>
             </DefaultLayout>
         )
     }

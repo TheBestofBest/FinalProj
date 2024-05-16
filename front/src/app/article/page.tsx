@@ -40,9 +40,9 @@ export default function Article() {
     if (data) {
         return (
             <DefaultLayout>
-                
+
                 <ul>
-                  
+
                     {data.map((row) => (
                         <li key={row.id}>
                             {row.id} /{' '}

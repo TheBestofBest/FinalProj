@@ -40,6 +40,16 @@ public class ApiV1AnswerController {
 
         return RsData.of(RsCode.S_01, "성공", new AnswersResponses(answerDtoList));
     }
+    @GetMapping("/{articleId}/articles")
+    public RsData<AnswersResponses> getAnswerAndArticle(@PathVariable(value = "articleId") Long articleId) {
+        List<Answer> answers = this.answerService.findAllByArticleId(articleId);
+        List<AnswerDto> answerDTOS = new ArrayList<>();
+        for (Answer answer : answers) {
+            answerDTOS.add(new AnswerDto(answer));
+        }
+
+        return RsData.of(RsCode.S_01, "성공", new AnswersResponses(answerDTOS));
+    }
 
     @GetMapping("/{id}")
     public RsData<AnswersResponse> getAnswer(@PathVariable("id") Long id) {
@@ -121,7 +131,8 @@ public class ApiV1AnswerController {
         private String content;
 
         private Article article;
-
+//        @NotBlank
+//        private List<Article> articleList;
     }
     @AllArgsConstructor
     @Getter

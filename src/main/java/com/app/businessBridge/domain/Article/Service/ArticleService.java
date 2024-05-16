@@ -44,18 +44,19 @@ public class ArticleService {
         return articleRepository.findById(id);
     }
     public RsData<Article> modify(Article article, String subject, String content) {
+        // 기존 article 객체를 기반으로 article1 객체 생성
 
-                article.setSubject(subject);
-                article.setContent(content);
+        // article1 객체의 subject와 content 필드를 새 값으로 설정
+        article.setSubject(subject);
+        article.setContent(content);
 
+        // article1 객체를 저장하여 수정된 내용을 DB에 반영
         articleRepository.save(article);
-
         return RsData.of(RsCode.S_03,
                 "%d번 게시물이 수정 되었습니다.".formatted(article.getId()),
                 article
         );
     }
-
     public RsData<Article> deleteById(Long id) {
         articleRepository.deleteById(id);
 

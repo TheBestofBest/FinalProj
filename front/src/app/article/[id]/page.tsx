@@ -36,7 +36,7 @@ export default function ArticleDetail() {
                 <div>{articleData.content}</div>
                 
                 <Link href={`/article/${params.id}/edit`}>수정하기</Link>
-                
+
             </DefaultLayout>
         );
     }
