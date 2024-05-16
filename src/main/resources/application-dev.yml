@@ -1,0 +1,16 @@
+server:
+  port: 8090
+spring:
+  output:
+    ansi:
+      enabled: always
+  datasource:
+    url: jdbc:mariadb://127.0.0.1:3306/businessBridge_dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    username: root
+    password:
+  servlet:
+    multipart:
+      maxFileSize: 50MB
+      maxRequestSize: 50MB
+custom:
+  fileDirPath: C:\B-bridge\file_upload
