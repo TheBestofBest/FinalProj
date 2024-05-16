@@ -17,7 +17,7 @@ public class MemberDTO {
     private Grade grade;
     private String username;
     private String email;
-//    private Image profileImg; // 프로필 사진
+    //    private Image profileImg; // 프로필 사진
     private Integer memberNumber; // 사원번호
     private String name; // 사원명
     private String assignedTask; // 담당 업무
@@ -42,7 +42,8 @@ public class MemberDTO {
         this.extensionNumber = member.getExtensionNumber();
         this.phoneNumber = member.getPhoneNumber();
         this.statusMessage = member.getStatusMessage();
-        ch
+        this.sex = member.getSex();
+        this.age = member.getAge();
         this.meetingState =
                 member.getMeetingState() == null ? "참석 중인 회의 없음" :
                         !member.getMeetingState() ? "%d번 회의 초대 받음".formatted(member.getMeetingRoom().getId()) :

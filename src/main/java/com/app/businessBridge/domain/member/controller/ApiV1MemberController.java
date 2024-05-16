@@ -33,7 +33,7 @@ public class ApiV1MemberController {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
 
-        RsData<Member> rsData = this.memberService.create(createRequest.getDivisionCode(), createRequest.getDepartmentCode(), createRequest.getGradeCode(),
+        RsData rsData = this.memberService.create(createRequest.getDivisionCode(), createRequest.getDepartmentCode(), createRequest.getGradeCode(),
                 createRequest.getUsername(), createRequest.getPassword(), createRequest.getEmail(), createRequest.getMemberNumber(), createRequest.getName()
                 );
 
@@ -78,8 +78,10 @@ public class ApiV1MemberController {
             return RsData.of(RsCode.F_10, "알 수 없는 오류로 실패했습니다.");
         }
         RsData<Member> rsData = this.memberService.update(updateRequest.getId(), updateRequest.getDivisionCode(), updateRequest.getDepartmentCode(), updateRequest.getGradeCode(),
-                updateRequest.getUsername(), updateRequest.getMemberNumber(), updateRequest.getName(),
-                updateRequest.getPassword(), updateRequest.getEmail());
+                updateRequest.getUsername(),updateRequest.getPassword(), updateRequest.getEmail(), updateRequest.getMemberNumber(),
+                updateRequest.getName(),updateRequest.getAssignedTask(),updateRequest.getExtensionNumber(),
+                updateRequest.getPhoneNumber(),updateRequest.getStatusMessage(),updateRequest.getSex(),
+                updateRequest.getAge());
 
         if (rsData.getData() == null) {
             return RsData.of(rsData.getRsCode(), rsData.getMsg());

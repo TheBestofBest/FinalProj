@@ -43,13 +43,25 @@ public class MemberRequest {
         @NotBlank
         private String username;
         @NotBlank
-        private String email;
-        @NotBlank
         private String password;
+        @NotBlank
+        private String email;
         @NotNull
         private Integer memberNumber;
         @NotBlank
         private String name;
+        @NotBlank
+        private String assignedTask;
+        @NotBlank
+        private String extensionNumber;
+        @NotBlank
+        String phoneNumber;
+        @NotBlank
+        String statusMessage;
+        @NotBlank
+        char sex;
+        @NotBlank
+        String age;
     }
 
     @Getter

@@ -114,7 +114,8 @@ public class MemberService {
 
     // 회원 수정
     public RsData<Member> update(Long id, Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
-                                 Integer memberNumber, String name, String password, String email) {
+                                 String password, String email, Integer memberNumber, String name, String assignedTask,
+                                 String extensionNumber, String phoneNumber, String statusMessage, char sex, String age) {
         RsData<Member> rsData = findById(id);
         Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
@@ -138,10 +139,16 @@ public class MemberService {
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
-                .memberNumber(memberNumber)
-                .name(name)
                 .password(passwordEncoder.encode(password))
                 .email(email)
+                .memberNumber(memberNumber)
+                .name(name)
+                .assignedTask(assignedTask)
+                .extensionNumber(extensionNumber)
+                .phoneNumber(phoneNumber)
+                .statusMessage(statusMessage)
+                .sex(sex)
+                .age(age)
                 .build();
 
         String refreshToken = jwtProvider.genRefreshToken(member);
@@ -340,11 +347,12 @@ public class MemberService {
         }
         return RsData.of(RsCode.S_05, "회원을 찾았습니다.", om.get());
     }
-    public List<Member> getAll(){
+
+    public List<Member> getAll() {
         return this.memberRepository.findAll();
     }
 
-    public List<Member> searchMember( String keyword) {
+    public List<Member> searchMember(String keyword) {
         return this.memberRepository.findByKeyword(keyword);
     }
 
