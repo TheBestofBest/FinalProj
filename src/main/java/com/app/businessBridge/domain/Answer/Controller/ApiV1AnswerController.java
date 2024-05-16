@@ -1,4 +1,5 @@
 package com.app.businessBridge.domain.Answer.Controller;
+
 import com.app.businessBridge.domain.Answer.DTO.AnswerDto;
 import com.app.businessBridge.domain.Answer.Entity.Answer;
 import com.app.businessBridge.domain.Answer.Service.AnswerService;
@@ -39,16 +40,6 @@ public class ApiV1AnswerController {
 
         return RsData.of(RsCode.S_01, "성공", new AnswersResponses(answerDtoList));
     }
-    @GetMapping("/{articleId}/articles")
-    public RsData<AnswersResponses> getAnswerAndArticle(@PathVariable(value = "articleId") Long articleId) {
-        List<Answer> answers = this.answerService.findAllByArticleId(articleId);
-        List<AnswerDto> answerDTOS = new ArrayList<>();
-        for (Answer answer : answers) {
-            answerDTOS.add(new AnswerDto(answer));
-        }
-
-        return RsData.of(RsCode.S_01, "성공", new AnswersResponses(answerDTOS));
-    }
 
     @GetMapping("/{id}")
     public RsData<AnswersResponse> getAnswer(@PathVariable("id") Long id) {
@@ -65,9 +56,6 @@ public class ApiV1AnswerController {
     @PostMapping("")
     public RsData<AnswerResponse> write(@Valid @RequestBody AnswerRequest answerRequest) {
 
-
-
-
         RsData<Answer> writeRs = this.answerService.create(answerRequest.getContent(), answerRequest.getArticle());
 
 //        if (writeRs.isFail()) return (RsData) writeRs;
@@ -81,25 +69,33 @@ public class ApiV1AnswerController {
     @PatchMapping("/{id}")
     public RsData<ModifyResponse> modify(@Valid @RequestBody ModifyRequest modifyRequest, @PathVariable("id") Long id) {
         Optional<Answer> optionalAnswer = this.answerService.findById(id);
+
+
         if (optionalAnswer.isEmpty()) return RsData.of(RsCode.F_01,
                 "%d번 댓글은 존재하지 않습니다.".formatted(id),
                 null
         );
+
         RsData<Answer> modifyRs = this.answerService.modify(optionalAnswer.get(),modifyRequest.getContent());
+
         return RsData.of(
                 modifyRs.getRsCode(),
                 modifyRs.getMsg(),
                 new ApiV1AnswerController.ModifyResponse(modifyRs.getData())
         );
     }
+
     @DeleteMapping("/{id}")
     public RsData<RemoveResponse> remove(@PathVariable("id") Long id) {
         Optional<Answer> optionalAnswer = this.answerService.findById(id);
+
         if (optionalAnswer.isEmpty()) return RsData.of(RsCode.F_01,
                 "%d번 댓글은 존재하지 않습니다.".formatted(id),
                 null
         );
+
         RsData<Answer> deleteRs = answerService.deleteById(id);
+
         return RsData.of(
                 deleteRs.getRsCode(),
                 deleteRs.getMsg(),
@@ -138,14 +134,17 @@ public class ApiV1AnswerController {
         @NotBlank
         private String content;
     }
+
     @AllArgsConstructor
     @Getter
     public static class ModifyResponse {
         private final Answer answer;
     }
+
     @AllArgsConstructor
     @Getter
     public static class RemoveResponse {
         private final Answer answer;
     }
+
 }

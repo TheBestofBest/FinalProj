@@ -4,9 +4,7 @@ import api from "@/util/api"
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation';
-
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
-
 
 export default function AnswerEdit() {
     const params = useParams()
@@ -21,11 +19,7 @@ export default function AnswerEdit() {
 
     const fetchAnswer = async () => {
         try {
-
             const response = await api.get(`/api/v1/answers/${params.id}`)
-
-            const response = await api.get(`/answers/${params.id}`)
-
             setAnswer(response.data.data.answer)
             setIsLoading(true)
         } catch (error) {
@@ -36,12 +30,8 @@ export default function AnswerEdit() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-
             await api.patch(`/api/v1/answers/${params.id}`, answer)
-
-            await api.patch(`/answers/${params.id}`, answer)
-
-            router.push('/answer');
+            router.push(`/article/${params.id}`);
         } catch (error) {
             console.log(error)
         }
@@ -53,18 +43,11 @@ export default function AnswerEdit() {
     }
 
     return (
-        <>
+        <DefaultLayout>
             {isLoading ? (
-
-                <DefaultLayout>
-                    <h1>수정페이지</h1>
-                    <form onSubmit={handleSubmit}>
-
-
                 <>
                     <h1>수정페이지</h1>
                     <form onSubmit={handleSubmit}>
-                        
 
                         <input
                             type="text"
@@ -74,18 +57,10 @@ export default function AnswerEdit() {
                         />
                         <button type="submit">수정</button>
                     </form>
-
-                </DefaultLayout>
-
                 </>
-
             ) : (
                 <></>
             )}
-        </>
+        </DefaultLayout>
     )
-
 }
-
-}
-

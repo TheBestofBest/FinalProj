@@ -42,7 +42,7 @@ export default function Article() {
             <DefaultLayout>
 
                 <ul>
-
+                    번호 / 제목 / 작성자 / 생성일 / 삭제
                     {data.map((row) => (
                         <li key={row.id}>
                             {row.id} /{' '}

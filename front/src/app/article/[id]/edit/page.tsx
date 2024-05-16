@@ -18,7 +18,6 @@ export default function ArticleEdit() {
     }, [])
 
     const fetchArticle = async () => {
-
         try {
             const response = await api.get(`/api/v1/articles/${params.id}`)
             setArticle(response.data.data.article)
