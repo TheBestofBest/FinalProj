@@ -44,12 +44,11 @@ public class ArticleService {
         return articleRepository.findById(id);
     }
     public RsData<Article> modify(Article article, String subject, String content) {
-        Article article1 = Article.builder()
-        .subject(subject)
-        .content(content)
-                .build();
 
-        articleRepository.save(article1);
+                article.setSubject(subject);
+                article.setContent(content);
+
+        articleRepository.save(article);
 
         return RsData.of(RsCode.S_03,
                 "%d번 게시물이 수정 되었습니다.".formatted(article.getId()),

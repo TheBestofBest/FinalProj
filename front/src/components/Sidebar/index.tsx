@@ -740,7 +740,53 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
             </ul>
           </div>
+          <Link
+                  href="/article"
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes("article") && "bg-graydark dark:bg-meta-4"
+                  }`}
+                >
+                  <svg
+  className="fill-current duration-300 ease-in-out"
+  width="18"
+  height="18"
+  viewBox="0 0 24 24"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <path
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+    d="M5 3C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3H5ZM5 5H19C19.5523 5 20 5.44771 20 6V18C20 18.5523 19.5523 19 19 19H5C4.44772 19 4 18.5523 4 18V6C4 5.44771 4.44771 5 5 5ZM9 7C9 6.44772 9.44771 6 10 6C10.5523 6 11 6.44771 11 7V17C11 17.5523 10.5523 18 10 18C9.44771 18 9 17.5523 9 17V7ZM13 7C13 6.44772 13.4477 6 14 6C14.5523 6 15 6.44771 15 7V17C15 17.5523 14.5523 18 14 18C13.4477 18 13 17.5523 13 17V7Z"
+    fill="currentColor"
+  />
+</svg>
 
+                  Article
+                </Link>
+                <Link
+                  href="/answer"
+                  className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes("answer") && "bg-graydark dark:bg-meta-4"
+                  }`}
+                >
+                  <svg
+      className="fill-current duration-300 ease-in-out"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M21 3C21 2.44772 20.5523 2 20 2H4C3.44771 2 3 2.44772 3 3V15C3 15.5523 3.44772 16 4 16H5.5V18.117L8.117 16H20C20.5523 16 21 15.5523 21 15V3ZM19 14H8.382L6.5 15.883V14H5C4.44771 14 4 13.5523 4 13V4H20V13C20 13.5523 19.5523 14 19 14Z"
+        fill="currentColor"
+      />
+    </svg>
+                  Answer
+                </Link>
           {/* <!-- Others Group --> */}
           <div>
             <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
@@ -995,6 +1041,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                               Sign Up
                             </Link>
                           </li>
+                          <li>
+                        </li>
                         </ul>
                       </div>
                       {/* <!-- Dropdown Menu End --> */}

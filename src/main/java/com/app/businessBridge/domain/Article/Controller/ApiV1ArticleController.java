@@ -44,6 +44,7 @@ public class ApiV1ArticleController {
                 null
         ));
     }
+
     @PostMapping("")
     public RsData<WriteResponse> write(@Valid @RequestBody WriteRequest writeRequest) {
 
