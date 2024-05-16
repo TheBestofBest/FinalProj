@@ -11,4 +11,6 @@ public class RbSearchRequest {
 
     private String userInfo;
 
+    private String dept;
+
 }

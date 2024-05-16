@@ -91,4 +91,18 @@ public class RebateService {
     public List<Rebate> findByYearAndMember(String year, Long id) {
         return this.rebateRepository.findByYearAndMember(year, String.valueOf(id));
     }
+
+    public List<Rebate> findByDeptAndMonth(String dept, String month) {
+        List<Rebate> rebates = this.rebateRepository.findAll();
+
+        List<Rebate> searchRebates = new ArrayList<>();
+
+        for(Rebate rebate : rebates) {
+            if(rebate.getMember().getDepartment().getName().equals(dept) && rebate.getMonth().equals(month)) {
+                searchRebates.add(rebate);
+            }
+        }
+
+        return searchRebates;
+    }
 }
