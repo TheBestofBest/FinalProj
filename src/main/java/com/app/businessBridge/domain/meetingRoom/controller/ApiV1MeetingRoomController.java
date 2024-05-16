@@ -59,15 +59,18 @@ public class ApiV1MeetingRoomController {
     public RsData<MeetingRoomResponse.getMeetingRoom> create(@Valid @RequestBody MeetingRoomRequest.Create createRq) {
         Member member = rq.getMember();
         RsData<MeetingRoom> rsData = meetingRoomService.create(createRq.getName(), member);
-        memberService.inviteMeeting(member, rsData.getData().getId());
-        memberService.approveMeeting(member, rsData.getData().getId());
-        RsData<MeetingRoom> result = meetingRoomService.getMeetingRoom(rsData.getData().getId());
         if (!rsData.getIsSuccess()) {
             return (RsData) rsData;
         }
+        Long meetingRoomId = rsData.getData().getId();
+        memberService.inviteMeeting(member, rsData.getData().getId());
+        memberService.approveMeeting(member, rsData.getData().getId());
+
+        RsData<MeetingRoom> result = meetingRoomService.getMeetingRoom(meetingRoomId);
+
         return RsData.of(
-                rsData.getRsCode(),
-                rsData.getMsg(),
+                result.getRsCode(),
+                result.getMsg(),
                 new MeetingRoomResponse.getMeetingRoom(result.getData())
         );
     }
