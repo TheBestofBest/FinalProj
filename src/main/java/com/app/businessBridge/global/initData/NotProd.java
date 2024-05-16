@@ -1,6 +1,11 @@
 package com.app.businessBridge.global.initData;
 
+import com.app.businessBridge.domain.alarm.service.AlarmService;
 import com.app.businessBridge.domain.chattingRoom.service.ChattingRoomService;
+import com.app.businessBridge.domain.confirmFormType.entity.ConfirmFormType;
+import com.app.businessBridge.domain.confirmFormType.service.ConfirmFormTypeService;
+import com.app.businessBridge.domain.confirmStatus.entity.ConfirmStatus;
+import com.app.businessBridge.domain.confirmStatus.service.ConfirmStatusService;
 import com.app.businessBridge.domain.department.service.DepartmentService;
 import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.member.Service.MemberService;
@@ -18,13 +23,16 @@ import java.time.LocalDate;
 @Configuration
 @Profile({"dev", "test"})
 public class NotProd {
+
     @Bean
     CommandLineRunner initData(DepartmentService departmentService,
                                GradeService gradeService,
                                MemberService memberService,
                                ChattingRoomService chattingRoomService,
                                RebateService rebateService,
-                               WorkingDateService workingDateService) {
+                               WorkingDateService workingDateService,
+                               AlarmService alarmService,
+                               ConfirmFormTypeService confirmFormTypeService, ConfirmStatusService confirmStatusService) {
 
         return args -> {
 
@@ -44,30 +52,30 @@ public class NotProd {
             memberService.create(102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
             memberService.create(102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
 
-//            // 올 해 월 별 근무일 일괄 계산
-//            workingDateService.createThisYear();
-//
-//            // 정산, 통계 테스트용 회원 생성
-//            for (int i = 4; i < 104; i++) {
-//                int randomNum = (int) (Math.random() * 100 + 1);
-//                int randomAge = (int) (Math.random() * 100 + 1);
-//                if (i % 2 == 0) {
-//                    memberService.createRebateTest(101, 1002, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '남', String.valueOf(randomAge));
-//                }
-//                memberService.createRebateTest(102, 1001, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '여', String.valueOf(randomAge));
-//            }
-//
-//            LocalDate currentDate = LocalDate.now();
-//            int year = currentDate.getYear();
-//            int month = currentDate.getMonthValue();
-//
-//            for (int i = 5; i < 105; i++) {
-//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month));
-//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-1));
-//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-2));
-//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-3));
-//                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-4));
-//            }
+            // 올 해 월 별 근무일 일괄 계산
+            workingDateService.createThisYear();
+
+            // 정산, 통계 테스트용 회원 생성
+            for (int i = 4; i < 104; i++) {
+                int randomNum = (int) (Math.random() * 100 + 1);
+                int randomAge = (int) (Math.random() * 100 + 1);
+                if (i % 2 == 0) {
+                    memberService.createRebateTest(101, 1002, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '남', String.valueOf(randomAge));
+                }
+                memberService.createRebateTest(102, 1001, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '여', String.valueOf(randomAge));
+            }
+
+            LocalDate currentDate = LocalDate.now();
+            int year = currentDate.getYear();
+            int month = currentDate.getMonthValue();
+
+            for (int i = 5; i < 105; i++) {
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month));
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-1));
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-2));
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-3));
+                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-4));
+            }
 
             chattingRoomService.create("채팅방1", memberService.findByUsername("admin").getData());
             chattingRoomService.create("채팅방2", memberService.findByUsername("admin").getData());
@@ -76,6 +84,24 @@ public class NotProd {
             chattingRoomService.invite(1L, memberService.findByUsername("user1").getData());
             chattingRoomService.invite(1L, memberService.findByUsername("user2").getData());
             chattingRoomService.invite(2L, memberService.findByUsername("user1").getData());
+
+            alarmService.save("all",0L,"전체 1번 데이터");
+            alarmService.save("dept",1L,"부서 1번 데이터");
+            alarmService.save("dept",2L,"부서 2번 데이터");
+            alarmService.save("all",0L,"전체 2번 데이터");
+            alarmService.save("all",0L,"전체 3번 데이터");
+            alarmService.save("dept",3L,"부서 3번 데이터");
+            alarmService.save("dept",1L,"부서 4번 데이터");
+            alarmService.save("dept",2L,"부서 5번 데이터");
+            alarmService.save("dept",3L,"부서 6번 데이터");
+            alarmService.save("member",1L,"회원 1번 데이터");
+            alarmService.save("member",2L,"회원 2번 데이터");
+            alarmService.save("all",0L,"전체 4번 데이터");
+            alarmService.save("member",3L,"회원 3번 데이터");
+            alarmService.save("member",1L,"회원 4번 데이터");
+            alarmService.save("member",2L,"회원 5번 데이터");
+            alarmService.save("member",3L,"회원 6번 데이터");
+            alarmService.save("all",0L,"전체 5번 데이터");
 
 
             // 이미지 저장하는 외부 경로 폴더 생성 로직 필요 시 추가
@@ -98,6 +124,17 @@ public class NotProd {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+            // 결재 타입 생성
+
+            confirmFormTypeService.create("휴가 신청", "휴가를 신청합니다.");
+
+
+
+            // 결재 상태 생성
+            confirmStatusService.create("결재 처리중", "결재를 처리가 필요합니다.");
+            confirmStatusService.create("승인", "결재가 승인 됐습니다.");
+            confirmStatusService.create("반려", "결재가 반려 됐습니다..");
         };
     }
 }

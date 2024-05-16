@@ -2,6 +2,8 @@ package com.app.businessBridge;
 
 import com.app.businessBridge.domain.chatLog.entity.ChatLog;
 //import com.app.businessBridge.global.handler.WebSocketChatHandler;
+import com.app.businessBridge.domain.confirm.request.ConfirmRequest;
+import com.app.businessBridge.domain.rebate.service.RebateService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,4 +27,10 @@ class BusinessBridgeApplicationTests {
 
     }
 
+//    @Test
+//    void howManyRebates() {
+//        int sum = this.rebateService.findAll().size();
+//
+//        assertEquals(20,sum);
+//    }
 }

@@ -43,4 +43,19 @@ public class ConfirmFormTypeResponse {
     public static class delete{
         private Long confirmFormTypeId;
     }
+
+
+    @Getter
+    public static class getByFormName{
+        private ConfirmFormTypeDTO confirmFormTypeDTO;
+
+        public getByFormName(ConfirmFormType confirmFormType){
+            this.confirmFormTypeDTO = new ConfirmFormTypeDTO(confirmFormType);
+        }
+    }
+
+
+
+
+
 }
