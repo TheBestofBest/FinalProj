@@ -67,14 +67,14 @@ const SignIn: React.FC = () => {
                 <Link className="mb-5.5 inline-block" href="/">
                   <Image
                     className="hidden dark:block"
-                    src={"/images/logo/logo.svg"}
+                    src={"/images/logo/b-bridge.png"}
                     alt="Logo"
                     width={176}
                     height={32}
                   />
                   <Image
                     className="dark:hidden"
-                    src={"/images/logo/logo-dark.svg"}
+                    src={"/images/logo/b-bridge.png"}
                     alt="Logo"
                     width={176}
                     height={32}
@@ -82,7 +82,7 @@ const SignIn: React.FC = () => {
                 </Link>
 
                 <p className="2xl:px-20">
-                  우리 회사는 어쩌구~ 저쩌구~ 이러쿵 저러쿵.
+                  기업 그룹웨어 어플리케이션 Business-Bridge
                 </p>
               </div>
             </div>
