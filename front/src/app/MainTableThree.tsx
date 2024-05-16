@@ -1,4 +1,5 @@
 import { Package } from "@/types/package";
+import ConfirmTable from "@/components/Confirm/ConfirmTable";
 
 const packageData: Package[] = [
   {
@@ -37,9 +38,9 @@ const MainTableThree = () => {
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
-      <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        결재함
-      </h4>
+        <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
+          결재함
+        </h4>
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
