@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RebateDto {
 
+    private Long rebateId;
+
     private String year;
 
     private String month;
@@ -47,7 +49,10 @@ public class RebateDto {
     // 세후 실급여
     private Long totalSalary;
 
+    private boolean isSaved;
+
     public RebateDto(Rebate rebate) {
+        this.rebateId = rebate.getId();
         this.year = rebate.getYear();
         this.month = rebate.getMonth();
 
@@ -63,5 +68,7 @@ public class RebateDto {
         this.tax = rebate.getTax();
         this.insurance = rebate.getInsurance();
         this.totalSalary = rebate.getTotalSalary();
+
+        this.isSaved = rebate.isSaved();
     }
 }

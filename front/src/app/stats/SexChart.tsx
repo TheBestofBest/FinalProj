@@ -49,7 +49,7 @@ const options: ApexOptions = {
   ],
 };
 
-const MemberChartTwo: React.FC = () => {
+const SexChart: React.FC = () => {
   const [state, setState] = useState<ChartThreeState>({
     series: [65, 34, 12, 56],
   });
@@ -67,7 +67,7 @@ const MemberChartTwo: React.FC = () => {
       <div className="mb-3 justify-between gap-4 sm:flex">
         <div>
           <h5 className="text-xl font-semibold text-black dark:text-white">
-            직원 연령 현황
+            직원 성비 현황
           </h5>
         </div>
       </div>
@@ -124,4 +124,4 @@ const MemberChartTwo: React.FC = () => {
   );
 };
 
-export default MemberChartTwo;
+export default SexChart;
