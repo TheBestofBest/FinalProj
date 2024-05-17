@@ -45,9 +45,9 @@ public class MeetingWebSocketController {
         return answer;
     }
 
-    @MessageMapping("/peer/disconnect/{roomId}")
-    @SendTo("/topic/peer/disconnect/{roomId}")
-    public String handleDisconnect(@Payload String message, @DestinationVariable(value = "roomId") String roomId) {
+    @MessageMapping("/peer/exit")
+    @SendTo("/topic/peer/exit")
+    public String handleExit(@Payload String message) {
         return message;
     }
 

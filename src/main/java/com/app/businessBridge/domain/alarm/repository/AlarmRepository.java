@@ -26,4 +26,6 @@ public interface AlarmRepository extends JpaRepository<Alarm,Long> {
             String relationName2, Long relationId2,
             String relationName3, Long relationId3,
             Pageable pageable);
+
+    
 }
