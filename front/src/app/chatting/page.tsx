@@ -8,7 +8,7 @@ import Id from "./[id]/page";
 const Chatting = () => {
   return (
     <main>
-      <main className=" h-115 flex-1 overflow-y-auto p-6 ">
+      <main className=" h-115 flex items-center justify-center overflow-y-auto p-6 ">
         <div className="flex items-center justify-center">
           <div className="mt-12">
             <div className="mb-6">
