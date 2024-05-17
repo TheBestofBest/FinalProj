@@ -1,14 +1,11 @@
 package com.app.businessBridge.domain.member.Service;
 
-import ch.qos.logback.core.spi.ConfigurationEvent;
-import com.app.businessBridge.domain.Article.Entity.Article;
 import com.app.businessBridge.domain.department.entity.Department;
 import com.app.businessBridge.domain.department.repository.DepartmentRepository;
 import com.app.businessBridge.domain.division.entity.Division;
 import com.app.businessBridge.domain.division.repository.DivisionRepository;
 import com.app.businessBridge.domain.grade.entity.Grade;
 import com.app.businessBridge.domain.grade.repository.GradeRepository;
-import com.app.businessBridge.domain.grade.service.GradeService;
 import com.app.businessBridge.domain.meetingRoom.entity.MeetingRoom;
 import com.app.businessBridge.domain.meetingRoom.service.MeetingRoomService;
 import com.app.businessBridge.domain.member.entity.Member;
@@ -45,7 +42,7 @@ public class MemberService {
 
     // 회원 생성
     public RsData create(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
-                         Integer memberNumber, String name, String password, String email) {
+                         String password, Integer memberNumber, String name) {
         Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
@@ -64,7 +61,6 @@ public class MemberService {
                 .memberNumber(memberNumber)
                 .name(name)
                 .password(passwordEncoder.encode(password))
-                .email(email)
                 .build();
 
         this.memberRepository.save(member);
@@ -114,7 +110,8 @@ public class MemberService {
 
     // 회원 수정
     public RsData<Member> update(Long id, Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
-                                 Integer memberNumber, String name, String password, String email) {
+                                 String password, String email, Integer memberNumber, String name, String assignedTask,
+                                 String extensionNumber, String phoneNumber, String statusMessage, char sex, String age) {
         RsData<Member> rsData = findById(id);
         Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
@@ -138,10 +135,16 @@ public class MemberService {
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
-                .memberNumber(memberNumber)
-                .name(name)
                 .password(passwordEncoder.encode(password))
                 .email(email)
+                .memberNumber(memberNumber)
+                .name(name)
+                .assignedTask(assignedTask)
+                .extensionNumber(extensionNumber)
+                .phoneNumber(phoneNumber)
+                .statusMessage(statusMessage)
+                .sex(sex)
+                .age(age)
                 .build();
 
         String refreshToken = jwtProvider.genRefreshToken(member);
@@ -342,11 +345,12 @@ public class MemberService {
         }
         return RsData.of(RsCode.S_05, "회원을 찾았습니다.", om.get());
     }
-    public List<Member> getAll(){
+
+    public List<Member> getAll() {
         return this.memberRepository.findAll();
     }
 
-    public List<Member> searchMember( String keyword) {
+    public List<Member> searchMember(String keyword) {
         return this.memberRepository.findByKeyword(keyword);
     }
 
