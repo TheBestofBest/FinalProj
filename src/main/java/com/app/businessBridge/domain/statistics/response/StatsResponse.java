@@ -9,5 +9,5 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class StatsResponse {
-    private final List<StatsDto> statsDtos;
+    private final StatsDto statsDtos;
 }

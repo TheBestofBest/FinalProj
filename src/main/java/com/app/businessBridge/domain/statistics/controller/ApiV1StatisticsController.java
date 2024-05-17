@@ -44,14 +44,11 @@ public class ApiV1StatisticsController {
 
         List<Member> members = this.memberService.findAll();
 
-        List<StatsDto> statsDtos = new ArrayList<>();
-
-        statsDtos.add(new StatsDto(members));
 
         return RsData.of(
                 RsCode.S_01,
                 "통계 데이터 생성 성공",
-                new StatsResponse(statsDtos)
+                new StatsResponse(new StatsDto(members))
         );
     }
 }

@@ -11,6 +11,8 @@ import MemberChart from "./MemberChart";
 import MemberChartTwo from "./MemberChartTwo";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import SexChart from "./SexChart";
+import AgeChart from "./AgeChart";
 
 interface Stats {
   totalPeople : string;
@@ -52,7 +54,7 @@ const Stats: React.FC = () => {
       if (!response.ok || data.rsCode.code.startsWith("F")) {
           throw new Error(data.msg);
       }
-      setStats(data.statsDtos);
+      setStats(data.data.statsDtos);
     } catch (error) {
       console.error('Error fetching data:', error);
       alert(error.message);
@@ -85,7 +87,7 @@ const Stats: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="총 매출액" total="5조 5480억" rate="전년대비 4.35%" levelUp>
+        <CardDataStats title="총 매출액" total="3,480억" rate="전년대비 4.35%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="20"
@@ -108,7 +110,7 @@ const Stats: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="제품 총 생산량" total="547,665개" rate="전년대비 2.59%" levelUp>
+        <CardDataStats title="제품 총 생산량" total="47,665개" rate="전년대비 2.59%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -127,7 +129,7 @@ const Stats: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="퇴사율" total="266명" rate="전년대비 0.95%" levelDown>
+        <CardDataStats title="퇴사율" total="26명" rate="전년대비 0.95%" levelDown>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -153,6 +155,11 @@ const Stats: React.FC = () => {
       </div>
 
       <div className="mt-4">
+      <div className="grid grid-cols-10 gap-4 md:gap-6 2xl:gap-7.5">
+        <SexChart/>
+        <AgeChart/>
+      </div>
+        <br/>
         <MemberChart/>
         <br/>
         <MemberChartTwo/>
@@ -164,10 +171,6 @@ const Stats: React.FC = () => {
         <MemberChart/>
       </div>
       <br/>
-      <div className="grid grid-cols-10 gap-4 md:gap-6 2xl:gap-7.5">
-        <MemberChartTwo/>
-        <MemberChartTwo/>
-      </div>
     </>
   );
 };
