@@ -17,6 +17,8 @@ public class MemberRequest {
         private Integer departmentCode;
         @NotNull
         private Integer gradeCode;
+        @NotNull
+        private Long salary;
         @NotBlank
         private String username;
         @NotBlank

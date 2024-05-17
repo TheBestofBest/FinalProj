@@ -41,8 +41,8 @@ public class MemberService {
     private final Request rq;
 
     // 회원 생성
-    public RsData create(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
-                         String password, Integer memberNumber, String name) {
+    public RsData create(Integer divisionCode, Integer departmentCode, Integer gradeCode, Long salary,
+                         String username, String password, Integer memberNumber, String name) {
         Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
@@ -57,6 +57,7 @@ public class MemberService {
                 .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
+                .salary(salary)
                 .username(username)
                 .memberNumber(memberNumber)
                 .name(name)

@@ -64,7 +64,11 @@ const AdminAccount = () => {
       <div className="flex justify-between">
         <AddAccountModal />
         <form onSubmit={searchMembers} className="flex">
-          <button onClick={searchReset} className="mr-2 h-11 w-11">
+          <button
+            type="button"
+            onClick={searchReset}
+            className="mr-2 h-11 w-11"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"

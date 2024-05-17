@@ -32,7 +32,7 @@ public class ApiV1MemberController {
         }
 
         RsData rsData = this.memberService.create(createRequest.getDivisionCode(), createRequest.getDepartmentCode(), createRequest.getGradeCode(),
-                createRequest.getUsername(), createRequest.getPassword(), createRequest.getMemberNumber(), createRequest.getName()
+                createRequest.getSalary(),createRequest.getUsername(), createRequest.getPassword(), createRequest.getMemberNumber(), createRequest.getName()
         );
 
         return RsData.of(rsData.getRsCode(), rsData.getMsg());

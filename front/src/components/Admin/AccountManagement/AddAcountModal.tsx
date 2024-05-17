@@ -59,6 +59,7 @@ export default function AddAccountModal() {
       divisionCode: e.target.divisions.value,
       departmentCode: e.target.departments.value,
       gradeCode: e.target.grades.value,
+      salary: e.target.salary.value,
       username: e.target.username.value,
       password: e.target.password.value,
       memberNumber: e.target.memberNumber.value,
@@ -233,6 +234,18 @@ export default function AddAccountModal() {
                         </svg>
                       </span>
                     </div>
+                  </div>
+                  <div className="mb-4.5">
+                    <label className="mb-3 block text-sm font-medium text-black dark:text-white">
+                      연봉 <span className="text-meta-1">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="salary"
+                      name="salary"
+                      placeholder="정확한 연봉을 입력해주세요."
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent px-5 py-3 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                    />
                   </div>
                 </div>
                 <div className="w-1/2">
