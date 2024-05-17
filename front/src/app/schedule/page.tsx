@@ -76,6 +76,7 @@ const SchedulePage = () => {
           categoryId: schedule.relationId,
           originalEnd: schedule.endDate,
           originalStart: schedule.startDate,
+          author: schedule.authorName,
         }));
         setSchedules((schedules) => [...schedules, ...scheduleData]);
       });

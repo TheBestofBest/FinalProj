@@ -301,6 +301,9 @@ const DetailModal: React.FC<DetailModalProps> = ({
                 <div className="grid h-50 content-between gap-3 overflow-auto">
                   {detailData && detailData.title}
                 </div>
+                <div className="text-end">
+                  {detailData && detailData.author}
+                </div>
                 <div className="flex justify-end">
                   {detailData && detailData.originalStart} ~{" "}
                   {detailData && detailData.originalEnd}
