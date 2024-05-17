@@ -6,8 +6,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import RebateDropDown from "./RebateDropDown";
 import { useRouter } from "next/navigation";
+import { Checkbox } from '@headlessui/react'
+import { CheckIcon } from '@heroicons/react/16/solid'
 
 interface Rebate {
+  rebateId : number;
   year: string;
   month: string;
   memberName: string;
@@ -21,6 +24,11 @@ interface Rebate {
   tax: number;
   insurance: number;
   totalSalary: number;
+  saved:boolean;
+}
+
+interface RebateIds {
+  rebateId : number;
 }
 
 
@@ -35,30 +43,149 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
   const [currentMonth, setCurrentMonth] = useState('');
   const router = useRouter();
 
+  const [rebateIds, setRebateIds] = useState<RebateIds[]>([]);
+
+  const [isCheckedList, setIsCheckedList] = useState(Array(rebates.length).fill(false));
+
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+
+  const handleCheckboxChange = (key, rebateId) => {
+    const newList = [...isCheckedList];
+    newList[key] = !newList[key];
+    setIsCheckedList(newList);
+    
+    // 해당 rebateId가 이미 있는지 확인
+    const existingIndex = rebateIds.findIndex(item => item.rebateId === rebateId);
+
+    if (existingIndex !== -1) {
+        // 이미 있는 경우, 해당 rebateId를 제거
+        setRebateIds(prevIds => prevIds.filter(item => item.rebateId !== rebateId));
+    } else {
+        // 없는 경우, 해당 rebateId를 추가
+        setRebateIds(prevIds => [...prevIds, { rebateId }]);
+    }
+    console.log(rebateIds);
+};
+
+  const handleAllCheckboxesChange = () => {
+    // 모든 체크박스가 선택되어 있는지 여부 확인
+    const allChecked = isCheckedList.every((isChecked) => isChecked);
+  
+    // 모든 체크박스의 상태를 전부 변경
+    const newList = isCheckedList.map(() => !allChecked);
+    setIsCheckedList(newList);
+    if (isChecked) {
+      setIsChecked(false);
+      setRebateIds([]);
+      console.log(rebateIds);
+  } else {
+      setIsChecked(true);
+      setRebateIds(rebates.map(rebate => ({ rebateId: rebate.rebateId })));
+      console.log(rebateIds);
+  }
+  };
+
   useEffect(() => {
-    setCurrentYear(rebates[0].year);
-    setCurrentMonth(rebates[0].month);
+    setCurrentYear(rebates[0]?.year);
+    setCurrentMonth(rebates[0]?.month);
   }, [rebates]);
+
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (rebateIds.length === 0) {
+      alert("저장할 정산을 선택해주세요.")
+      return;
+    }
+
+    const confirmed = window.confirm("정말로 저장하시겠습니까? 저장 후에는 변경이 불가합니다.");
+    
+    if (confirmed) {
+      const response = await fetch("http://localhost:8090/api/v1/rebates/save", {
+        method: 'POST',
+        credentials: "include",
+        headers: {
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(rebateIds)
+    });
+
+      if (response.ok) {
+        alert("정산 저장 성공.");
+        window.location.replace(`/rebate`);
+      } else {
+        alert("정산 저장 실패.");
+      }
+
+    } else {
+      
+    }
+  }
+
+  
 
 
 
   return (
     <div className="h-40r px-5 pb-2.5 pt-6 shadow-default dark:border-strokedark dark:bg-boxdark overflow-scroll">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-        {currentYear}년 {rebates[0].memberId === rebates[1].memberId ? (<span>정산내역</span>) : (<span>{currentMonth}월 정산내역</span>)}
+        {currentYear}년 {rebates[0]?.memberId === rebates[1]?.memberId ? (<span>정산내역</span>) : (<span>{currentMonth}월 정산내역</span>)}
       </h4>
 
+      <form onSubmit={handleSubmit}>
       <div className="flex justify-between py-4">
         총 정산 금액 : {totalSum.toLocaleString()}원
-          <Link
-              href="#"
+          <button
+              type="submit"
               className="flex items-center whitespace-nowrap rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] motion-reduce:transition-none dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
               저장하기
-          </Link>
+          </button>
       </div>
 
       <div className="flex flex-col">
-        <div className="h-14 grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-6">
+        <div className="h-14 grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-7">
+          <div className="p-2.5 xl:p-5">
+            
+          <div>
+      <label
+        htmlFor="checkboxLabelTwo"
+        className="flex cursor-pointer select-none items-center"
+      >
+        <div className="relative">
+          <input
+            type="checkbox"
+            id="checkboxLabelTwo"
+            className="sr-only"
+            onChange={handleAllCheckboxesChange}
+          />
+          <div
+            className={`mr-4 flex h-5 w-5 items-center justify-center rounded border ${
+              isChecked && "border-primary bg-gray dark:bg-transparent"
+            }`}
+          >
+            <span className={`opacity-0 ${isChecked && "!opacity-100"}`}>
+              <svg
+                width="11"
+                height="8"
+                viewBox="0 0 11 8"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.0915 0.951972L10.0867 0.946075L10.0813 0.940568C9.90076 0.753564 9.61034 0.753146 9.42927 0.939309L4.16201 6.22962L1.58507 3.63469C1.40401 3.44841 1.11351 3.44879 0.932892 3.63584C0.755703 3.81933 0.755703 4.10875 0.932892 4.29224L0.932878 4.29225L0.934851 4.29424L3.58046 6.95832C3.73676 7.11955 3.94983 7.2 4.1473 7.2C4.36196 7.2 4.55963 7.11773 4.71406 6.9584L10.0468 1.60234C10.2436 1.4199 10.2421 1.1339 10.0915 0.951972ZM4.2327 6.30081L4.2317 6.2998C4.23206 6.30015 4.23237 6.30049 4.23269 6.30082L4.2327 6.30081Z"
+                  fill="#3056D3"
+                  stroke="#3056D3"
+                  strokeWidth="0.4"
+                ></path>
+              </svg>
+            </span>
+          </div>
+        </div>
+      </label>
+    </div>
+
+          </div>
           <div className="p-2.5 xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base">
               임직원
@@ -86,15 +213,59 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
           </div>
         </div>
 
+        
         {rebates.map((rebate, key) => (
           <div
-            className={`grid grid-cols-3 sm:grid-cols-6 h-16 ${
+            className={`grid grid-cols-3 sm:grid-cols-7 h-16 ${
               key === rebates.length - 1
                 ? ""
                 : "border-b border-stroke dark:border-strokedark"
             }`}
             key={key}
           >
+            {rebate.saved===false ? ( <div className="flex items-center gap-3 p-2.5 xl:p-5">
+            <label
+              htmlFor={`${rebate.rebateId}`}
+              className="cursor-pointer select-none items-center"
+            >
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  id={`${rebate.rebateId}`}
+                  value={`${rebate.rebateId}`}
+                  name="rebateIds"
+                  className="sr-only"
+                  checked={isCheckedList[key]}
+                  onChange={() => handleCheckboxChange(key, rebate.rebateId)}
+                />
+                <div
+                  className={`mr-4 flex h-5 w-5 items-center justify-center rounded border ${
+                    isCheckedList[key] && "border-primary bg-gray dark:bg-transparent"
+                  }`}
+                >
+                  <span className={`opacity-0 ${isCheckedList[key] && "!opacity-100"}`}>
+                    <svg
+                      width="11"
+                      height="8"
+                      viewBox="0 0 11 8"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.0915 0.951972L10.0867 0.946075L10.0813 0.940568C9.90076 0.753564 9.61034 0.753146 9.42927 0.939309L4.16201 6.22962L1.58507 3.63469C1.40401 3.44841 1.11351 3.44879 0.932892 3.63584C0.755703 3.81933 0.755703 4.10875 0.932892 4.29224L0.932878 4.29225L0.934851 4.29424L3.58046 6.95832C3.73676 7.11955 3.94983 7.2 4.1473 7.2C4.36196 7.2 4.55963 7.11773 4.71406 6.9584L10.0468 1.60234C10.2436 1.4199 10.2421 1.1339 10.0915 0.951972ZM4.2327 6.30081L4.2317 6.2998C4.23206 6.30015 4.23237 6.30049 4.23269 6.30082L4.2327 6.30081Z"
+                        fill="#3056D3"
+                        stroke="#3056D3"
+                        strokeWidth="0.4"
+                      ></path>
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </label>
+          </div>) : (<div className="flex items-center gap-3 p-2.5 xl:p-5">저장됨</div>)}
+         
+
+
             <div className="flex items-center gap-3 p-2.5 xl:p-5">
               <p className="hidden text-black dark:text-white sm:block">
                 {rebate.memberName}
@@ -128,7 +299,9 @@ const MemberTable: React.FC<MemberTableProps> = ({ rebates, totalSum }) => {
             </div>
           </div>
         ))}
+        
       </div>
+      </form>
     </div>
   );
 };

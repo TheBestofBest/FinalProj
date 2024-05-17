@@ -74,13 +74,13 @@ const ConfirmTable: React.FC<ConfirmTableProps> = (clickModal) => {
                   </td>
                   <td className="border-b border-[#eee] px-4 py-5 dark:border-strokedark">
                     <p
-                      className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-sm font-medium ${
+                      className={`inline-flex rounded-full bg-opacity-10 px-3 py-1 text-base font-bold ${
                         confirm.confirmStatusDTO?.statusName === "승인"
                           ? "bg-success text-success"
                           : confirm.confirmStatusDTO?.statusName ===
                               "결재 처리중"
-                            ? "bg-danger text-danger"
-                            : "bg-warning text-warning"
+                            ? "bg-warning text-warning"
+                            : "bg-danger text-danger"
                       }`}
                     >
                       {confirm.confirmStatusDTO?.statusName}

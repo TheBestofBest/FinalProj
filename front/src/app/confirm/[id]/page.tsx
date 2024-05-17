@@ -1,13 +1,14 @@
 "use client";
+import VacationForm from "@/components/ConfirmForm/VacationForm";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import HorizontalLinearAlternativeLabelStepper from "@/components/Stepper/Stepper";
 import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
-import { ConfirmType } from "@/types/Confirm/ConfirmTypes";
+import { ConfirmFormType, ConfirmType } from "@/types/Confirm/ConfirmTypes";
 import { MemberType } from "@/types/Member/MemberTypes";
 import api from "@/util/api";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 export default function ConfirmDetailPage() {
   // 모달 버튼 클릭 유무를 저장할 state
@@ -54,22 +55,73 @@ export default function ConfirmDetailPage() {
   });
   const queryClient = useQueryClient();
   const member = queryClient.getQueryData<MemberType>(["member"]);
+  const router = useRouter();
+  const [jsonObject, setJsonObject] = useState<ConfirmFormVactionType>({
+    content: "",
+    startDate: new Date(),
+    endDate: new Date(),
+  });
 
-  // 수정 필요!!
+  useEffect(() => {
+    try {
+      // JSON 문자열이 올바른지 확인하고 객체로 변환
+      if (confirm.formData && confirm.formData.trim()) {
+        const parsedObject = JSON.parse(confirm.formData);
+        setJsonObject(parsedObject);
+        console.log(jsonObject);
+      } else {
+        console.error("JSON 문자열이 비어 있습니다.");
+      }
+    } catch (error) {
+      console.error("JSON 파싱 오류:", error);
+    }
+  }, []);
+
+  const deleteConfirm = async () => {
+    await api.delete(`/api/v1/confirms/${params.id}`);
+    router.push(`/confirm`);
+  };
+  const handleDelete = () => {
+    const isConfirmed = window.confirm("정말로 삭제하시겠습니까?");
+
+    if (isConfirmed) {
+      deleteConfirm();
+    }
+  };
+
   const getConfirm = async () => {
     const response = await api.get(`/api/v1/confirms/${params.id}`);
     setConfirm(response.data.data.confirmDTO);
+    console.log(confirm);
   };
   useEffect(() => {
     getConfirm();
-    console.log(confirm);
   }, []);
 
-  // const jsonData: string = confirm.formData;
+  const confirmConfirm = async () => {
+    await api.patch(`/api/v1/confirms/${params.id}/change-counter`);
+    router.push(`/confirm`);
+  };
+  const handleConfirm = () => {
+    const isConfirmed = window.confirm("승인 하시겠습니까?");
 
-  // const parsedData: ConfirmFormVactionType = JSON.parse(jsonData);
+    if (isConfirmed) {
+      confirmConfirm();
+    }
+  };
 
-  // 버튼 클릭시 모달 버튼 클릭 유무를 설정하는 state 함수
+  const rejectConfirm = async () => {
+    await api.patch(`/api/v1/confirms/${params.id}/reject`);
+    router.push(`/confirm`);
+  };
+  const handleReject = () => {
+    const isConfirmed = window.confirm("반려 하시겠습니까?");
+
+    if (isConfirmed) {
+      rejectConfirm();
+    }
+  };
+
   const clickModal = () => setShowModal(!showModal);
   return (
     <DefaultLayout>
@@ -164,8 +216,33 @@ export default function ConfirmDetailPage() {
                         scope="row"
                         className="text-gray-900 bg-gray-50 dark:bg-gray-800 whitespace-nowrap border px-6 py-4 font-medium dark:text-white"
                       >
-                        123
-                        {/* {parsedData.content} */}
+                        <span>상세내용: {jsonObject?.content}</span>
+                        <br />
+                        <br />
+                        <span>
+                          휴가 시작일:{" "}
+                          {new Date(jsonObject.startDate).toLocaleDateString(
+                            "ko-KR",
+                            {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                            },
+                          )}
+                        </span>
+                        <br />
+                        <br />
+                        <span>
+                          휴가 종료일:{" "}
+                          {new Date(jsonObject.endDate).toLocaleDateString(
+                            "ko-KR",
+                            {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                            },
+                          )}
+                        </span>
                       </th>
                     </tr>
                   </tbody>
@@ -176,40 +253,45 @@ export default function ConfirmDetailPage() {
 
           <div className="mb-3 mt-3 flex w-full justify-center">
             {/* 수정,삭제: 기안자에게만 보이게 하기 */}
-            {confirm?.confirmRequestMember?.name === member?.name && (
-              <div>
-                <button
-                  type="button"
-                  className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-                >
-                  수정
-                </button>
-                <button
-                  type="button"
-                  className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
-                >
-                  삭제
-                </button>
-              </div>
-            )}
+            {confirm?.confirmRequestMember?.name === member?.name &&
+              confirm.confirmStatusDTO?.statusName === "결재 처리중" && (
+                <div>
+                  <button
+                    type="button"
+                    className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                  >
+                    수정
+                  </button>
+                  <button
+                    type="button"
+                    className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
+                    onClick={handleDelete}
+                  >
+                    삭제
+                  </button>
+                </div>
+              )}
             {/* 승인, 반려: 결재 승인자에게만 보이게하기 */}
             {confirm?.confirmMembers[confirm?.confirmStepCounter]?.name ===
-              member?.name && (
-              <div>
-                <button
-                  type="button"
-                  className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
-                >
-                  승인
-                </button>
-                <button
-                  type="button"
-                  className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
-                >
-                  반려
-                </button>
-              </div>
-            )}
+              member?.name &&
+              confirm?.confirmStatusDTO?.statusName === "결재 처리중" && (
+                <div>
+                  <button
+                    type="button"
+                    className="mb-2 me-2 rounded-lg bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 px-5 py-2.5 text-center text-lg font-bold  text-white hover:bg-gradient-to-br focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                    onClick={handleConfirm}
+                  >
+                    승인
+                  </button>
+                  <button
+                    type="button"
+                    className="focus:ring-black-300 mb-2 me-2 rounded-lg bg-gradient-to-r from-slate-900 via-slate-500 to-slate-600 px-5 py-2.5 text-center text-lg font-bold text-white hover:bg-slate-900 hover:bg-gradient-to-br focus:outline-none focus:ring-4 dark:focus:ring-slate-800"
+                    onClick={handleReject}
+                  >
+                    반려
+                  </button>
+                </div>
+              )}
           </div>
         </div>
       </div>

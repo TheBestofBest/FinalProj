@@ -18,7 +18,7 @@ import java.util.List;
 @SuperBuilder
 @ToString(callSuper = true)
 public class Club extends BaseEntity {
-    private String name;// 동아리 이름
+    private String clubName;// 동아리 이름
 
     @OneToMany(mappedBy = "club", cascade = CascadeType.REMOVE)
     private List<Article> articleList;

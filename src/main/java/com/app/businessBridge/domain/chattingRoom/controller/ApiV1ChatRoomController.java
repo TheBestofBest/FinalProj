@@ -1,5 +1,7 @@
 package com.app.businessBridge.domain.chattingRoom.controller;
 
+import com.app.businessBridge.domain.chatLog.dto.ChatLogDto;
+import com.app.businessBridge.domain.chatLog.service.ChatLogService;
 import com.app.businessBridge.domain.chattingRoom.dto.ChattingRoomDto;
 import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
 import com.app.businessBridge.domain.chattingRoom.request.ChattingRoomRequest;
@@ -25,6 +27,8 @@ public class ApiV1ChatRoomController {
     private final ChattingRoomService chattingRoomService;
     private final MemberService memberService;
     private final Request rq;
+    private final ChatLogService chatLogService;
+    private final ChatWebSocketController chatWebSocketController;
 
     @GetMapping("")
     public RsData<ChattingRoomResponse.getChattingRooms> getChattingRooms() {
@@ -68,9 +72,10 @@ public class ApiV1ChatRoomController {
     }
 
     @PatchMapping("/{id}/invite") //해당 채팅방id에 username으로 초대
-    public RsData<ChattingRoomResponse.getChattingRoom> invite(@PathVariable("id") Long id,@Valid @RequestBody ChattingRoomRequest.Invite inviteRq) {
+    public RsData<ChattingRoomResponse.getChattingRoom> invite(@PathVariable("id") Long id, @Valid @RequestBody ChattingRoomRequest.Invite inviteRq) {
         Member member = memberService.findByUsername(inviteRq.getUsername()).getData();
         RsData<ChattingRoom> rsData = chattingRoomService.invite(id, member);
+        chatLogService.save(id, "%s 님이 입장했습니다.".formatted(member.getName()));
         if (!rsData.getIsSuccess()) {
             return RsData.of(
                     rsData.getRsCode(),
@@ -102,6 +107,7 @@ public class ApiV1ChatRoomController {
     public RsData<ChattingRoomResponse.getChattingRoom> exit(@PathVariable("id") Long id) {
         Member member = rq.getMember();
         RsData<ChattingRoom> rsData = chattingRoomService.exit(id, member);
+        chatLogService.save(id, "%s 님이 퇴장했습니다.".formatted(member.getName()));
         if (!rsData.getIsSuccess()) {
             return (RsData) rsData;
         }

@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.meetingRoom.controller;
 
+import com.app.businessBridge.domain.alarm.service.AlarmService;
 import com.app.businessBridge.domain.chattingRoom.entity.ChattingRoom;
 import com.app.businessBridge.domain.chattingRoom.request.ChattingRoomRequest;
 import com.app.businessBridge.domain.chattingRoom.response.ChattingRoomResponse;
@@ -27,6 +28,7 @@ public class ApiV1MeetingRoomController {
     private final MemberService memberService;
     private final Request rq;
     private final AlarmWebSocketController alarmWebSocketController;
+    private final AlarmService alarmService;
 
     @GetMapping("/{id}")
     public RsData<MeetingRoomResponse.getMeetingRoom> getMeetingRoom(@PathVariable("id") Long id) {
@@ -129,6 +131,7 @@ public class ApiV1MeetingRoomController {
     public RsData<MemberResponse.GetMembers> exit(@PathVariable("id") Long id) {
         Member member = rq.getMember();
         RsData<List<Member>> rsData = memberService.exitMeeting(member, id);
+//        alarmService.delete(alarmId);
         if (!rsData.getIsSuccess()) {
             return (RsData) rsData;
         }

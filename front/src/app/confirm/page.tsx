@@ -23,7 +23,7 @@ export default function ConfirmsPage() {
         </button>
       </div>
       <div className="h-full w-full overflow-y-auto">
-        <ConfirmTable></ConfirmTable>
+        <ConfirmTable clickModal={showModal}></ConfirmTable>
         {showModal && <ConfirmFormModal clickModal={clickModal} />}
       </div>
     </DefaultLayout>

@@ -8,6 +8,7 @@ import com.app.businessBridge.domain.rebate.dto.RebatesDto;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
 import com.app.businessBridge.domain.rebate.request.RbSearchRequest;
 import com.app.businessBridge.domain.rebate.request.RebateRequest;
+import com.app.businessBridge.domain.rebate.request.SaveRequest;
 import com.app.businessBridge.domain.rebate.response.RebateResponse;
 import com.app.businessBridge.domain.rebate.response.RebatesResponse;
 import com.app.businessBridge.domain.rebate.service.RebateService;
@@ -99,9 +100,12 @@ public class ApiV1RebateController {
                 && searchedMember!=null) {
             rebateList = this.rebateService.findByYearAndMember(rbSearchRequest.getYear(), searchedMember.getId());
         } else if (!rbSearchRequest.getDept().isEmpty()
-                && !rbSearchRequest.getMonth().isEmpty()) {
+                && !rbSearchRequest.getMonth().isEmpty()
+                && searchedMember == null) {
             rebateList = this.rebateService.findByDeptAndMonth(rbSearchRequest.getDept(), rbSearchRequest.getMonth());
-        } else {
+        } else if(searchedMember!=null
+                && !rbSearchRequest.getYear().isEmpty()
+                && !rbSearchRequest.getMonth().isEmpty()) {
             rebateList = this.rebateService.findBySearch(rbSearchRequest.getYear(), month, searchedMember.getId());
         }
 
@@ -162,6 +166,17 @@ public class ApiV1RebateController {
         );
     }
 
+    @PatchMapping("/{id}")
+    public void modifyRebate(@Valid @RequestBody RebateRequest.PatchRequest patchRequest) {
+
+        String bonus = patchRequest.getBonus().replace(",","");
+
+        Rebate modifyRebate = this.rebateService.findById(Long.valueOf(patchRequest.getRebateId())).getData();
+
+        this.rebateService.modifyBonus(modifyRebate, bonus);
+
+    }
+
     @PostMapping("")
     public RsData<RebateResponse> createRebate(@Valid @RequestBody RebateRequest rebateRequest) throws IOException {
         Member member = rq.getMember();
@@ -171,8 +186,16 @@ public class ApiV1RebateController {
         return RsData.of(rsData.getRsCode(), rsData.getMsg(), new RebateResponse(new RebateDto(rsData.getData())));
     }
 
+    @PostMapping("/save")
+    public RsData saveRebates(@Valid @RequestBody List<SaveRequest> saveRequests) {
+
+        return this.rebateService.saveRebates(saveRequests);
+
+    }
+
     @DeleteMapping("/{id}")
     public void deleteRebate() {
+
 
     }
 

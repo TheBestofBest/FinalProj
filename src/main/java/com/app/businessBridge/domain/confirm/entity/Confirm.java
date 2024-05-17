@@ -38,7 +38,6 @@ public class Confirm extends BaseEntity {
     @ManyToOne
     private ConfirmStatus confirmStatus;
 
-    // ! Member 엔티티 추가 시 주석 해제 하기
     // 결재 요청자
     @ManyToOne
     private Member confirmRequestMember;
