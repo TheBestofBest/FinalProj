@@ -10,17 +10,17 @@ import {
 } from '@heroicons/react/24/solid'
 import api from "@/util/api";
 import { useQueryClient } from "@tanstack/react-query";
+import { MemberType } from "@/types/Member/MemberTypes";
 
 const MainTableOne = () => {
   const queryClient = useQueryClient();
-  const memberData: any = queryClient.getQueryData(["member"]);
-
+  const member = queryClient.getQueryData<MemberType>(["member"]);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [allMails, setAllMails] = useState({});
 
   const fetchAllMails = async () => {
     try {
-      const memberId = memberData.memberId;
+      const memberId = member?.id
       const response = await api.get(`/api/v1/mailboxes/${memberId}/mails/all`);
       console.log(response);
 
@@ -30,7 +30,7 @@ const MainTableOne = () => {
           console.log("============================================================");
           console.log(allMails); // 전체 메일 목록 확인
           console.log("전체 메일 목록(allMails 상태):", allMails); // 상태 값 확인
-          setAllMails(allMails);
+          setAllMails(response.data.data.allMails);
         }
       } else {
         console.error("전체 메일 불러오기 실패:", response.data.message);
@@ -86,9 +86,6 @@ const MainTableOne = () => {
               <div className="h-5 w-15 rounded-md text-sm font-semibold text-black dark:text-white">
                 확인
               </div>
-              <p className="text-sm font-semibold text-black dark:text-white">
-                보낸 사람
-              </p>
             </div>
           </div>
           <div className="ml-4 col-span-4 hidden items-center sm:flex">
@@ -98,13 +95,13 @@ const MainTableOne = () => {
             <p className="text-sm font-semibold text-black dark:text-white">답장</p>
           </div>
           <div className="col-span-1 flex items-center">
-            <p className="text-sm font-semibold text-black dark:text-white">삭제</p>
+            <p className="text-sm font-semibold text-black dark:text-white">받은 날짜</p>
           </div>
         </div>
         {allMails.length > 0 ? (
           allMails.map(mail => (
             <div
-              className="grid h-screen grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5 duration-300 ease-in-out hover:bg-meta-2 dark:hover:bg-meta-4"
+              className="grid grid-cols-6 border-t border-stroke px-4 py-4.5 dark:border-strokedark sm:grid-cols-8 md:px-6 2xl:px-7.5 duration-300 ease-in-out hover:bg-meta-2 dark:hover:bg-meta-4"
               key={mail.id}
             >
               <div className="col-span-2 flex items-center">
@@ -167,10 +164,10 @@ const MainTableOne = () => {
                 </p>
               </div>
               <div className="col-span-1 flex items-center">
-                <p className="text-sm font-semibold text-meta-3">삭제</p>
+                <p className="text-sm font-semibold text-meta-3">답장</p>
               </div>
               <div className="col-span-1 flex items-center">
-                <p className="text-sm font-semibold text-meta-3">{mail.receiveDate}</p>
+                <p className="text-sm font-semibold text-meta-3">{mail.sendDate}</p>
               </div>
             </div>
           ))

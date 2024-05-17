@@ -133,6 +133,7 @@ const SendMail = () => {
         try {
 
             const response = await api.post("/api/v1/mails", sendData);
+
             console.log("메일 발송 성공", response.data);
             alert("메일 발송 완료")
             router.push(`/mail/mailbox`);
