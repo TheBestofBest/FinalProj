@@ -220,10 +220,11 @@ public class MemberService {
     }
 
     // 정산, 통계 테스트용 회원 생성 로직
-    public RsData createRebateTest(Integer departmentCode, Integer gradeCode, String username,
+    public RsData createRebateTest(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
                                    Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
+        Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
 
         if (findByUsername(username).getData() != null) {
             return RsData.of(RsCode.F_06, "중복된 아이디가 존재합니다.");
@@ -232,6 +233,7 @@ public class MemberService {
         }
 
         Member member = Member.builder()
+                .division(odv.get())
                 .department(od.get())
                 .grade(og.get())
                 .username(username)
@@ -348,4 +350,7 @@ public class MemberService {
         return this.memberRepository.findByKeyword(keyword);
     }
 
+    public List<Member> findAll() {
+        return this.memberRepository.findAll();
+    }
 }

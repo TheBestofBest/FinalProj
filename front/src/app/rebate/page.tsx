@@ -15,6 +15,7 @@ interface memberInfo {
 
 
 interface Rebate {
+    rebateId : number;
     year: string;
     month: string;
     memberName: string;
@@ -28,6 +29,7 @@ interface Rebate {
     tax: number;
     insurance: number;
     totalSalary: number;
+    isSaved: boolean;
 }
 
 export default function Rebates() {
