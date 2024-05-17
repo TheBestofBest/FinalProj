@@ -190,4 +190,48 @@ public class ApiV1ConfirmController {
                 new ConfirmResponse.delete(id)
         );
     }
+
+    // 승인 카운터 증가 api
+    @PatchMapping("/{id}/change-counter")
+    public RsData<ConfirmResponse.changeStatus> changeCounterConfirm(@PathVariable(value = "id") Long id){
+        // {id}번 결재 존재하는지 검증
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
+        if(optionalConfirm.isEmpty()){
+            return RsData.of(
+                    RsCode.F_04,
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
+                    null
+            );
+        }
+        RsData<Confirm> confirmRsData = this.confirmService.changeCounter(optionalConfirm.get());
+        if(confirmRsData.getData().getConfirmStepCounter() == confirmRsData.getData().getConfirmMembers().size()){
+            ConfirmStatus confirmStatus = this.confirmStatusService.getConfirmStatusByName("승인");
+            confirmRsData = this.confirmService.confirmConfirm(confirmRsData.getData(), confirmStatus);
+        }
+
+        return RsData.of(
+                confirmRsData.getRsCode(),
+                confirmRsData.getMsg(),
+                new ConfirmResponse.changeStatus(confirmRsData.getData())
+        );
+    }
+    @PatchMapping("/{id}/reject")
+    public RsData<ConfirmResponse.changeStatus> rejectConfirm(@PathVariable(value = "id") Long id){
+        Optional<Confirm> optionalConfirm = this.confirmService.findById(id);
+        if(optionalConfirm.isEmpty()){
+            return RsData.of(
+                    RsCode.F_04,
+                    "id: %d번 결재 는 존재하지 않습니다.".formatted(id),
+                    null
+            );
+        }
+        ConfirmStatus confirmStatus = this.confirmStatusService.getConfirmStatusByName("반려");
+        RsData<Confirm> confirmRsData = this.confirmService.rejectConfirm(optionalConfirm.get(), confirmStatus);
+        return RsData.of(
+                confirmRsData.getRsCode(),
+                confirmRsData.getMsg(),
+                new ConfirmResponse.changeStatus(confirmRsData.getData())
+        );
+    }
+
 }

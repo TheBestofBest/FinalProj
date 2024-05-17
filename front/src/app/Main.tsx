@@ -20,7 +20,7 @@ const Main: React.FC = () => {
           <MainTableOne />
         </div>
         <div className="col-span-12 xl:col-span-6">
-          <ConfirmTable />
+          <ConfirmTable clickModal={false} />
         </div>
         <div className="col-span-12 xl:col-span-4">
           <MainTableTwo />
