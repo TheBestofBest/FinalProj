@@ -3,7 +3,7 @@ import VacationForm from "@/components/ConfirmForm/VacationForm";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import HorizontalLinearAlternativeLabelStepper from "@/components/Stepper/Stepper";
 import { ConfirmFormVactionType } from "@/types/Confirm/ConfirmFormTypes";
-import { ConfirmType } from "@/types/Confirm/ConfirmTypes";
+import { ConfirmFormType, ConfirmType } from "@/types/Confirm/ConfirmTypes";
 import { MemberType } from "@/types/Member/MemberTypes";
 import api from "@/util/api";
 import { useQueryClient } from "@tanstack/react-query";
@@ -56,6 +56,26 @@ export default function ConfirmDetailPage() {
   const queryClient = useQueryClient();
   const member = queryClient.getQueryData<MemberType>(["member"]);
   const router = useRouter();
+  const [jsonObject, setJsonObject] = useState<ConfirmFormVactionType>({
+    content: "",
+    startDate: new Date(),
+    endDate: new Date(),
+  });
+
+  useEffect(() => {
+    try {
+      // JSON 문자열이 올바른지 확인하고 객체로 변환
+      if (confirm.formData && confirm.formData.trim()) {
+        const parsedObject = JSON.parse(confirm.formData);
+        setJsonObject(parsedObject);
+        console.log(jsonObject);
+      } else {
+        console.error("JSON 문자열이 비어 있습니다.");
+      }
+    } catch (error) {
+      console.error("JSON 파싱 오류:", error);
+    }
+  }, []);
 
   const deleteConfirm = async () => {
     await api.delete(`/api/v1/confirms/${params.id}`);
@@ -77,8 +97,6 @@ export default function ConfirmDetailPage() {
   useEffect(() => {
     getConfirm();
   }, []);
-
-  // 버튼 클릭시 모달 버튼 클릭 유무를 설정하는 state 함수
 
   const confirmConfirm = async () => {
     await api.patch(`/api/v1/confirms/${params.id}/change-counter`);
@@ -198,8 +216,33 @@ export default function ConfirmDetailPage() {
                         scope="row"
                         className="text-gray-900 bg-gray-50 dark:bg-gray-800 whitespace-nowrap border px-6 py-4 font-medium dark:text-white"
                       >
-                        parsedData:
-                        {confirm?.formData}
+                        <span>상세내용: {jsonObject?.content}</span>
+                        <br />
+                        <br />
+                        <span>
+                          휴가 시작일:{" "}
+                          {new Date(jsonObject.startDate).toLocaleDateString(
+                            "ko-KR",
+                            {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                            },
+                          )}
+                        </span>
+                        <br />
+                        <br />
+                        <span>
+                          휴가 종료일:{" "}
+                          {new Date(jsonObject.endDate).toLocaleDateString(
+                            "ko-KR",
+                            {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                            },
+                          )}
+                        </span>
                       </th>
                     </tr>
                   </tbody>
