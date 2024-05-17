@@ -66,6 +66,11 @@ public class NotProd {
             memberService.create(11, 101, 1001, "user1", "1234", 20001, "이마부");
             memberService.create(11, 102, 1002, "user2", "1234", 30001, "박영대");
             memberService.create(12, 102, 1002, "user3", "1234", 30002, "홍길동");
+//            memberService.update(1,1,1,"CEO",10000,"왕대표","1234","CEO@emil.com");
+//            memberService.update(10,100, 1000, "admin", 10001, "김관리", "1234", "admin@email.com");
+//            memberService.update(11,101, 1001, "user1", 20001, "이마부", "1234", "user1@email.com");
+//            memberService.update(11,102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
+//            memberService.update(12,102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
 
             // 올 해 월 별 근무일 일괄 계산
             workingDateService.createThisYear();
