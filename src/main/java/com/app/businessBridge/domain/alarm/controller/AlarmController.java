@@ -33,4 +33,5 @@ public class AlarmController {
         return RsData.of(result.getRsCode(),result.getMsg(),new AlarmResponse.AlarmRes(result.getData()) );
     }
 
+
 }
