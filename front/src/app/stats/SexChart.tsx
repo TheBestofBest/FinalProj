@@ -49,18 +49,41 @@ const options: ApexOptions = {
   ],
 };
 
-const SexChart: React.FC = ({stats}) => {
-  const [state, setState] = useState<ChartThreeState>({
-    series: [65, 34],
-  });
+interface Stats {
+    totalPeople : string;
+    numberOfMan : number;
+    numberOfWoman : number;
+    two : number;
+    three : number;
+    four : number;
+    five : number;
+    salaryOne : number;
+    salaryTwo : number;
+    salaryThree : number;
+    salaryFour : number;
+    salaryFive : number;
+    salarySix : number;
+    salarySeven : number;
+  }
 
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-      series: [65, 34],
-    }));
-  };
-  handleReset;
+const SexChart = ({stats} : Stats) => {
+  
+
+    const total = stats?.numberOfMan + stats?.numberOfWoman;
+    const man = (stats?.numberOfMan / total) * 100; // 56이 전체에서 차지하는 비율
+    const woman = (stats?.numberOfWoman / total) * 100; // 44가 전체에서 차지하는 비율
+
+    const [state, setState] = useState<ChartThreeState>({
+        series: [man, woman],
+      });
+
+    const handleReset = () => {
+        setState((prevState) => ({
+        ...prevState,
+        series: [man, woman],
+        }));
+    };
+    handleReset;
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-5">

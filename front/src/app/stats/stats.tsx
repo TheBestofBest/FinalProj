@@ -35,7 +35,7 @@ interface Stats {
 const Stats: React.FC = () => {
 
   const router = useRouter();
-  const [stats, setStats] = useState<Stats>();
+  const [stats, setStats] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -156,8 +156,8 @@ const Stats: React.FC = () => {
 
       <div className="mt-4">
       <div className="grid grid-cols-10 gap-4 md:gap-6 2xl:gap-7.5">
-        <SexChart/>
-        <AgeChart/>
+        <SexChart stats = {stats}/>
+        <AgeChart stats = {stats}/>
       </div>
         <br/>
         <MemberChart/>

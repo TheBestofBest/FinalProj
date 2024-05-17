@@ -49,7 +49,7 @@ const options: ApexOptions = {
   ],
 };
 
-const AgeChart: React.FC = () => {
+const AgeChart: React.FC = ({stats}) => {
   const [state, setState] = useState<ChartThreeState>({
     series: [65, 34, 12, 56],
   });
