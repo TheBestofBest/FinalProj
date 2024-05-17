@@ -17,6 +17,7 @@ export default function RebateDetail() {
 
     const [rebate, setRebate] = useState([]);
     // "rebateDto": {
+    //     "rebateId" : 496,
     //     "year": "2024",
     //     "month": "6",
     //     "memberName": "고길동",

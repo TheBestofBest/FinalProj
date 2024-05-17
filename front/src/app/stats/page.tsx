@@ -9,7 +9,9 @@ export default function StatsMain() {
     return (
         <>
         <DefaultLayout>
-            통계 페이지
+            <h1 className="mb-6 text-xl font-semibold text-black dark:text-white">
+                통계
+            </h1>
             <Stats/>
         </DefaultLayout>
         </>
