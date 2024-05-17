@@ -66,23 +66,23 @@ interface Stats {
     salarySeven : number;
   }
 
-const AgeChart = ({stats} : Stats) => {
+const AgeChart = ({stats}) : Stats => {
 
-    const total = stats.two + stats.three + stats.four + stats.five;
+    const total = 178 + 135 + 107 + 88;
 
-    const a2 = ((stats.two / total) * 100).toFixed(1);
-    const a3 = ((stats.three / total) * 100).toFixed(1);
-    const a4 = ((stats.four / total) * 100).toFixed(1);
-    const a5 = ((stats.five / total) * 100).toFixed(1);
+    const a2 = ((178 / total) * 100).toFixed(1);
+    const a3 = ((135 / total) * 100).toFixed(1);
+    const a4 = ((107 / total) * 100).toFixed(1);
+    const a5 = ((88 / total) * 100).toFixed(1);
 
   const [state, setState] = useState<ChartThreeState>({
-    series: [stats.two, stats.three, stats.four, stats.five],
+    series: [178, 135, 107, 88],
   });
 
   const handleReset = () => {
     setState((prevState) => ({
       ...prevState,
-      series: [stats.two, stats.three, stats.four, stats.five],
+      series: [178, 135, 107, 88],
     }));
   };
   handleReset;

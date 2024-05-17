@@ -20,6 +20,7 @@
 //import java.io.IOException;
 //import java.nio.file.*;
 //import java.time.LocalDate;
+//import java.util.Random;
 //
 //@Configuration
 //@Profile({"dev", "test"})
@@ -59,34 +60,57 @@
 //            gradeService.create(1,"대표이사");
 //            gradeService.create(1000, "슈퍼관리자");
 //            gradeService.create(1001, "부장");
-//            gradeService.create(1002, "대리");
+//            gradeService.create(1002, "차장");
+//            gradeService.create(1003, "과장");
+//            gradeService.create(1004, "대리");
+//            gradeService.create(1005, "주임");
+//            gradeService.create(1006, "사원");
 //            gradeService.create(9999,"테스트 전용 직급");
 //
 //            // 회원 생성
-//            memberService.create(1,1,1,"CEO",10000,"왕대표","1234","CEO@emil.com");
-//            memberService.create(10,100, 1000, "admin", 10001, "김관리", "1234", "admin@email.com");
-//            memberService.create(11,101, 1001, "user1", 20001, "이마부", "1234", "user1@email.com");
-//            memberService.create(11,102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
-//            memberService.create(12,102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
-//
+////            memberService.create(1,1,1,"CEO",10000,"왕대표","1234","CEO@emil.com");
+////            memberService.create(10,100, 1000, "admin", 10001, "김관리", "1234", "admin@email.com");
+////            memberService.create(11,101, 1001, "user1", 20001, "이마부", "1234", "user1@email.com");
+////            memberService.create(11,102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com");
+////            memberService.create(12,102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com");
+//            // 추가해야될거, 연봉, 성별, 나이, 개인번호, 내선번호
 //            // 올 해 월 별 근무일 일괄 계산
 //            workingDateService.createThisYear();
 //
+//            memberService.createFullTest(1,1,1,"CEO",10000,"왕대표","1234","CEO@emil.com", 10000000000L, '남', "46", "01077777777","0427777777");
+//            memberService.createFullTest(10,100, 1000, "admin", 10001, "김관리", "1234", "admin@email.com", 99999999999L, '남', "99", "01099999999","0429999999");
+//            memberService.createFullTest(11,101, 1001, "user1", 20001, "이마부", "1234", "user1@email.com", 620000000L, '여', "43", "01012341234","0421231234");
+//            memberService.createFullTest(11,102, 1002, "user2", 30001, "박영대", "1234", "user2@email.com", 340000000L, '남', "31", "01012341234","0421231234");
+//            memberService.createFullTest(12,102, 1002, "user3", 30002, "홍길동", "1234", "user3@email.com", 330000000L, '남', "29", "01012341234","0421231234");
+//
+//            String[] firstName = {"김", "이", "최", "박", "조", "왕", "홍", "양", "전", "류", "신"};
+//            String[] secondName = {"철수", "영희", "민수", "수정", "기범", "미현", "광식", "두환", "정배", "오빈", "희동", "한선", "대호", "율택", " 신", " 현", "성진", "민호", "진아", "가은", "지혜", "혜지", "수지", "나라", "동건"};
+//            char[] sex = {'남','여'};
+//
+//            Random random = new Random();
+//
+//
+//
 //            // 정산, 통계 테스트용 회원 생성
-//            for (int i = 4; i < 104; i++) {
-//                int randomNum = (int) (Math.random() * 100 + 1);
-//                int randomAge = (int) (Math.random() * 100 + 1);
-//                if (i % 2 == 0) {
-//                    memberService.createRebateTest(10,101, 1002, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '남', String.valueOf(randomAge));
-//                }
-//                memberService.createRebateTest(11,102, 1001, "user" + i, 20000 + i, "직원" + i, "1234", "user" + i + "@email.com", randomNum * 1000000L, '여', String.valueOf(randomAge));
+//            for (int i = 4; i < 504; i++) {
+//
+//                int randomNum2 = (int) (Math.random() * 100 + 1);
+//                int randomAge2 = (int) (Math.random() * 100 + 1);
+//                String testFirstName = firstName[random.nextInt(firstName.length)];
+//                String testSecondName = secondName[random.nextInt(secondName.length)];
+//                int testDivision = 10 + random.nextInt(3);
+//                int testDept = 100 + random.nextInt(3);
+//                int testGrade = 1000 + random.nextInt(6)+1;
+//                char testSex = sex[random.nextInt(2)];
+//
+//                memberService.createFullTest(testDivision,testDept, testGrade, "user" + i, 20000 + i, (testFirstName + testSecondName), "1234", "user" + i + "@email.com", randomNum2 * 1000000L, testSex, String.valueOf(randomAge2), "01012341234","0421231234");
 //            }
 //
 //            LocalDate currentDate = LocalDate.now();
 //            int year = currentDate.getYear();
 //            int month = currentDate.getMonthValue();
 //
-//            for (int i = 6; i < 106; i++) {
+//            for (int i = 1; i < 506; i++) {
 //                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month));
 //                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-1));
 //                rebateService.createRebate(memberService.findById((long) i).getData(), String.valueOf(year), String.valueOf(month-2));

@@ -222,9 +222,10 @@ public class MemberService {
         return RsData.of(RsCode.S_06, "로그인에 성공했습니다.", new MemberResponse.AuthAndMakeTokensResponseBody(member, accessToken, refreshToken));
     }
 
-    // 정산, 통계 테스트용 회원 생성 로직
-    public RsData createRebateTest(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
-                                   Integer memberNumber, String name, String password, String email, Long salary, char sex, String age) {
+    // 시연용 테스트 계정 생성 메서드
+    public RsData createFullTest(Integer divisionCode, Integer departmentCode, Integer gradeCode, String username,
+                                   Integer memberNumber, String name, String password, String email, Long salary, char sex, String age,
+                                 String phoneNumber, String exNumber ) {
         Optional<Department> od = this.departmentRepository.findByCode(departmentCode);
         Optional<Grade> og = this.gradeRepository.findByCode(gradeCode);
         Optional<Division> odv = this.divisionRepository.findByCode(divisionCode);
@@ -247,6 +248,8 @@ public class MemberService {
                 .salary(salary)
                 .sex(sex)
                 .age(age)
+                .phoneNumber(phoneNumber)
+                .extensionNumber(exNumber)
                 .build();
 
         this.memberRepository.save(member);
