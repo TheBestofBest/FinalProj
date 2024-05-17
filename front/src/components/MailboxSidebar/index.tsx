@@ -11,6 +11,7 @@ import { DocumentIcon,
         PaperAirplaneIcon
         
  } from '@heroicons/react/24/solid'
+import MailboxAll from "../Mailbox/MailboxAll";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -78,8 +79,8 @@ const mailboxsidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             <ul className="mb-6 flex flex-col gap-3.5">
               {/* <!-- Menu Item 전체 메일함 --> */}
               <li>
-                <Link
-                  href="/calendar"
+                <Link 
+                  href="/Mailbox/MAilboxAll"
                   className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-dark duration-300 ease-in-out hover:bg-primary hover:text-white dark:hover:primary ${pathname.includes("calendar") &&
                     "bg-graydark dark:bg-meta-4"
                     }`}
