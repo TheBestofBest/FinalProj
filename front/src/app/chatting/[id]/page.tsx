@@ -215,7 +215,7 @@ const Id = () => {
                 <div className="flex flex-col gap-2">
                     {chattingLogs?.map((chatLog: ChatLog) => <>
                         {chatLog.username == memberData?.username ?
-                            <div className="bg-blue-200 p-4 rounded-lg max-w-xs self-end">
+                            <div className="border-[#eee] bg-blue-200 p-4 rounded-lg max-w-xs self-end shadow-lg">
                                 <p className="text-sm whitespace-pre-wrap">{chatLog.content}</p>
                                 <div className="flex justify-between items-end mt-2">
                                     <span className="text-xs">{chatLog.name}</span>
@@ -227,7 +227,7 @@ const Id = () => {
                                     <span className=" px-3 py-1 rounded text-gray-700 text-sm"> {chatLog.content}</span>
                                 </div>
                                 :
-                                <div className="bg-zinc-300 p-4 rounded-lg max-w-xs self-start ">
+                                <div className="border-[#eee] bg-zinc-300 p-4 rounded-lg max-w-xs self-start shadow-lg">
                                     <p className="text-sm whitespace-pre-wrap">{chatLog.content}</p>
                                     <div className="flex justify-between items-end mt-2">
                                         <span className="text-xs">{chatLog.name}</span>
