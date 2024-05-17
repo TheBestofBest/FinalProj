@@ -111,7 +111,8 @@ public class ConfirmService {
 
     public Confirm findVacation(Member member, String year, String month) {
 
-        return this.confirmRepository.findVacation(member, year, month);
+//        return this.confirmRepository.findVacation(member, year, month);
+        return null;
 
     }
 }

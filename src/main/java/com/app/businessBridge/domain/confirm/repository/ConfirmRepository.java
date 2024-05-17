@@ -13,10 +13,10 @@ import java.util.List;
 @Repository
 public interface ConfirmRepository extends JpaRepository<Confirm, Long> {
 
-    @Query("SELECT c " +
-            "FROM Confirm c " +
-            "WHERE c.confirmRequestMemberId = :confirmRequestMemberId " +
-            "AND FUNCTION('DATE_FORMAT', c.createdDate, '%Y-%m') = :year-:month")
-    Confirm findVacation(@Param("confirm_request_member_id") Member member, @Param("year") String year,@Param("month") String month);
+//    @Query("SELECT c " +
+//            "FROM Confirm c " +
+//            "WHERE c.confirmRequestMemberId = :confirmRequestMemberId " +
+//            "AND FUNCTION('DATE_FORMAT', c.createdDate, '%Y-%m') = :year-:month")
+//    Confirm findVacation(@Param("confirm_request_member_id") Member member, @Param("year") String year,@Param("month") String month);
 
 }
