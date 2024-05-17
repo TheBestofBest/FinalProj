@@ -37,8 +37,15 @@ export default function ChattingLayout({
 
     useEffect(() => {
         setTimeout(() => setLoading(false), 1000);
+        loginCheck();
         fetchChattingRooms();
     }, []);
+
+    const loginCheck = () => {
+        if (memberData == undefined) {
+            router.push("/auth/signin");
+        }
+    }
 
     const fetchChattingRooms = () => {
         api.get('/api/v1/chats')
@@ -205,12 +212,12 @@ export default function ChattingLayout({
                     <div>
                         <button className="w-full border rounded mt-1 p-1 bg-white hover:bg-gray shadow-lg" onClick={openModal}>찾기 및 초대</button>
                     </div>
-                    <div className="mt-2 h-171.5 border p-2 rounded bg-stone-100 shadow-lg">
+                    <div className="mt-2 h-171.5 border p-2 rounded bg-stone-100 shadow-lg overflow-y-auto">
                         {isEmpty ? <></> :
                             chattingRooms.map((chattingRoom: ChattingRoom) =>
                                 <>
                                     <Link className={`flex w-full border rounded p-1.5 mt-1 bg-white hover:bg-gray
-                                     justify-between items-center`} href={"/chatting/" + chattingRoom.id}
+                                     justify-between items-center shadow-lg`} href={"/chatting/" + chattingRoom.id}
                                         onMouseEnter={() => onMouseEnter(chattingRoom.id)} onMouseLeave={onMouseLeave}>
                                         <span className="p-1">{chattingRoom.name}</span>
 
@@ -223,7 +230,7 @@ export default function ChattingLayout({
                                     </Link>
                                     {isSelected == chattingRoom.id ?
                                         <form className="p-0.5 flex justify-between" onSubmit={(e) => modifyChattingRoom(e, chattingRoom.id)}>
-                                            <input className="w-3/4 p-0.5 border rounded-sm" value={modifyName}
+                                            <input className="w-3/4 p-0.5 border rounded-sm " value={modifyName}
                                                 onChange={handleChange} type="text" />
                                             <button type="submit" className="w-1/4 p-0.5 border rounded-sm">수정</button>
                                         </form> :
