@@ -42,6 +42,7 @@ const MainTableFour: React.FC = () => {
           categoryId: schedule.relationId,
           originalEnd: schedule.endDate,
           originalStart: schedule.startDate,
+          author: schedule.authorName,
         }));
         setSchedules((schedules) => [...schedules, ...scheduleData]);
       });
@@ -86,10 +87,13 @@ const MainTableFour: React.FC = () => {
     return (
       <a className="flex w-full bg-blue-50 hover:bg-slate-400" href="/schedule">
         <div className={`${color} me-1 h-auto w-1`}></div>
-        <div>
+        <div className="w-full">
           <div className="fc-event-title truncate ">{today.title}</div>
-          <div className="mt-1 truncate">
-            {today.originalStart} ~ {today.originalEnd}
+          <div className="mt-1 flex w-full justify-between truncate">
+            <div>
+              {today.originalStart} ~ {today.originalEnd}
+            </div>
+            <div className="me-1">{today.author}</div>
           </div>
         </div>
       </a>
