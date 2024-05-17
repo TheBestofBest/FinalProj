@@ -27,14 +27,16 @@ const EducationCard: React.FC<Props> = (video) => {
       href={"education/" + data.id}
     >
       {hover ? (
-        <div className="relative h-full w-full bg-slate-300">
-          <div className="relative">
+        <div className="relative h-full bg-slate-300">
+          <div className="relative h-full ">
             <ReactPlayer
               url={data.filePath}
               playing={true}
               muted={true}
               loop={true}
               width="w-full"
+              height="h-full"
+              className="absolute bottom-0 left-0 right-0 top-0"
             />
           </div>
         </div>
