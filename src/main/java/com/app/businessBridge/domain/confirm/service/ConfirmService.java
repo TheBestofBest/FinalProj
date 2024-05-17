@@ -108,4 +108,10 @@ public class ConfirmService {
 
         return RsData.of(RsCode.S_03,"반려 처리됨", confirm1);
     }
+
+    public Confirm findVacation(Member member, String year, String month) {
+
+        return this.confirmRepository.findVacation(member, year, month);
+
+    }
 }

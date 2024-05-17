@@ -1,6 +1,7 @@
 package com.app.businessBridge.domain.rebate.service;
 
 
+import com.app.businessBridge.domain.confirm.service.ConfirmService;
 import com.app.businessBridge.domain.member.Service.MemberService;
 import com.app.businessBridge.domain.member.entity.Member;
 import com.app.businessBridge.domain.rebate.entity.Rebate;
@@ -27,15 +28,12 @@ public class RebateService {
 
     private final MemberService memberService;
 
+    private final ConfirmService confirmService;
+
     public RsData<Rebate> createRebate(Member member, String year, String month) {
 
         // 해당 year년, month월에 근무해야 하는 일 수
         int workDate = this.workingDateService.findByYearAndMonth(year,month).getWorkDate();
-
-        // -----
-        // member 결재내역 조회 하여 휴가 등 근무하지 않은 날 확인하는 로직 필요
-        // 또는 근태관련 결재 최종 승인 시 근무일을 빼는 방법으로 ????
-        // -----
 
         Long salary = member.getSalary() / 12 / 20 * workDate;
         // 현행법상 소득 1,200만원 이하의 경우 6% 적용 한다고함
