@@ -1,21 +1,68 @@
+"use client";
+
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import Image from "next/image";
 import { Metadata } from "next";
 import DefaultLayout from "@/components/Layouts/DefaultLayout";
 import Link from "next/link";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Next.js Profile | TailAdmin - Next.js Dashboard Template",
-  description:
-    "This is Next.js Profile page for TailAdmin - Next.js Tailwind CSS Admin Dashboard Template",
-};
+interface member {
+  division: {
+    code: number;
+    name: string;
+  };
+  department: {
+    code: number;
+    name: string;
+  };
+  grade: {
+    code: number;
+    name: string;
+  };
+  username: string;
+  email: string;
+  memberNumber: number;
+  name: string;
+  assignedTask: string;
+  extensionNumber: string;
+  phoneNumber: string;
+  statusMessage: string;
+  sex: string;
+  age: string;
+}
 
 const Profile = () => {
+  const queryClient = useQueryClient();
+
+  const [member, setMember] = useState<member>();
+
+  useEffect(() => {
+    const memberLoad = () => {
+      setMember(queryClient.getQueryData<any>(["member"]));
+    };
+
+    memberLoad();
+  }, []);
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-242.5">
-        <Breadcrumb pageName="Profile" />
-
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="text-title-md2 font-bold text-black dark:text-white">
+            프로필
+          </h2>
+          <nav>
+            <ol className="flex items-center gap-2">
+              <li>
+                <a className="font-medium" href="index.html">
+                  메뉴 /
+                </a>
+              </li>
+              <li className="font-medium text-primary">프로필</li>
+            </ol>
+          </nav>
+        </div>
         <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="relative z-20 h-35 md:h-65">
             <Image
@@ -115,41 +162,66 @@ const Profile = () => {
               </div>
             </div>
             <div className="mt-4">
-              <h3 className="mb-1.5 text-2xl font-semibold text-black dark:text-white">
-                Danish Heilium
-              </h3>
-              <p className="font-medium">Ui/Ux Designer</p>
-              <div className="mx-auto mb-5.5 mt-4.5 grid max-w-94 grid-cols-3 rounded-md border border-stroke py-2.5 shadow-1 dark:border-strokedark dark:bg-[#37404F]">
+              <div className="flex justify-center">
+                <h3 className="mb-1.5 mr-1.5 text-2xl font-semibold text-black dark:text-white">
+                  {member?.name}
+                </h3>
+                <div className="text-lg">{member?.username}</div>
+              </div>
+              <p className="font-medium">
+                {" "}
+                {member?.division.code === 0
+                  ? null
+                  : `${member?.division.name}`}
+                {member?.department.code === 0
+                  ? null
+                  : member?.division.code !== 0
+                    ? ` / ${member?.department.name}`
+                    : `${member?.department.name}`}
+                {member?.grade.code === 0
+                  ? null
+                  : member?.division.code !== 0 || member?.department.code !== 0
+                    ? ` / ${member?.grade.name}`
+                    : `${member?.grade.name}`}
+              </p>
+              <div className="mx-auto mb-5.5 mt-4.5 grid grid-cols-3 rounded-md border border-stroke py-2.5 shadow-1 dark:border-strokedark dark:bg-[#37404F]">
                 <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-4 dark:border-strokedark xsm:flex-row">
                   <span className="font-semibold text-black dark:text-white">
-                    259
+                    이메일
                   </span>
-                  <span className="text-sm">Posts</span>
+                  <span className="text-sm">
+                    {member?.email === null
+                      ? `이메일 없음`
+                      : `${member?.email}`}
+                  </span>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-4 dark:border-strokedark xsm:flex-row">
                   <span className="font-semibold text-black dark:text-white">
-                    129K
+                    내선전화
                   </span>
-                  <span className="text-sm">Followers</span>
+                  <span className="text-sm">
+                    {member?.extensionNumber === null
+                      ? `내선전화 없음`
+                      : `${member?.extensionNumber}`}
+                  </span>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-1 px-4 xsm:flex-row">
                   <span className="font-semibold text-black dark:text-white">
-                    2K
+                    개인전화
                   </span>
-                  <span className="text-sm">Following</span>
+                  <span className="text-sm">
+                    {member?.phoneNumber === null
+                      ? `개인전화 없음`
+                      : `${member?.phoneNumber}`}
+                  </span>
                 </div>
               </div>
 
               <div className="mx-auto max-w-180">
-                <h4 className="font-semibold text-black dark:text-white">
-                  About Me
-                </h4>
                 <p className="mt-4.5">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Pellentesque posuere fermentum urna, eu condimentum mauris
-                  tempus ut. Donec fermentum blandit aliquet. Etiam dictum
-                  dapibus ultricies. Sed vel aliquet libero. Nunc a augue
-                  fermentum, pharetra ligula sed, aliquam lacus.
+                  {member?.statusMessage === null
+                    ? `상태 메세지 없음`
+                    : `${member?.statusMessage}`}
                 </p>
               </div>
 
