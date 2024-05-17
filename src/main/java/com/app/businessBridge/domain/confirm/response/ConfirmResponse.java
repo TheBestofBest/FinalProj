@@ -66,4 +66,13 @@ public class ConfirmResponse {
             this.confirmDTO = new ConfirmDTO(confirm);
         }
     }
+
+    @Getter
+    @AllArgsConstructor
+    public static class changeCounter{
+        private ConfirmDTO confirmDTO;
+        public changeCounter(Confirm confirm){
+            this.confirmDTO = new ConfirmDTO(confirm);
+        }
+    }
 }
