@@ -1,5 +1,6 @@
 package com.app.businessBridge.domain.mail.Request;
 
+import com.app.businessBridge.domain.member.DTO.MemberDTO;
 import com.app.businessBridge.domain.member.entity.Member;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,20 +16,23 @@ public class MailRequest {
     @Setter
     public static class CreateRequest {
         // 보낸 사람
-        @NotNull
-        private String senderName;
-        @NotNull
-        private String senderEmail;
+        private MemberDTO sender;
+//        @NotNull
+//        private String senderName;
+//        @NotNull
+//        private String senderEmail;
 
         // 받는 사람
-        @NotNull
-        private String receiverName;
-        @NotNull
-        private String receiverEmail;
+        private MemberDTO receiver;
+//        @NotNull
+//        private String receiverName;
+//        @NotNull
+//        private String receiverEmail;
 
         // 참조
-        private String referenceName;
-        private String referenceEmail;
+        private MemberDTO reference;
+//        private String referenceName;
+//        private String referenceEmail;
 
         @NotNull
         private String title;
