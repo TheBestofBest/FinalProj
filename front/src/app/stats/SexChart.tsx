@@ -69,18 +69,20 @@ interface Stats {
 const SexChart = ({stats} : Stats) => {
   
 
-    const total = stats?.numberOfMan + stats?.numberOfWoman;
-    const man = (stats?.numberOfMan / total) * 100; // 56이 전체에서 차지하는 비율
-    const woman = (stats?.numberOfWoman / total) * 100; // 44가 전체에서 차지하는 비율
+    const total = 89 + 16;
+    const man = (89 / total) * 100; // 56이 전체에서 차지하는 비율
+    const woman = (16 / total) * 100;
+    const MPercentage = man.toFixed(1);
+    const WPercentage = woman.toFixed(1);
 
     const [state, setState] = useState<ChartThreeState>({
-        series: [man, woman],
+        series: [89, 16],
       });
 
     const handleReset = () => {
         setState((prevState) => ({
         ...prevState,
-        series: [man, woman],
+        series: [89, 16],
         }));
     };
     handleReset;
@@ -111,7 +113,7 @@ const SexChart = ({stats} : Stats) => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> 남성 </span>
-              <span> 65% </span>
+              <span> {MPercentage}% </span>
             </p>
           </div>
         </div>
@@ -120,7 +122,7 @@ const SexChart = ({stats} : Stats) => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> 여성 </span>
-              <span> 34% </span>
+              <span> {WPercentage}% </span>
             </p>
           </div>
         </div>

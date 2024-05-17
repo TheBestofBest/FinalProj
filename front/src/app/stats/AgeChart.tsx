@@ -49,15 +49,40 @@ const options: ApexOptions = {
   ],
 };
 
-const AgeChart: React.FC = ({stats}) => {
+interface Stats {
+    totalPeople : string;
+    numberOfMan : number;
+    numberOfWoman : number;
+    two : number;
+    three : number;
+    four : number;
+    five : number;
+    salaryOne : number;
+    salaryTwo : number;
+    salaryThree : number;
+    salaryFour : number;
+    salaryFive : number;
+    salarySix : number;
+    salarySeven : number;
+  }
+
+const AgeChart = ({stats} : Stats) => {
+
+    const total = stats.two + stats.three + stats.four + stats.five;
+
+    const a2 = ((stats.two / total) * 100).toFixed(1);
+    const a3 = ((stats.three / total) * 100).toFixed(1);
+    const a4 = ((stats.four / total) * 100).toFixed(1);
+    const a5 = ((stats.five / total) * 100).toFixed(1);
+
   const [state, setState] = useState<ChartThreeState>({
-    series: [65, 34, 12, 56],
+    series: [stats.two, stats.three, stats.four, stats.five],
   });
 
   const handleReset = () => {
     setState((prevState) => ({
       ...prevState,
-      series: [65, 34, 12, 56],
+      series: [stats.two, stats.three, stats.four, stats.five],
     }));
   };
   handleReset;
@@ -88,7 +113,7 @@ const AgeChart: React.FC = ({stats}) => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> 20대 </span>
-              <span> 65% </span>
+              <span> {a2}% </span>
             </p>
           </div>
         </div>
@@ -97,7 +122,7 @@ const AgeChart: React.FC = ({stats}) => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> 30대 </span>
-              <span> 34% </span>
+              <span> {a3}% </span>
             </p>
           </div>
         </div>
@@ -106,7 +131,7 @@ const AgeChart: React.FC = ({stats}) => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> 40대 </span>
-              <span> 45% </span>
+              <span> {a4}% </span>
             </p>
           </div>
         </div>
@@ -115,7 +140,7 @@ const AgeChart: React.FC = ({stats}) => {
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
               <span> 50대 이상 </span>
-              <span> 12% </span>
+              <span> {a5}% </span>
             </p>
           </div>
         </div>
