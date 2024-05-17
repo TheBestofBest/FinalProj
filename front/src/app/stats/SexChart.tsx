@@ -11,8 +11,8 @@ const options: ApexOptions = {
     fontFamily: "Satoshi, sans-serif",
     type: "donut",
   },
-  colors: ["#3C50E0", "#6577F3", "#8FD0EF", "#0FADCF"],
-  labels: ["20대", "30대", "40대", "50대 이상"],
+  colors: ["#3C50E0", "#6577F3"],
+  labels: ["남성", "여성"],
   legend: {
     show: false,
     position: "bottom",
@@ -49,18 +49,43 @@ const options: ApexOptions = {
   ],
 };
 
-const SexChart: React.FC = () => {
-  const [state, setState] = useState<ChartThreeState>({
-    series: [65, 34, 12, 56],
-  });
+interface Stats {
+    totalPeople : string;
+    numberOfMan : number;
+    numberOfWoman : number;
+    two : number;
+    three : number;
+    four : number;
+    five : number;
+    salaryOne : number;
+    salaryTwo : number;
+    salaryThree : number;
+    salaryFour : number;
+    salaryFive : number;
+    salarySix : number;
+    salarySeven : number;
+  }
 
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-      series: [65, 34, 12, 56],
-    }));
-  };
-  handleReset;
+const SexChart = ({stats} : Stats) => {
+  
+
+    const total = 89 + 16;
+    const man = (89 / total) * 100; // 56이 전체에서 차지하는 비율
+    const woman = (16 / total) * 100;
+    const MPercentage = man.toFixed(1);
+    const WPercentage = woman.toFixed(1);
+
+    const [state, setState] = useState<ChartThreeState>({
+        series: [89, 16],
+      });
+
+    const handleReset = () => {
+        setState((prevState) => ({
+        ...prevState,
+        series: [89, 16],
+        }));
+    };
+    handleReset;
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-5">
@@ -87,8 +112,8 @@ const SexChart: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-primary"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> 20대 </span>
-              <span> 65% </span>
+              <span> 남성 </span>
+              <span> {MPercentage}% </span>
             </p>
           </div>
         </div>
@@ -96,26 +121,8 @@ const SexChart: React.FC = () => {
           <div className="flex w-full items-center">
             <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#6577F3]"></span>
             <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> 30대 </span>
-              <span> 34% </span>
-            </p>
-          </div>
-        </div>
-        <div className="w-full px-8 sm:w-1/2">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#8FD0EF]"></span>
-            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> 40대 </span>
-              <span> 45% </span>
-            </p>
-          </div>
-        </div>
-        <div className="w-full px-8 sm:w-1/2">
-          <div className="flex w-full items-center">
-            <span className="mr-2 block h-3 w-full max-w-3 rounded-full bg-[#0FADCF]"></span>
-            <p className="flex w-full justify-between text-sm font-medium text-black dark:text-white">
-              <span> 50대 이상 </span>
-              <span> 12% </span>
+              <span> 여성 </span>
+              <span> {WPercentage}% </span>
             </p>
           </div>
         </div>

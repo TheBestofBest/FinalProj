@@ -11,6 +11,7 @@ export interface ChatLog {
     content: string;
     username: string | undefined;
     name: string;
+    createdDate: string;
 }
 
 
