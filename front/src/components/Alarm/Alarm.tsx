@@ -19,6 +19,7 @@ export default function Alarm() {
   const [roomId, setRoomId] = useState("");
   const [openAlarm, setOpenAlarm] = useState<boolean>(true);
   const queryClient = useQueryClient();
+  const [alarmId, setAlarmId] = useState("");
 
   const [categoryToKorean, setcategoryToKorean] = useState("");
 
@@ -150,7 +151,9 @@ export default function Alarm() {
       })
   }
 
-  const rejectMeeting = () => {
+
+
+  const rejectMeeting = (content: string) => {
     api.patch(`/api/v1/meetings/${roomId}/exit`).then((res) => {
       api.get(`/api/v1/members/me`).then((res) => {
         if (!res.data.isSuccess) {
@@ -195,7 +198,7 @@ export default function Alarm() {
                   </button>
                   <button
                     className="mx-1 rounded border bg-blue-500 px-1 text-white hover:bg-blue-400"
-                    onClick={approveMeeting}
+                    onClick={() => approveMeeting(alarms.message)}
                   >
                     참여
                   </button>

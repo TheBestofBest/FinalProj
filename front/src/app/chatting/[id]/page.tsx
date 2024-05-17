@@ -19,6 +19,10 @@ const Id = () => {
     const [chattingLogs, setChattingLogs] = useState<ChatLog[]>([]);
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    const memberCount = useRef<number>(0);
+
 
     useEffect(() => {
         // 새로운 메시지가 추가될 때마다 스크롤을 맨 아래로 이동
@@ -30,7 +34,13 @@ const Id = () => {
         fetchChattingRoom();
         fetchChatLogs();
         wsHandler();
+        joinMessage();
     }, [])
+
+    useEffect(() => {
+        fetchChattingRoom();
+        fetchChatLogs();
+    }, [memberCount])
 
     const fetchChattingRoom = () => {
         api.get(`/api/v1/chats/${params.id}`)
@@ -60,7 +70,6 @@ const Id = () => {
         isCheck: chattingRoom?.members.length
     });
 
-
     //채팅방
     const [stomp, setStomp] = useState<Client>();
 
@@ -71,7 +80,13 @@ const Id = () => {
         });
         chatClient.onConnect = () => {
             console.log('웹 소켓 연결이 열렸습니다.');
-            chatClient.subscribe(`/topic/chat/${params.id}`, (data) => {
+            chatClient.subscribe(`/topic/chat/send/${params.id}`, (data) => {
+                fetchChatLogs();
+            });
+            chatClient.subscribe(`/topic/chat/join/${params.id}`, (data) => {
+
+            });
+            chatClient.subscribe(`/topic/chat/exit/${params.id}`, (data) => {
                 fetchChatLogs();
             });
         };
@@ -82,7 +97,22 @@ const Id = () => {
         };
     }
 
+    const joinMessage = () => {
+        stomp?.publish({
+            destination: `/app/chat/join/${params.id}`,
+            body: JSON.stringify({
+                roomId: parseInt(params.id),
+                content: `${memberData.name} 님이 입장했습니다.`,
+                username: undefined,
+                name: undefined,
+                isCheck: 0
+            })
+        });
+        console.log("입장~")
+    }
+
     const sendMessage = async () => {
+        if (message.content.trim() === '') return;
         stomp?.publish({
             destination: `/app/chat/send/${params.id}`,
             body: JSON.stringify(message)
@@ -94,12 +124,16 @@ const Id = () => {
             name: memberData?.name,
             isCheck: message.isCheck ? -1 : undefined
         });
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setMessage({ ...message, [name]: value });
-        console.log({ ...message, [name]: value });
+        setMessage({ ...message, content: e.target.value });
+        console.log({ ...message, content: e.target.value });
+        e.target.style.height = 'auto';
+        e.target.style.height = `${e.target.scrollHeight}px`;
     };
 
     const loginCheck = () => {
@@ -109,11 +143,12 @@ const Id = () => {
     }
 
     //enter입력
-    const handleEnterPress = (e: any) => {
-        if (e.keyCode == 13) {
+    const handleEnterPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key == 'Enter') {
             if (e.ctrlKey) {
                 insertNewLine(e.currentTarget);
             } else {
+                e.preventDefault();
                 sendMessage();
             }
         }
@@ -123,16 +158,12 @@ const Id = () => {
         const end = inputElement.selectionEnd;
 
         if (start !== null && end !== null) {
-            const value = message.content ;
+            const value = message.content;
             const newValue = value.substring(0, start) + '\n' + value.substring(end);
             setMessage({
-                roomId: parseInt(params.id),
+                ...message,
                 content: newValue,
-                username: memberData?.username,
-                name: memberData?.name,
-                isCheck: message.isCheck ? -1 : undefined
             });
-
             // Move the cursor to the position after the newline
             setTimeout(() => {
                 inputElement.selectionStart = inputElement.selectionEnd = start + 1;
@@ -140,9 +171,39 @@ const Id = () => {
         }
     };
 
+    function calculateDate(logDate: any) {
+        var createdDate: Date = new Date(logDate);
+        var nowDate: Date = new Date();
+        var difference: number = Math.floor((nowDate.getTime() - createdDate.getTime()) / 1000);
+
+        if (difference == 0) {
+            return "방금 전";
+        }
+        //초
+        else if (difference < 60) {
+            return `${Math.floor(difference)}초 전`;
+        }
+        //분
+        else if (difference < 3600) {
+            return `${Math.floor(difference / 60)}분 전`;
+        }
+        //시
+        else if (difference < 86400) {
+            return `${Math.floor(difference / 3600)}시간 전`;
+        }
+        //일
+        else if (difference < 31536000) {
+            return `${Math.floor(difference / 86400)}일 전`;
+        }
+        //년
+        else {
+            return `${Math.floor(difference / 31536000)}년 전`;
+        }
+    }
+
     return (
         <>
-            <header className="bg-blue-700 text-white py-4 px-6 rounded">
+            <header className="bg-blue-700 text-white py-4 px-6 rounded shadow-lg">
                 <h1 className="text-2xl font-bold">{chattingRoom?.name}</h1>
                 <span className="text-sm">{chattingRoom?.members.map((name, index) =>
                     <React.Fragment key={index}>
@@ -153,15 +214,26 @@ const Id = () => {
             <main className="flex-1 h-150 p-6 overflow-y-auto" ref={containerRef}>
                 <div className="flex flex-col gap-2">
                     {chattingLogs?.map((chatLog: ChatLog) => <>
-                        {chatLog.username != memberData?.username ?
-                            <div className="bg-gray-100 p-4 rounded-lg max-w-xs self-start border">
-                                <p className="text-sm">{chatLog.content}</p>
-                                <p className="text-sm">{chatLog.name}</p>
-                            </div> :
+                        {chatLog.username == memberData?.username ?
                             <div className="bg-blue-200 p-4 rounded-lg max-w-xs self-end">
-                                <p className="text-sm">{chatLog.content}</p>
-                                <p className="text-sm">{chatLog.name}</p>
+                                <p className="text-sm whitespace-pre-wrap">{chatLog.content}</p>
+                                <div className="flex justify-between items-end mt-2">
+                                    <span className="text-xs">{chatLog.name}</span>
+                                    <span className="ml-20 text-xs">{calculateDate(chatLog.createdDate)}</span>
+                                </div>
                             </div>
+                            : chatLog.username == null ?
+                                <div className="flex items-center justify-center rounded-lg p-4 my-4">
+                                    <span className=" px-3 py-1 rounded text-gray-700 text-sm"> {chatLog.content}</span>
+                                </div>
+                                :
+                                <div className="bg-zinc-300 p-4 rounded-lg max-w-xs self-start ">
+                                    <p className="text-sm whitespace-pre-wrap">{chatLog.content}</p>
+                                    <div className="flex justify-between items-end mt-2">
+                                        <span className="text-xs">{chatLog.name}</span>
+                                        <span className="ml-20 text-xs">{calculateDate(chatLog.createdDate)}</span>
+                                    </div>
+                                </div>
                         }
                     </>)}
                     {/* {messages?.map((message: Message) => <>
@@ -178,11 +250,13 @@ const Id = () => {
                     </>)} */}
                 </div>
             </main>
-            <footer className="bg-gray-300 py-4 px-6 ">
+            <footer className="bg-gray-300 py-4 px-6">
                 <div className="flex">
-                    <textarea  placeholder="Type your message..." className="flex-1 h-10 rounded-l-lg p-2 resize-none focus:outline-none"
-                        name="content" value={message.content} onChange={handleChange} onKeyDown={handleEnterPress} />
-                    <button className="bg-blue-700 text-white px-4 rounded-r-lg " type="button" onClick={sendMessage}>Send</button>
+                    <textarea placeholder="Type your message..."
+                        className="flex items-center border-0.5 flex-1 h-11 rounded-l-lg p-2 resize-none focus:outline-none shadow-lg"
+                        name="content" value={message.content} onChange={handleChange} onKeyDown={handleEnterPress}
+                        rows={1} style={{ overflow: 'hidden' }} />
+                    <button className="bg-blue-700 text-white px-4 rounded-r-lg shadow-lg" type="button" onClick={sendMessage}>Send</button>
                 </div>
             </footer>
         </>

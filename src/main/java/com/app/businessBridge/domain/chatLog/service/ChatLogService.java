@@ -25,13 +25,22 @@ public class ChatLogService {
     private final MemberService memberService;
 
 
-    public void save(Long roomId, String username, ChatLogDto chatLogDto) {
-        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom((Long) chatLogDto.getRoomId()).getData();
+    public void save(ChatLogDto chatLogDto) {
+        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom(chatLogDto.getRoomId()).getData();
         Member member = memberService.findByUsername(chatLogDto.getUsername()).getData();
         ChatLog chatLog = ChatLog.builder()
                 .content(chatLogDto.getContent())
                 .chattingRoom(chattingRoom)
                 .member(member)
+                .build();
+        chatLogRepository.save(chatLog);
+    }
+
+    public void save(Long roomId, String message) {
+        ChattingRoom chattingRoom = chattingRoomService.getChattingRoom(roomId).getData();
+        ChatLog chatLog = ChatLog.builder()
+                .content(message)
+                .chattingRoom(chattingRoom)
                 .build();
         chatLogRepository.save(chatLog);
     }
