@@ -62,40 +62,35 @@ public class MailService {
     }
 
     @Transactional
-    public RsData create(MailRequest.CreateRequest createRequest) {
-//        Optional<Member> senderOptional = this.memberRepository.findByEmailAndName(createRequest.getSenderEmail(), createRequest.getSenderName());
-        Optional<Member> receiverOptional = this.memberRepository.findByEmailAndName(createRequest.getReceiverEmail(), createRequest.getReceiverName());
-        Optional<Member> referenceOptional = this.memberRepository.findByEmailAndName(createRequest.getReferenceEmail(), createRequest.getReferenceName());
-        Member loginedMember = request.getMember();
+    public RsData create(MailRequest.CreateRequest createRequest, Member sender, Member receiver, Member reference) {
+        // 메일 생성
+        Mail mail = Mail.builder()
+                .title(createRequest.getTitle())
+                .content(createRequest.getContent())
+                .is_Read(createRequest.isRead())
+                .sendDate(createRequest.getSendDate())
+                .receiveDate(createRequest.getReceiveDate())
+                .sender(sender)
+                .receiver(receiver)
+                .reference(reference)
+                .build();
 
-        if (receiverOptional.isPresent()) {
-            Mail.MailBuilder mailBuilder = Mail.builder()
-                    .sender(loginedMember.getEmail())
-                    .receiver(receiverOptional.get())
-                    .title(createRequest.getTitle())
-                    .content(createRequest.getContent())
-                    .is_Read(createRequest.isRead())
-                    .sendDate(createRequest.getSendDate())
-                    .receiveDate(createRequest.getReceiveDate());
+        // 메일 저장
+        Mail savedMail = mailRepository.save(mail);
 
-            // 참조자가 존재하는 경우에만 설정
-            referenceOptional.ifPresent(reference -> mailBuilder.reference(reference));
+        // 발신자와 수신자에 대한 추가 작업 수행
+        sender.getSentMails().add(savedMail); // 발신자의 '보낸 메일' 목록에 추가
+        receiver.getReceivedMails().add(savedMail); // 수신자의 '받은 메일' 목록에 추가
 
-            Mail mail = mailBuilder.build();
-
-            // 메일 저장
-            Mail savedMail = mailRepository.save(mail);
-
-            // 발신자와 수신자에 대한 추가 작업 수행
-//            savedMail.getSender().getSentMails().add(savedMail);
-            savedMail.getReceiver().getReceivedMails().add(savedMail);
-
-            // 참조자가 존재하는 경우에만 추가 작업 수행
-            referenceOptional.ifPresent(reference -> reference.getReferencedMails().add(savedMail));
-
-            return RsData.of(RsCode.S_01, "메일이 성공적으로 전송되었습니다.", savedMail);
-        } else {
-            return RsData.of(RsCode.F_01, "발신자 또는 수신자 정보가 올바르지 않습니다.", null);
+        // 참조자가 존재하는 경우에만 추가 작업 수행
+        if (reference != null) {
+            reference.getReferencedMails().add(savedMail); // 참조자의 '참조한 메일' 목록에 추가
         }
+
+        return RsData.of(
+                RsCode.S_02,
+                "메일 발송이 완료되었습니다.",
+                savedMail
+        );
     }
 }

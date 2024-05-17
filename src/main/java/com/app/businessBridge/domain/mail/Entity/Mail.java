@@ -21,16 +21,6 @@
     @ToString(callSuper = true)
     public class Mail extends BaseEntity {
 
-        // 보낸 사람
-        private String sender;
-        // 받은 사람
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "receiver_id")
-        private Member receiver;
-        // 참조
-        @ManyToOne
-        @JoinColumn(name = "reference_id")
-        private Member reference;
         // 메일 제목
         private String title;
         // 메일 내용
@@ -43,6 +33,18 @@
         private LocalDate sendDate;
         // 받은 날짜
         private LocalDate receiveDate;
+        // 보낸 사람
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "sender_id")
+        private Member sender;
+        // 받은 사람
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "receiver_id")
+        private Member receiver;
+        // 참조
+        @ManyToOne
+        @JoinColumn(name = "reference_id")
+        private Member reference;
 
         @ManyToOne
         @JoinColumn(name = "mailbox_id")
