@@ -27,7 +27,7 @@
 
 ## ☁️ ERD [링크](https://www.erdcloud.com/d/W2PGGGb4JJoaH84KY)
 
-![final proj](https://github.com/TheBestofBest/FinalProj_BusinessBridge/assets/144447216/40b05ee7-c1c1-4979-942a-e5986e41153e)
+![final proj](https://github.com/TheBestofBest/FinalProj_BusinessBridge/assets/144447216/27717e60-0142-4763-91ce-5fc9bee14f6e)
 
 
 
