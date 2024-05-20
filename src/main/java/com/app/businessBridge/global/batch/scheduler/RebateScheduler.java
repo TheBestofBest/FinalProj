@@ -28,7 +28,7 @@ public class RebateScheduler {
     }
 
     // 초 분 시 일 월 년
-    @Scheduled(cron = "0 0 0 1 * *")
+    @Scheduled(cron = "0 1 * * * *")
     public void runJob() throws Exception {
         jobLauncher.run(job, new JobParameters());
     }

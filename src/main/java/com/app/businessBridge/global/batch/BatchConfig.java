@@ -28,9 +28,9 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job helloJob(JobRepository jobRepository, Step simpleStep1) {
+    public Job helloJob(JobRepository jobRepository, Step helloStep1) {
         return new JobBuilder("helloJob", jobRepository)
-                .start(simpleStep1)
+                .start(helloStep1)
                 .build();
     }
 
